@@ -1,0 +1,146 @@
+var jsext = require("jsext").install(),	//TODO: remove this...
+    assert = require("assert"),
+	alter = require("../../");
+
+module.exports = {
+
+	"alter": {
+
+		"should be able to use an empty pipeline (no-op)": function(){
+console.debug("");
+			var i = [1, 2, 3],
+				p = [],
+				e = [1, 2, 3],
+				alterer = alter(p),
+				a = alterer(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
+			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+		},
+
+		"should be able to use a $skip operator": function(){
+console.debug("");
+			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
+				p = [{$skip:2}, {$skip:1}],	//testing w/ 2 ensures independent state variables
+				e = [{_id:3}, {_id:4}, {_id:5}],
+				alterer = alter(p),
+				a = alterer(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
+			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+		},
+
+		"should be able to use a $limit operator": function(){
+console.debug("");
+			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
+				p = [{$limit:2}],
+				e = [{_id:0}, {_id:1}],
+				alterer = alter(p),
+				a = alterer(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
+			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+		},
+
+		"should be able to use a $skip and then a $limit operator together in the same pipeline": function(){
+console.debug("");
+			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
+				p = [{$skip:2}, {$limit:1}],
+				e = [{_id:2, e:1}],
+				alterer = alter(p),
+				a = alterer(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
+			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+		},
+
+		"should be able to use a $match operator": function(){
+console.debug("");
+			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
+				p = [{$match:{e:1}}],
+				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
+				alterer = alter(p),
+				a = alterer(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
+			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+		},
+
+		"should be able to use a $project operator": function(){
+console.debug("");
+			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
+				p = [{$project:{e:1}}],
+				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
+				alterer = alter(p),
+				a = alterer(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
+			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+		},
+
+//TODO: $project w/ expressions
+
+/*
+		"should be able to construct an instance with $unwind operators properly": function(){
+console.debug("");
+			var i = [
+					{_id:0, nodes:[
+						{one:[11], two:[2,2]},
+						{one:[1,1], two:[22]}
+					]},
+					{_id:1, nodes:[
+						{two:[22], three:[333]},
+						{one:[1], three:[3,3,3]}
+					]}
+				],
+				p = [{$unwind:"$nodes"}, {$unwind:"$nodes.two"}],
+				e = [
+					{_id:0,nodes:{one:[11],two:2}},
+					{_id:0,nodes:{one:[11],two:2}},
+					{_id:0,nodes:{one:[1,1],two:22}},
+					{_id:1,nodes:{two:22,three:[333]}}
+				],
+				alterer = alter(p),
+				a = alterer(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
+			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+		},
+
+		"should be able to construct an instance with $sort operators properly (ascending)": function(){
+			var i = [
+						{_id:3.14159}, {_id:-273.15},
+						{_id:42}, {_id:11}, {_id:1},
+						{_id:false},{_id:true},
+						{_id:""}, {_id:"a"}, {_id:"A"}, {_id:"Z"}, {_id:"z"},
+						{_id:null}, {_id:NaN},
+						//TODO: test with Objects; e.g., {_id:{a:{b:1}},
+						{_id:new Date("2012-10-22T08:01:21.235Z")}, {_id:new Date("2012-10-15T15:48:55.181Z")}
+					],
+				p = [{$sort:{_id:1}}],
+				e = [
+						{_id:null}, {_id:NaN},
+						{_id:-273.15}, {_id:1}, {_id:3.14159}, {_id:11}, {_id:42},
+						{_id:""}, {_id:"A"}, {_id:"Z"}, {_id:"a"}, {_id:"z"},
+						{_id:false}, {_id:true},
+						{_id:new Date("2012-10-15T15:48:55.181Z")}, {_id:new Date("2012-10-22T08:01:21.235Z")}
+					];
+			console.debug("\nINPUTS:\n", i);
+			console.debug("\nPIPELINE OPS:\n", p);
+			var a = alter(p, i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			console.debug("\n");
+		}
+*/
+	}
+
+};
+
+if(!module.parent) (new (require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run();

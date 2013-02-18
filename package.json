@@ -1,0 +1,43 @@
+{
+	"name": "munge",
+	"version": "0.4.2+2013.02.22",
+	"description": "A JavaScript data munging pipeline based on the MongoDB aggregation framework.",
+	"author": "Rivera Group <support@riverainc.com>",
+	"contributors": [
+		"Adam Bell <ABell@riverainc.com>",
+		"Kyle Davis <KDavis@riverainc.com>",
+		"Phil Murray <PMurray@riverainc.com>",
+		"Spencer Rathbun <SRathbun@riverainc.com>",
+		"Charles Ezell <CEzell@riverainc.com>"
+	],
+	"main": "./munge.js",
+	"scripts": {
+		"test": "npm_scripts/test/test.sh"
+	},
+	"repository": {
+		"type": "svn",
+		"url": "http://svn.rcg.local/svn/devrd/eagle6/"
+	},
+	"keywords": [
+		"manipulation",
+		"alteration"
+	],
+	"dependencies": {
+	},
+	"devDependencies": {
+		"mocha": "*",
+		"jshint": "*",
+		"visionmedia-jscoverage": "*",
+		"jscheckstyle": "git+https://github.com/RiveraGroup/jscheckstyle.git"
+	},
+	"license": "AGPL",
+	"private": true,
+	"engine": {
+		"node": ">=0.8"
+	},
+	"config": {
+		"test_syntax": false,
+		"test_unit": false,
+		"test_coverage": false
+	}
+}
