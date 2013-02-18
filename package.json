@@ -23,6 +23,7 @@
 		"alteration"
 	],
 	"dependencies": {
+		"stream-utils":"*"
 	},
 	"devDependencies": {
 		"mocha": "*",
