@@ -1,1 +1,1 @@
-module.exports = require("./alter");
+module.exports = require("./munge");

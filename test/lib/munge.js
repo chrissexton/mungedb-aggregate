@@ -1,22 +1,22 @@
 var jsext = require("jsext").install(),	//TODO: remove this...
     assert = require("assert"),
-	alter = require("../../");
+	munge = require("../../");
 
 module.exports = {
 
-	"alter": {
+	"munge": {
 
 		"should be able to use an empty pipeline (no-op)": function(){
 console.debug("");
 			var i = [1, 2, 3],
 				p = [],
 				e = [1, 2, 3],
-				alterer = alter(p),
-				a = alterer(i);
+				munger = munge(p),
+				a = munger(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
-			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
 		"should be able to use a $skip operator": function(){
@@ -24,12 +24,12 @@ console.debug("");
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$skip:2}, {$skip:1}],	//testing w/ 2 ensures independent state variables
 				e = [{_id:3}, {_id:4}, {_id:5}],
-				alterer = alter(p),
-				a = alterer(i);
+				munger = munge(p),
+				a = munger(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
-			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
 		"should be able to use a $limit operator": function(){
@@ -37,12 +37,12 @@ console.debug("");
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$limit:2}],
 				e = [{_id:0}, {_id:1}],
-				alterer = alter(p),
-				a = alterer(i);
+				munger = munge(p),
+				a = munger(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
-			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
 		"should be able to use a $skip and then a $limit operator together in the same pipeline": function(){
@@ -50,12 +50,12 @@ console.debug("");
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$skip:2}, {$limit:1}],
 				e = [{_id:2, e:1}],
-				alterer = alter(p),
-				a = alterer(i);
+				munger = munge(p),
+				a = munger(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
-			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
 		"should be able to use a $match operator": function(){
@@ -63,12 +63,12 @@ console.debug("");
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$match:{e:1}}],
 				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
-				alterer = alter(p),
-				a = alterer(i);
+				munger = munge(p),
+				a = munger(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
-			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
 		"should be able to use a $project operator": function(){
@@ -76,12 +76,12 @@ console.debug("");
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$project:{e:1}}],
 				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
-				alterer = alter(p),
-				a = alterer(i);
+				munger = munge(p),
+				a = munger(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
-			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
 //TODO: $project w/ expressions
@@ -106,12 +106,12 @@ console.debug("");
 					{_id:0,nodes:{one:[1,1],two:22}},
 					{_id:1,nodes:{two:22,three:[333]}}
 				],
-				alterer = alter(p),
-				a = alterer(i);
+				munger = munge(p),
+				a = munger(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(alterer(i)), JSON.stringify(e), "Reuse of alterer should yeild the same results!");
-			assert.equal(JSON.stringify(alter(p, i)), JSON.stringify(e), "Alternate use of alter should yeild the same results!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
 		"should be able to construct an instance with $sort operators properly (ascending)": function(){
@@ -134,7 +134,7 @@ console.debug("");
 					];
 			console.debug("\nINPUTS:\n", i);
 			console.debug("\nPIPELINE OPS:\n", p);
-			var a = alter(p, i);
+			var a = munge(p, i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			console.debug("\n");
 		}
