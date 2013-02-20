@@ -26,7 +26,7 @@ module.exports = {
 
 		"#getOpName()": {
 
-			"should return the correct op name; $mod": function testOpName(){
+			"should return the correct op name; $last": function testOpName(){
 				assert.strictEqual(new LastAccumulator().getOpName(), "$last");
 			}
 
