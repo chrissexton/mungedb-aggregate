@@ -61,6 +61,7 @@ module.exports = {
 			"The accumulator evaluates two documents and retains the value in the first": function two() {
 				var acc = createAccumulator();
 				acc.evaluate({a:5});
+				acc.evaluate({a:7});
 				assert.strictEqual(acc.getValue(), 5);
 			},
 
