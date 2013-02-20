@@ -8,6 +8,13 @@ module.exports = {
 
 		"constructor()": {
 
+	
+			"should not throw Error when constructing with no args": function testConstructor(){
+				assert.doesNotThrow(function(){
+					new SingleValueAccumulator();
+				});
+			},
+
 			"should not throw Error when constructing with 1 arg": function testConstructor(){
 				assert.doesNotThrow(function(){
 					new SingleValueAccumulator(null);
@@ -16,11 +23,6 @@ module.exports = {
 			"should throw Error when constructing with > 1 arg": function testConstructor(){
 				assert.throws(function(){
 					new SingleValueAccumulator(null, null);
-				});
-			},
-			"should throw Error when constructing with < 1 arg": function testConstructor(){
-				assert.throws(function(){
-					new SingleValueAccumulator();
 				});
 			}
 		},
