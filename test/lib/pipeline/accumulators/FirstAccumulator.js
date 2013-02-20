@@ -1,6 +1,12 @@
 var assert = require("assert"),
 	FirstAccumulator = require("../../../../lib/pipeline/accumulators/FirstAccumulator"),
-	Expression = require("../../../../lib/pipeline/expressions/Expression");
+	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
+
+function createAccumulator(){
+	var firstAccumulator = new FirstAccumulator();
+	firstAccumulator.addOperand(new FieldPathExpression("a") );
+	return firstAccumulator;
+}
 
 module.exports = {
 
@@ -34,31 +40,35 @@ module.exports = {
 
 		"#evaluate()": {
 
-			/*
-			"should return day of year; 49 for 2013-02-18": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$dayOfYear:"$someDate"}).evaluate({someDate:new Date("2013-02-18 EST")}), 49);
-			},
-			*/
-
 			"The accumulator evaluates no documents": function none() {
 				// The accumulator returns no value in this case.
-				assert.ok(Expression.parseOperand({$first:"$a"}).evaluate());
+				var acc = createAccumulator();
+				assert.ok(!acc.getValue());
 			},
 
 			"The accumulator evaluates one document and retains its value": function one() {
-				assert.strictEqual(Expression.parseOperand({$first:"$a"}).evaluate({a:5}), 5);
+				var acc = createAccumulator();
+				acc.evaluate({a:5});
+				assert.strictEqual(acc.getValue(), 5);
 			},
 
 			"The accumulator evaluates one document with the field missing retains undefined": function missing() {
-				assert.strictEqual(Expression.parseOperand({$first:"$a"}).evaluate({}), undefined);
+				var acc = createAccumulator();
+				acc.evaluate({});
+				assert.strictEqual(acc.getValue(), undefined);
 			},
 
 			"The accumulator evaluates two documents and retains the value in the first": function two() {
-				assert.strictEqual(Expression.parseOperand({$first:"$a"}).evaluate([{a:5}, {a:7}]), 5);
+				var acc = createAccumulator();
+				acc.evaluate({a:5});
+				assert.strictEqual(acc.getValue(), 5);
 			},
 
 			"The accumulator evaluates two documents and retains the undefined value in the first": function firstMissing() {
-				assert.strictEqual(Expression.parseOperand({$first:"$a"}).evaluate([{}, {a:7}]), undefined);
+				var acc = createAccumulator();
+				acc.evaluate({});
+				acc.evaluate({a:7});
+				assert.strictEqual(acc.getValue(), undefined);
 			}
 		}
 
