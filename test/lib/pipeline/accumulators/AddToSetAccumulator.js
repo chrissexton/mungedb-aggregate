@@ -1,125 +1,70 @@
-
 var assert = require("assert"),
 	AddToSetAccumulator = require("../../../../lib/pipeline/accumulators/AddToSetAccumulator"),
+	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
 
+var createAccumulator = function createAccumulator() {
+	var myAccumulator = new AddToSetAccumulator();
+	myAccumulator.addOperand(new FieldPathExpression("b") );
+	return myAccumulator;
+};
 
-function createAccumulator(){
-	var accumulator = new AddToSetAccumulator();
-	accumulator.addOperand(new FieldPathExpression("b") );
-	return accumulator;
-}
-
-
+//TODO: refactor these test cases using Expression.parseOperand() or something because these could be a whole lot cleaner...
 module.exports = {
 
 	"AddToSetAccumulator": {
 
 		"constructor()": {
 
-			"should not throw Error when constructing without args": function testConstructor(){
-				assert.doesNotThrow(function(){
-					new AddToSetAccumulator();
+		},
+
+		"#getValue()": {
+
+			"should return empty array": function testEmptySet() {
+				var acc = new createAccumulator();
+				var value = acc.getValue();
+				assert.equal((value instanceof Array), true);
+				assert.equal(value.length, 0);
+			},
+
+			"should return array with one element that equals 5": function test5InSet() {
+				var acc = createAccumulator();
+				acc.evaluate({b:[5]});
+				var value = acc.getValue();
+				assert.equal((value instanceof Array), true);
+				assert.equal(value.length, 1);
+				assert.equal(value[0], 5);
+			},
+
+			"should produce value that is an array of multiple elements": function testMultipleItems() {
+				var acc = createAccumulator();
+				acc.evaluate({b:[5, {key: "value"}]});
+				var value = acc.getValue();
+				assert.equal((value instanceof Array), true);
+				assert.equal(value.length, 2);
+				assert.equal((value[0] instanceof Object || value[1] instanceof Object) && (typeof value[0] == 'number' || typeof value[1] == 'number'), true);
+				//assert.equal(value[0], 5);
+			},
+
+			"should throw an error when given a non-array to evaluate": function testArrayValidity() {
+				assert.throws(function() {
+					var acc = createAccumulator();
+					acc.evaluate({b:5});
+					var value = acc.getValue();
 				});
-			}
-
-		},
-
-		"#getOpName()": {
-
-			"should return the correct op name; $addToSet": function testOpName(){
-				assert.strictEqual(new AddToSetAccumulator().getOpName(), "$addToSet");
-			}
-
-		},
-
-		"#evaluate()": {
-
-			"should evaluate no documents": function testStuff(){
-				var accumulator = createAccumulator();
-				accumulator.evaluate();
-				assert.deepEqual(accumulator.getValue(), []);
 			},
 
-
-			"should evaluate one document and return an set of 1: [1]": function testStuff(){
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:1});
-				assert.deepEqual(accumulator.getValue(), [1]);
-			},
-
-			"should evaluate two documents with the same value and return a set of 1: [1]": function testStuff(){
-
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:1});
-				accumulator.evaluate({b:1});
-				assert.deepEqual(accumulator.getValue(), [1]);
-			},
-
-			"should evaluate two documents with the same objects as values and return a set of 1: [{foo:'bar'}]": function testStuff(){
-
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:{foo:"bar"}});
-				accumulator.evaluate({b:{foo:"bar"}});
-				assert.deepEqual(accumulator.getValue(), [{foo:"bar"}]);
-			},
-
-
-			"should evaluate two documents with the same arrays as values and return a set of 1: [[1,2,3]]": function testStuff(){
-
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:[1,2,3]});
-				accumulator.evaluate({b:[1,2,3]});
-				assert.deepEqual(accumulator.getValue(), [[1,2,3]]);
-			},
-
-
-			"should evaluate two documents with different values and return a set of 2: [1,2]": function testStuff(){
-
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:1});
-				accumulator.evaluate({b:2});
-				assert.deepEqual(accumulator.getValue(), [1,2]);
-			},
-
-			"should evaluate two documents with the different objects as values and return a set of 2: [{foo:'bar'},{foo:'baz'}]": function testStuff(){
-
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:{foo:"bar"}});
-				accumulator.evaluate({b:{foo:"baz"}});
-				assert.deepEqual(accumulator.getValue(), [{foo:"bar"},{foo:"baz"}]);
-			},
-
-
-			"should evaluate two documents with the different arrays as values and return a set of 1: [[1,2,3], [1,2]]": function testStuff(){
-
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:[1,2,3]});
-				accumulator.evaluate({b:[1,2]});
-				assert.deepEqual(accumulator.getValue(), [[1,2,3], [1,2]]);
-			},
-
-
-
-			"should evaluate one document with null and one document with a value and return an set of 1: [1]": function testStuff(){
-				var accumulator = createAccumulator();
-				accumulator.evaluate({b:1});
-				accumulator.evaluate({b:null});
-				assert.deepEqual(accumulator.getValue(), [1]);
+			"should return array with one element that is an object containing a key/value pair": function testKeyValue() {
+				var acc = createAccumulator();
+				acc.evaluate({b:[{key: "value"}]});
+				var value = acc.getValue();
+				assert.equal((value instanceof Object), true);
+				assert.equal(value.length, 1);
+				assert.equal(value[0].key == "value", true);
 			}
 
 		}
-
 	}
-
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-
-
-
-
-
-
-
-
