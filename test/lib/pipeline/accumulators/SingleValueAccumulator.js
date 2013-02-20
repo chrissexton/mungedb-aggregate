@@ -1,5 +1,5 @@
 var assert = require("assert"),
-	SingleValueAccumulator = require("../../../../lib/pipeline/accumulator/SingleValueAccumulator");
+	SingleValueAccumulator = require("../../../../lib/pipeline/accumulators/SingleValueAccumulator");
 
 //TODO: refactor these test cases using Expression.parseOperand() or something because these could be a whole lot cleaner...
 module.exports = {
