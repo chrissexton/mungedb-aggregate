@@ -18,7 +18,7 @@ module.exports = {
 
 		"#getOpName()": {
 
-			"should return the correct op name; $dayOfYear": function testOpName(){
+			"should return the correct op name; $not": function testOpName(){
 				assert.equal(new NotExpression().getOpName(), "$not");
 			}
 
