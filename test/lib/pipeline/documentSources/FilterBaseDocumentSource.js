@@ -28,21 +28,21 @@ module.exports = {
 
 		"#accept()": {
 
-			"should throw Error when calling toMatcherBson": function testConstructor(){
+			"should throw Error when calling toMatcherJson": function testConstructor(){
 				assert.throws(function(){
 					var fbds = new FilterBaseDocumentSource();
-					fbds.toMatcherBson();
+					fbds.toMatcherJson();
 				});
 			}
 
 		},
 
-		"#toMatcherBson()": {
+		"#toMatcherJson()": {
 
-			"should throw Error when calling toMatcherBson": function testConstructor(){
+			"should throw Error when calling toMatcherJson": function testConstructor(){
 				assert.throws(function(){
 					var fbds = new FilterBaseDocumentSource();
-					fbds.toMatcherBson();
+					fbds.toMatcherJson();
 				});
 			}
 
