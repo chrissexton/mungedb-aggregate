@@ -23,7 +23,8 @@ Here is a list of the major items where I have deviated from the MongoDB code an
     * DESIGN: The `{FOO}Expression` classes do not provide `create` statics since calling new is easy enough
       * DESIGN: To further this, the `CompareExpression` class doesn't provide any of it's additional `create{FOO}` helpers so instead I'm binding the appropriate args to the ctor
     * TESTING: Most of the expression tests have been written without the expression test base classes
-
+  * Document sources
+  	* we have implemented a 'reset' method for all document sources so that we can reuse them against different streams of data
 
 
 TODO
