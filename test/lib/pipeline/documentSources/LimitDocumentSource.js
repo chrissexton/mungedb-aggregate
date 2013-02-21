@@ -32,12 +32,15 @@ module.exports = {
 
 		},
 
-		/*
 		"#coalesce()": {
 
-			"should return false if nextSource is not $skip": function dontSkip(){
+			"should return false if nextSource is not $limit": function dontSkip(){
+				var lds = new LimitDocumentSource();
+				assert.equal(lds.coalesce({}), false);
 			},
-			"should return true if nextSource is $skip": function changeLimit(){
+			"should return true if nextSource is $limit": function changeLimit(){
+				var lds = new LimitDocumentSource();
+				assert.equal(lds.coalesce(new LimitDocumentSource()), true);
 			}
 
 		},
@@ -45,8 +48,37 @@ module.exports = {
 		"#eof()": {
 
 			"should return true if there are no more sources": function noSources(){
+				var lds = new LimitDocumentSource();
+				lds.limit = 9;
+				lds.count = 0;
+				lds.pSource = {
+					eof: function(){
+						return true;
+					}
+				};
+				assert.equal(lds.eof(), true);
 			},
 			"should return true if limit is hit": function hitLimit(){
+				var lds = new LimitDocumentSource();
+				lds.limit = 9;
+				lds.count = 9;
+				lds.pSource = {
+					eof: function(){
+						return false;
+					}
+				};
+				assert.equal(lds.eof(), true);
+			},
+			"should return false if limit is not hit and there are more documents": function hitLimit(){
+				var lds = new LimitDocumentSource();
+				lds.limit = 10;
+				lds.count = 9;
+				lds.pSource = {
+					eof: function(){
+						return false;
+					}
+				};
+				assert.equal(lds.eof(), false);
 			}
 
 		},
@@ -56,8 +88,8 @@ module.exports = {
 			"should return the current document source": function currSource(){
 				var lds = new LimitDocumentSource();
 				lds.limit = 1;
-				lds.pSource = { item:1 };
-				assert.strictEqual(lds.getCurrent(), { item:1 }); 
+				lds.pSource = {getCurrent:function(){return { item:1 };}};
+				assert.deepEqual(lds.getCurrent(), { item:1 }); 
 			}
 
 		},
@@ -65,13 +97,37 @@ module.exports = {
 		"#advance()": {
 
 			"should return true for moving to the next source": function nextSource(){
+				var lds = new LimitDocumentSource();
+				lds.count = 0;
+				lds.limit = 2;
+				lds.pSource = {
+					getCurrent:function(){return { item:1 };},
+					advance:function(){return true;}
+				};
+				assert.strictEqual(lds.advance(), true); 
 			},
 
 			"should return false for no sources remaining": function noMoar(){
+				var lds = new LimitDocumentSource();
+				lds.limit = 1;
+				lds.pSource = {
+					getCurrent:function(){return { item:1 };},
+					advance:function(){return false;}
+				};
+				assert.strictEqual(lds.advance(), false); 
+			},
+
+			"should return false if we hit our limit": function noMoar(){
+				var lds = new LimitDocumentSource();
+				lds.limit = 1;
+				lds.pSource = {
+					getCurrent:function(){return { item:1 };},
+					advance:function(){return true;}
+				};
+				assert.strictEqual(lds.advance(), false); 
 			}
 
 		},
-		*/
 
 		"#sourceToJson()": {
 

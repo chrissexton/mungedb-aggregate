@@ -59,16 +59,6 @@ module.exports = {
 			return klass;
 		})();
 		
-		//TODO:remove this once Match is implemented!!!
-		Pipeline.MatchDocumentSource = (function(){
-			var klass = function MatchDocumentSource(){
-				
-			}, base = require('../../../lib/pipeline/documentSources/DocumentSource'), proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
-			klass.matchName = "$match";
-			return klass;
-		})();
-		Pipeline.StageDesc.$match = Pipeline.MatchDocumentSource;
-		
 		//TODO:remove this once Sort is implemented!!!
 		Pipeline.SortDocumentSource = (function(){
 			var klass = function SortDocumentSource(){
