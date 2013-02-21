@@ -36,7 +36,6 @@ module.exports = {
 
 			"should evaluate no documents": function testStuff(){
 				var lastAccumulator = createAccumulator();
-				lastAccumulator.evaluate();
 				assert.strictEqual(lastAccumulator.getValue(), undefined);
 			},
 

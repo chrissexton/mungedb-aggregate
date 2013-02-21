@@ -36,7 +36,6 @@ module.exports = {
 
 			"should evaluate no documents": function testStuff(){
 				var accumulator = createAccumulator();
-				accumulator.evaluate();
 				assert.deepEqual(accumulator.getValue(), []);
 			},
 
