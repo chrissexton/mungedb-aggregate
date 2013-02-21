@@ -1,7 +1,7 @@
 var assert = require("assert"),
 	FilterBaseDocumentSource = require("../../../../lib/pipeline/documentSources/FilterBaseDocumentSource");
 
-function createAccumulator(){
+function createSource(){
 	var fbds = new FilterBaseDocumentSource();
 	fbds.addOperand(new FieldPathExpression("a") );
 	return fbds;
@@ -28,10 +28,10 @@ module.exports = {
 
 		"#accept()": {
 
-			"should throw Error when calling toMatcherJson": function testConstructor(){
+			"should throw Error when calling accept": function testConstructor(){
 				assert.throws(function(){
 					var fbds = new FilterBaseDocumentSource();
-					fbds.toMatcherJson();
+					fbds.accept();
 				});
 			}
 
