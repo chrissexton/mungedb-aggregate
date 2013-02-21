@@ -24,7 +24,7 @@
 	],
 	"dependencies": {
 		"stream-utils":"*",
-		"sha3":"*"
+		"es6-shim":"*"
 	},
 	"devDependencies": {
 		"mocha": "*",

@@ -16,6 +16,43 @@ module.exports = {
 
 		"constructor()": {
 
+			"should error if called with args": function testArgsGivenToCtor() {
+				assert.throws(function() {
+					var acc = new AddToSetAccumulator('arg');
+				});
+			},
+
+			"should construct object with set property": function testCtorAssignsSet() {
+				var acc = new AddToSetAccumulator();
+				assert.notEqual(acc.set, null);
+				assert.notEqual(acc.set, undefined);
+			}
+
+		},
+
+		"#evaluate()" : {
+
+			"should error if evaluate is called with no args": function testNoArgs() {
+				assert.throws(function() {
+					var acc = new createAccumulator();
+					acc.evaluate();
+				});
+			},
+
+			"should error if evaluate is called with more than one arg": function testTooManyArgs() {
+				assert.throws(function() {
+					var acc = new createAccumulator();
+					acc.evaluate({}, {});
+				});
+			},
+
+			"should throw an error when given a non-array to evaluate": function testArrayValidity() {
+				assert.throws(function() {
+					var acc = createAccumulator();
+					acc.evaluate({b:5});
+				});
+			}
+
 		},
 
 		"#getValue()": {
@@ -44,14 +81,6 @@ module.exports = {
 				assert.equal(value.length, 2);
 				assert.equal((value[0] instanceof Object || value[1] instanceof Object) && (typeof value[0] == 'number' || typeof value[1] == 'number'), true);
 				//assert.equal(value[0], 5);
-			},
-
-			"should throw an error when given a non-array to evaluate": function testArrayValidity() {
-				assert.throws(function() {
-					var acc = createAccumulator();
-					acc.evaluate({b:5});
-					var value = acc.getValue();
-				});
 			},
 
 			"should return array with one element that is an object containing a key/value pair": function testKeyValue() {
