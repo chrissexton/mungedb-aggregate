@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"mocha": "*",
-		"jshint": "*",
+		"jshint": "0.9.1",
 		"visionmedia-jscoverage": "*",
 		"jscheckstyle": "git+https://github.com/RiveraGroup/jscheckstyle.git"
 	},
