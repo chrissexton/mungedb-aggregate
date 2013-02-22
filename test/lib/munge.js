@@ -42,7 +42,6 @@ module.exports = {
 			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 		
-/*
 		"should be able to use a $skip operator": function(){
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$skip:2}, {$skip:1}],	//testing w/ 2 ensures independent state variables
@@ -67,6 +66,7 @@ module.exports = {
 		},
 
 
+/*
 		"should be able to use a $project operator": function(){
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$project:{e:1}}],
