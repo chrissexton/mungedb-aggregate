@@ -39,8 +39,8 @@
 		"node": ">=0.8"
 	},
 	"config": {
-		"test_syntax": false,
-		"test_unit": false,
-		"test_coverage": false
+		"test_syntax": true,
+		"test_unit": true,
+		"test_coverage": true
 	}
 }

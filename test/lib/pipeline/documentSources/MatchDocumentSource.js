@@ -59,8 +59,7 @@ module.exports = {
 		"#createFromJson()": {
 
 			"should return a new MatchDocumentSource object from an input object": function createTest(){
-				var mds = new MatchDocumentSource({ location : { $in : ['Kentucky'] } });
-				var t = mds.createFromJson({ someval:{$exists:true} });
+				var t = MatchDocumentSource.createFromJson({ someval:{$exists:true} });
 				assert.strictEqual(t instanceof MatchDocumentSource, true);
 			}
 

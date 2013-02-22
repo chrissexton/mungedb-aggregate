@@ -1,5 +1,4 @@
-var jsext = require("jsext").install(),	//TODO: remove this...
-    assert = require("assert"),
+var assert = require("assert"),
 	munge = require("../../");
 
 module.exports = {
@@ -7,7 +6,6 @@ module.exports = {
 	"munge": {
 
 		"should be able to use an empty pipeline (no-op)": function(){
-console.debug("");
 			var i = [1, 2, 3],
 				p = [],
 				e = [1, 2, 3],
@@ -19,21 +17,8 @@ console.debug("");
 			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
-		"should be able to use a $skip operator": function(){
-console.debug("");
-			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
-				p = [{$skip:2}, {$skip:1}],	//testing w/ 2 ensures independent state variables
-				e = [{_id:3}, {_id:4}, {_id:5}],
-				munger = munge(p),
-				a = munger(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
-		},
 
 		"should be able to use a $limit operator": function(){
-console.debug("");
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$limit:2}],
 				e = [{_id:0}, {_id:1}],
@@ -45,8 +30,31 @@ console.debug("");
 			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
+		"should be able to use a $match operator": function(){
+			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
+				p = [{$match:{e:1}}],
+				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
+				munger = munge(p),
+				a = munger(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+		},
+		
+/*
+		"should be able to use a $skip operator": function(){
+			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
+				p = [{$skip:2}, {$skip:1}],	//testing w/ 2 ensures independent state variables
+				e = [{_id:3}, {_id:4}, {_id:5}],
+				munger = munge(p),
+				a = munger(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+		},
 		"should be able to use a $skip and then a $limit operator together in the same pipeline": function(){
-console.debug("");
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$skip:2}, {$limit:1}],
 				e = [{_id:2, e:1}],
@@ -58,21 +66,8 @@ console.debug("");
 			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
-		"should be able to use a $match operator": function(){
-console.debug("");
-			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
-				p = [{$match:{e:1}}],
-				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
-				munger = munge(p),
-				a = munger(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
-		},
 
 		"should be able to use a $project operator": function(){
-console.debug("");
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$project:{e:1}}],
 				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
@@ -86,9 +81,7 @@ console.debug("");
 
 //TODO: $project w/ expressions
 
-/*
 		"should be able to construct an instance with $unwind operators properly": function(){
-console.debug("");
 			var i = [
 					{_id:0, nodes:[
 						{one:[11], two:[2,2]},
@@ -132,11 +125,8 @@ console.debug("");
 						{_id:false}, {_id:true},
 						{_id:new Date("2012-10-15T15:48:55.181Z")}, {_id:new Date("2012-10-22T08:01:21.235Z")}
 					];
-			console.debug("\nINPUTS:\n", i);
-			console.debug("\nPIPELINE OPS:\n", p);
 			var a = munge(p, i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			console.debug("\n");
 		}
 */
 	}

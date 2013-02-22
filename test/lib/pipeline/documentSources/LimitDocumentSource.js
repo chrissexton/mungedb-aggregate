@@ -144,9 +144,8 @@ module.exports = {
 		"#createFromJson()": {
 
 			"should return a new LimitDocumentSource object from an input number": function createTest(){
-				var lds = new LimitDocumentSource();
-				var t = lds.createFromJson(5);
-				assert.strictEqual(t, LimitDocumentSource);
+				var t = LimitDocumentSource.createFromJson(5);
+				assert.strictEqual(t.constructor, LimitDocumentSource);
 				assert.strictEqual(t.limit, 5);
 			}
 

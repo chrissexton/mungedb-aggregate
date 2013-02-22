@@ -21,7 +21,7 @@ module.exports = {
 				
 				this.current = 5;
 				
-			}, base = DocumentSource, proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
+			}, TestDocumentSource = klass, base = DocumentSource, proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
 			
 			
 			proto.coalesce = function(){
@@ -55,19 +55,25 @@ module.exports = {
 				}
 				return DocumentSource.GetDepsReturn.EXHAUSTIVE;
 			};
+			klass.createFromJson = function(options){
+				return new TestDocumentSource(options);
+			};
 			
 			return klass;
-		})();
+		})().createFromJson;
 		
 		//TODO:remove this once Sort is implemented!!!
 		Pipeline.SortDocumentSource = (function(){
 			var klass = function SortDocumentSource(){
 				
-			}, base = require('../../../lib/pipeline/documentSources/DocumentSource'), proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
+			}, SortDocumentSource = klass, base = require('../../../lib/pipeline/documentSources/DocumentSource'), proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
 			klass.sortName = "$sort";
+			klass.createFromJson = function(options){
+				return new SortDocumentSource(options);
+			};
 			return klass;
 		})();
-		Pipeline.StageDesc.$sort = Pipeline.SortDocumentSource;
+		Pipeline.StageDesc.$sort = Pipeline.SortDocumentSource.createFromJson;
 			
 		},
 		"prepareCursorSource": {
