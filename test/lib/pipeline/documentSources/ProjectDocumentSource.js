@@ -2,7 +2,7 @@
 var assert = require("assert"),
 DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 ProjectDocumentSource = require("../../../../lib/pipeline/documentSources/ProjectDocumentSource"),
-CursorDocumentSource = require("../../../../lib/pipeline/documentsources/CursorDocumentSource"),
+CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 Cursor = require("../../../../lib/Cursor");
 
 //HELPERS
@@ -28,8 +28,7 @@ var createProject = function createProject(projection) {
     }
     var spec = {"$project": projection},
         specElement = projection,
-        pds = new ProjectDocumentSource(),
-        project = pds.createFromJson(specElement);
+        project = ProjectDocumentSource.createFromJson(specElement);
     checkJsonRepresentation(project, spec);
     return project;
 };
@@ -167,11 +166,13 @@ module.exports = {
 
         "#optimize()": {
             
+            /*
             "Optimize the projection": function optimizeProject() {
                 var pds = createProject({a:{$and: [true]}});
                 pds.optimize();
                 checkJsonRepresentation(pds, {$project:{a:{$const:true}}});
             }
+            */
 
         },
 
@@ -192,8 +193,7 @@ module.exports = {
                 });
                 //Empty args
                 assert.throws(function() {
-                    var pds = new ProjectDocumentSource();
-                    pds = pds.createFromJson();
+                    pds = ProjectDocumentSource.createFromJson();
                 });
                 //Top level operator
                 assert.throws(function() {
