@@ -151,7 +151,7 @@ module.exports = {
 
 			"should throw an exception when passed an object with a non valid number value": function createTest(){
 				assert.throws(function() {
-					var sds = SortDocumentSource.createFromJson({a:0});
+					var sds = SortDocumentSource.createFromJson({a:14});
 				});
 			}
 
@@ -164,7 +164,7 @@ module.exports = {
 				cwc._cursor = new Cursor( [{_id:0, a: 1}] );
 				var cds = new CursorDocumentSource(cwc);
 				var sds = new SortDocumentSource();
-				sds.addKey("_id");
+				sds.addKey("_id", false);
 				sds.setSource(cds);
 				assert.deepEqual(sds.getCurrent(), {_id:0, a:1}); 
 			},
@@ -175,7 +175,7 @@ module.exports = {
 				cwc._cursor = new Cursor( l );
 				var cds = new CursorDocumentSource(cwc);
 				var sds = new SortDocumentSource();
-				sds.addKey("_id");
+				sds.addKey("_id", false);
 				sds.setSource(cds);
 				var c = [];
 				while (!sds.eof()) {
@@ -207,8 +207,8 @@ module.exports = {
 				cwc._cursor = new Cursor( l );
 				var cds = new CursorDocumentSource(cwc);
 				var sds = new SortDocumentSource();
-				sds.addKey("a");
-				sds.addKey("b");
+				sds.addKey("a", false);
+				sds.addKey("b", false);
 				sds.setSource(cds);
 				var c = [];
 				while (!sds.eof()) {
@@ -258,7 +258,7 @@ module.exports = {
 				cwc._cursor = new Cursor( l );
 				var cds = new CursorDocumentSource(cwc);
 				var sds = new SortDocumentSource();
-				sds.addKey("a");
+				sds.addKey("a", false);
 				assert.throws(sds.setSource(cds));
 			},
 
@@ -268,7 +268,7 @@ module.exports = {
 				cwc._cursor = new Cursor( l );
 				var cds = new CursorDocumentSource(cwc);
 				var sds = new SortDocumentSource();
-				sds.addKey("a");
+				sds.addKey("a", true);
 				sds.setSource(cds);
 				var c = [];
 				while (!sds.eof()) {
@@ -278,8 +278,69 @@ module.exports = {
 				assert.deepEqual(c, [{_id:1}, {_id:0, a:1}]); 
 			},
 
-		}
+			"should sort docs with null fields": function nullFields() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var l = [{_id:0, a: 1}, {_id:1, a: null}];
+				cwc._cursor = new Cursor( l );
+				var cds = new CursorDocumentSource(cwc);
+				var sds = new SortDocumentSource();
+				sds.addKey("a", true);
+				sds.setSource(cds);
+				var c = [];
+				while (!sds.eof()) {
+					c.push(sds.getCurrent());
+					sds.advance();
+				}
+				assert.deepEqual(c, [{_id:1, a:null}, {_id:0, a:1}]); 
+			},
 
+			"should not support a missing object nested in an array": function missingObjectWithinArray() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var l = [{_id:0, a: [1]}, {_id:1, a:[0]}];
+				cwc._cursor = new Cursor( l );
+				var cds = new CursorDocumentSource(cwc);
+				var sds = new SortDocumentSource();
+				assert.throws(function() {
+					sds.addKey("a.b", false);
+					sds.setSource(cds);
+					var c = [];
+					while (!sds.eof()) {
+						c.push(sds.getCurrent());
+						sds.advance();
+					}
+				});
+			},
+
+			"should compare nested values from within an array": function extractArrayValues() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var l = [{_id:0,a:[{b:1},{b:2}]}, {_id:1,a:[{b:1},{b:1}]} ];
+				cwc._cursor = new Cursor( l );
+				var cds = new CursorDocumentSource(cwc);
+				var sds = new SortDocumentSource();
+				sds.addKey("a.b", true);
+				sds.setSource(cds);
+				var c = [];
+				while (!sds.eof()) {
+					c.push(sds.getCurrent());
+					sds.advance();
+				}
+				assert.deepEqual(c, [{_id:1,a:[{b:1},{b:1}]},{_id:0,a:[{b:1},{b:2}]}]); 
+			}
+
+		},
+
+		"#dependencies": {
+			"should have Dependant field paths": function dependencies() {
+				var sds = new SortDocumentSource();
+				sds.addKey("a", true);
+				sds.addKey("b.c", false);
+				var deps = [];
+				assert.equal("SEE_NEXT", sds.getDependencies(deps));
+				assert.equal(2, deps.length);
+				assert.equal(1, deps.filter(function(val) { return "a" == val; }).length);
+				assert.equal(1, deps.filter(function(val) { return "a" == val; }).length);
+			}
+		}
 
 	}
 
