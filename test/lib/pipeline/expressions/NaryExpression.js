@@ -4,7 +4,7 @@ var assert = require("assert"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
 
-/** A dummy child of NaryExpression used for testing **/
+// A dummy child of NaryExpression used for testing
 var TestableExpression = (function(){
 	// CONSTRUCTOR
 	var klass = module.exports = function TestableExpression(operands, haveFactory){
