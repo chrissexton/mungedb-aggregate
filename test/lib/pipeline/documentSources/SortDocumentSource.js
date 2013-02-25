@@ -334,11 +334,11 @@ module.exports = {
 				var sds = new SortDocumentSource();
 				sds.addKey("a", true);
 				sds.addKey("b.c", false);
-				var deps = [];
+				var deps = {};
 				assert.equal("SEE_NEXT", sds.getDependencies(deps));
-				assert.equal(2, deps.length);
-				assert.equal(1, deps.filter(function(val) { return "a" == val; }).length);
-				assert.equal(1, deps.filter(function(val) { return "a" == val; }).length);
+				assert.equal(2, Object.keys(deps).length);
+				assert.ok(deps.a);
+				assert.ok(deps["b.c"]);
 			}
 		}
 

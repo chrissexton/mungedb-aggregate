@@ -92,7 +92,6 @@ module.exports = {
                 assert.ok(pds.advance());
             },
 
-            /*
             "can retrieve values from the project when advance is first function call": function testAdvanceFirst() {
                 var cwc = new CursorDocumentSource.CursorWithContext();
                 var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
@@ -103,14 +102,12 @@ module.exports = {
                 assert.ok(pds.advance()); 
                 assert.equal(2, pds.getCurrent().a);
             }
-            */
 
         },
 
         /* TODO : copy mongo tests, they will probably be more involved */
         "#getCurrent()": {
 
-            /*
             "should work when getCurrent is the first function call": function getCurrentCalledFirst() {
                 var cwc = new CursorDocumentSource.CursorWithContext();
                 var input = [{_id: 0, a: 1}];
@@ -121,13 +118,11 @@ module.exports = {
                 assert.ok(pds.getCurrent()); 
                 assert.equal(1, pds.getCurrent().a);                
             }
-            */
 
         },
 
         "combined": {
 
-            /*
             "The a and c.d fields are included but the b field is not": function testFullProject1() {
                 var cwc = new CursorDocumentSource.CursorWithContext();
                 var input = [{_id:0,a:1,b:1,c:{d:1}}];
@@ -152,27 +147,22 @@ module.exports = {
                 assert.ok(!pds.eof());
                 assert.equal(1, pds.getCurrent().a);  
                 assert.ok(!pds.getCurrent().b);
-                assert.equal(0, pds.getCurrent()._id);
-                assert.equal(1, pds.getCurrent().c.d); 
                 assert.ok(pds.advance());
                 assert.ok(!pds.eof());
                 assert.equal(3, pds.getCurrent().a); 
                 assert.ok(!pds.getCurrent().b);
-                assert.ok(!project.advance());
+                assert.ok(!pds.advance());
                 assertExhausted(pds);
             }
-            */
         },
 
         "#optimize()": {
             
-            /*
             "Optimize the projection": function optimizeProject() {
                 var pds = createProject({a:{$and: [true]}});
                 pds.optimize();
                 checkJsonRepresentation(pds, {$project:{a:{$const:true}}});
             }
-            */
 
         },
 
@@ -210,21 +200,19 @@ module.exports = {
 
         "#getDependencies()": {
 
-            /*
-            "should return a new ProjectDocumentSource object from an input object": function createTest(){
+            "should properly detect dependencies in project": function testGetDependencies(){
                 var cwc = new CursorDocumentSource.CursorWithContext();
-                var input = [{a:true,x:'$b',y:{$and:['$c','$d']}}];
+                var input = {a:true,x:'$b',y:{$and:['$c','$d']}};
                 var pds = createProject(input);
                 var dependencies = {};
-                assert.equals(DocumentSource.GetDepsReturn.EXHAUSTIVE, pds.getDependencies(dependencies));
-                assert.equals(5, dependencies.length);
+                assert.equal(DocumentSource.GetDepsReturn.EXHAUSTIVE, pds.getDependencies(dependencies));
+                assert.equal(5, Object.keys(dependencies).length);
                 assert.ok(dependencies._id);
                 assert.ok(dependencies.a);
                 assert.ok(dependencies.b);
                 assert.ok(dependencies.c);
                 assert.ok(dependencies.d);
             }
-            */
 
         }
 
