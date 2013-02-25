@@ -1,5 +1,5 @@
 var assert = require("assert"),
-	CursorDocumentSource = require("../../../../lib/pipeline/documentsources/CursorDocumentSource"),
+	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor"),
 	GroupDocumentSource = require("../../../../lib/pipeline/documentSources/GroupDocumentSource");
 
@@ -22,7 +22,7 @@ function assertExpectedResult(args) {
 		gds.setSource(cds);
 		gds.advance();
 		var result = gds.getCurrent();
-		assert.deepEqual(result, expected);
+		assert.deepEqual(result, args.expected);
 	}else{
 		if(args.throw)
 			assert.throws(function(){
