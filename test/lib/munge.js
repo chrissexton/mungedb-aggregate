@@ -65,22 +65,6 @@ module.exports = {
 			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
 
-
-/*
-		"should be able to use a $project operator": function(){
-			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
-				p = [{$project:{e:1}}],
-				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
-				munger = munge(p),
-				a = munger(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
-		},
-
-//TODO: $project w/ expressions
-
 		"should be able to construct an instance with $unwind operators properly": function(){
 			var i = [
 					{_id:0, nodes:[
@@ -105,7 +89,23 @@ module.exports = {
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
 			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+		}
+
+/*
+		"should be able to use a $project operator": function(){
+			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
+				p = [{$project:{e:1}}],
+				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
+				munger = munge(p),
+				a = munger(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
 		},
+
+//TODO: $project w/ expressions
+
 
 		"should be able to construct an instance with $sort operators properly (ascending)": function(){
 			var i = [
