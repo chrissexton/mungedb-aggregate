@@ -1,6 +1,6 @@
 var assert = require("assert"),
 	SortDocumentSource = require("../../../../lib/pipeline/documentSources/SortDocumentSource"),
-	CursorDocumentSource = require("../../../../lib/pipeline/documentsources/CursorDocumentSource"),
+	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
 
