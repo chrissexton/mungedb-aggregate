@@ -102,10 +102,9 @@ module.exports = {
 				e = [{_id:0, e:1, b:"not two", a:2}, {_id:2, e:2, b:"two", a:4}, {_id:4, e:3, b:"not two", a:6}],
 				munger = munge(p),
 				a = munger(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.deepEqual(munger(i), e, "Reuse of munger should yield the same results!");
+			assert.deepEqual(munge(p, i), e, "Alternate use of munge should yield the same results!");
 		},
 
 		"should be able to construct an instance with $sort operators properly (ascending)": function(){
