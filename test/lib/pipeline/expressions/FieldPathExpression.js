@@ -107,11 +107,9 @@ module.exports = {
 		"#addDependencies()": {
 
 			"should return the field path itself as a dependency": function testDependencies(){
-				var deps = {};
-				var fpe = new FieldPathExpression('a.b');
-				fpe.addDependencies(deps);
-				assert.strictEqual(Object.keys(deps).length, 1);
-				assert.ok(deps['a.b']);
+				var deps = new FieldPathExpression('a.b').addDependencies([]);
+				assert.strictEqual(deps.length, 1);
+				assert.strictEqual(deps[0], 'a.b');
 			}
 
 		},

@@ -6,8 +6,13 @@ var assert = require("assert"),
 
 
 function assertEqualJson(actual, expected, message){
-	//assert.strictEqual(message + ":  " + JSON.stringify(actual), message + ":  " + JSON.stringify(expected));
-	assert.deepEqual(actual, expected, message);
+	if(actual.sort) {
+		actual.sort();
+		if(expected.sort) {
+			expected.sort();
+		}
+	}
+	assert.strictEqual(message + ":  " + JSON.stringify(actual), message + ":  " + JSON.stringify(expected));
 }
 
 /// An assertion for `ObjectExpression` instances based on Mongo's `ExpectedResultBase` class
@@ -26,8 +31,8 @@ function assertExpectedResult(args) {
 	// run implementation
 	var result = args.expression.addToDocument({}, args.source, args.source);
 	assertEqualJson(result, args.expected, "unexpected results");
-	var dependencies = args.expression.addDependencies({}, [/*FAKING: includePath=true*/]);
-	//dependencies.sort(), args.expectedDependencies.sort();	// NOTE: this is a minor hack added for munge because I'm pretty sure order doesn't matter for this anyhow
+	var dependencies = args.expression.addDependencies([], [/*FAKING: includePath=true*/]);
+	dependencies.sort(), args.expectedDependencies.sort();	// NOTE: this is a minor hack added for munge because I'm pretty sure order doesn't matter for this anyhow
 	assertEqualJson(dependencies, args.expectedDependencies, "unexpected dependencies");
 	assertEqualJson(args.expression.toJson(true), args.expectedJsonRepresentation, "unexpected JSON representation");
 	assertEqualJson(args.expression.getIsSimple(), args.expectedIsSimple, "unexpected isSimple status");
@@ -54,20 +59,20 @@ module.exports = {
 				/** Dependencies for non inclusion expressions. */
 				var expr = new ObjectExpression();
 				expr.addField("a", new ConstantExpression(5));
-				assertEqualJson(expr.addDependencies({}, [/*FAKING: includePath=true*/]), {"_id":1}, "unexpected dependencies (including _id)");
-				assertEqualJson(expr.addDependencies({}), {}, "unexpected dependencies (excluding _id)");
+				assertEqualJson(expr.addDependencies([], [/*FAKING: includePath=true*/]), ["_id"], "unexpected dependencies (including _id)");
+				assertEqualJson(expr.addDependencies([]), [], "unexpected dependencies (excluding _id)");
 				expr.addField("b", new FieldPathExpression("c.d"));
-				assertEqualJson(expr.addDependencies({}, [/*FAKING: includePath=true*/]), {"c.d":1, "_id":1}, "unexpected dependencies (including _id)");
-				assertEqualJson(expr.addDependencies({}), {"c.d":1}, "unexpected dependencies (excluding _id)");
+				assertEqualJson(expr.addDependencies([], [/*FAKING: includePath=true*/]), ["c.d", "_id"], "unexpected dependencies (including _id)");
+				assertEqualJson(expr.addDependencies([]), ["c.d"], "unexpected dependencies (excluding _id)");
 			},
 
 			"should be able to get dependencies for inclusion expressions": function testInclusionDependencies(){
 				/** Dependencies for inclusion expressions. */
 				var expr = new ObjectExpression();
 				expr.includePath( "a" );
-				assertEqualJson(expr.addDependencies({}, [/*FAKING: includePath=true*/]), {"_id":1, "a":1}, "unexpected dependencies (including _id)");
+				assertEqualJson(expr.addDependencies([], [/*FAKING: includePath=true*/]), ["_id", "a"], "unexpected dependencies (including _id)");
 				assert.throws(function(){
-					expr.addDependencies({});
+					expr.addDependencies([]);
 				}, Error);
 			},
 
@@ -108,7 +113,7 @@ module.exports = {
 				assertExpectedResult({
 					expression: expr,
 					expected: {"_id":0},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {},
 				});
 			},
@@ -120,7 +125,7 @@ module.exports = {
 				assertExpectedResult({
 					expression: expr,
 					expected: {"_id":0, "a":1},
-					expectedDependencies: {"_id":1, "a":1},
+					expectedDependencies: ["_id", "a"],
 					expectedJsonRepresentation: {"a":true},
 				});
 			},
@@ -133,7 +138,7 @@ module.exports = {
 					source: {"_id":0, "b":2},
 					expression: expr,
 					expected: {"_id":0},
-					expectedDependencies: {"_id":1, "a":1},
+					expectedDependencies: ["_id", "a"],
 					expectedJsonRepresentation: {"a":true},
 				});
 			},
@@ -145,7 +150,7 @@ module.exports = {
 				assertExpectedResult({
 					expression: expr,
 					expected: {"_id":0},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {"_id":true},
 				});
 			},
@@ -158,7 +163,7 @@ module.exports = {
 				assertExpectedResult({
 					expression: expr,
 					expected: {"b":2},
-					expectedDependencies: {"b":1},
+					expectedDependencies: ["b"],
 					expectedJsonRepresentation: {"_id":false, "b":true},
 				});
 			},
@@ -171,7 +176,7 @@ module.exports = {
 				assertExpectedResult({
 					expression: expr,
 					get expected() { return this.source; },
-					expectedDependencies: {"_id":1, "a":1, "b":1},
+					expectedDependencies: ["_id", "a", "b"],
 					expectedJsonRepresentation: {"b":true, "a":true},
 				});
 			},
@@ -184,7 +189,7 @@ module.exports = {
 					source: {"_id":0, "a":{ "b":5, "c":6}, "z":2 },
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":5} },
-					expectedDependencies: {"_id":1, "a.b":1},
+					expectedDependencies: ["_id", "a.b"],
 					expectedJsonRepresentation: {"a":{ "b":true} },
 				});
 			},
@@ -198,7 +203,7 @@ module.exports = {
 					source: {"_id":0, "a":{ "b":5, "c":6}, "z":2 },
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":5, "c":6} },
-					expectedDependencies: {"_id":1, "a.b":1, "a.c":1},
+					expectedDependencies: ["_id", "a.b", "a.c"],
 					expectedJsonRepresentation: {"a":{ "b":true, "c":true} },
 				});
 			},
@@ -212,7 +217,7 @@ module.exports = {
 					source: {"_id":0, "a":{ "b":5 }, "c":{"d":6} },
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":5}, "c":{"d":6} },
-					expectedDependencies: {"_id":1, "a.b":1, "c.d":1},
+					expectedDependencies: ["_id", "a.b", "c.d"],
 					expectedJsonRepresentation: {"a":{"b":true}, "c":{"d":true} }
 				});
 			},
@@ -225,7 +230,7 @@ module.exports = {
 					source: {"_id":0, "a":{ "c":6}, "z":2 },
 					expression: expr,
 					expected: {"_id":0, "a":{} },
-					expectedDependencies: {"_id":1, "a.b":1},
+					expectedDependencies: ["_id", "a.b"],
 					expectedJsonRepresentation: {"a":{ "b":true} },
 				});
 			},
@@ -238,7 +243,7 @@ module.exports = {
 					source: {"_id":0, "a":2, "z":2},
 					expression: expr,
 					expected: {"_id":0},
-					expectedDependencies: {"_id":1, "a.b":1},
+					expectedDependencies: ["_id", "a.b"],
 					expectedJsonRepresentation: {"a":{ "b":true} },
 				});
 			},
@@ -251,7 +256,7 @@ module.exports = {
 					source: {_id:0,a:[{b:5,c:6},{b:2,c:9},{c:7},[],2],z:1},
 					expression: expr,
 					expected: {_id:0,a:[{b:5},{b:2},{}]},
-					expectedDependencies: {"_id":1, "a.b":1},
+					expectedDependencies: ["_id", "a.b"],
 					expectedJsonRepresentation: {"a":{ "b":true} },
 				});
 			},
@@ -264,7 +269,7 @@ module.exports = {
 					source: {"_id":0, "a":{ "_id":1, "b":1} },
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":1} },
-					expectedDependencies: {"_id":1, "a.b":1},
+					expectedDependencies: ["_id", "a.b"],
 					expectedJsonRepresentation: {"a":{ "b":true} },
 				});
 			},
@@ -277,7 +282,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":5},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {"a":{ "$const":5} },
 					expectedIsSimple: false
 				});
@@ -291,7 +296,7 @@ module.exports = {
 					source: {"_id":0, "a":99},
 					expression: expr,
 					expected: {"_id": 0, "a": 5},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {"a": {"$const": 5}},
 					expectedIsSimple: false
 				});
@@ -305,7 +310,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{$const:undefined}},
 					expectedIsSimple: false
 				});
@@ -319,7 +324,7 @@ module.exports = {
 					source: {"_id":0, "a":99},
 					expression: expr,
 					expected: {"_id":0, "a":5},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {"a":{"$const":5}},
 					expectedIsSimple: false
 				});
@@ -333,7 +338,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":null},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {"a":{"$const":null}},
 					expectedIsSimple: false
 				});
@@ -347,7 +352,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{"b":5}},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {"a":{"b":{"$const":5}}},
 					expectedIsSimple: false
 				});
@@ -361,7 +366,7 @@ module.exports = {
 					source: {"_id":0, "x":4},
 					expression: expr,
 					expected: {"_id":0, "a":4},
-					expectedDependencies: {"_id":1, "x":1},
+					expectedDependencies: ["_id", "x"],
 					expectedJsonRepresentation: {"a":"$x"},
 					expectedIsSimple: false
 				});
@@ -375,7 +380,7 @@ module.exports = {
 					source: {"_id":0, "x":{"y":4}},
 					expression: expr,
 					expected: {"_id":0, "a":{"b":4}},
-					expectedDependencies: {"_id":1, "x.y":1},
+					expectedDependencies: ["_id", "x.y"],
 					expectedJsonRepresentation: {"a":{"b":"$x.y"}},
 					expectedIsSimple: false
 				});
@@ -392,7 +397,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{$const:undefined}}},
 					expectedIsSimple: false
 				});
@@ -409,7 +414,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":6} },
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{$const:6}}},
 					expectedIsSimple: false
 				});
@@ -424,7 +429,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":6, "c":7} },
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{$const:6},c:{$const:7}}},
 					expectedIsSimple: false
 				});
@@ -441,7 +446,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":6, "c":7} },
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{$const:6},c:{$const:7}}},
 					expectedIsSimple: false
 				});
@@ -458,7 +463,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":6, "c":7} },
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{$const:6},c:{$const:7}}},
 					expectedIsSimple: false
 				});
@@ -477,7 +482,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":6, "c":7} },
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{$const:6},c:{$const:7}}},
 					expectedIsSimple: false
 				});
@@ -496,7 +501,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":6, "d":7, "c":8} },
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{$const:6},d:{$const:7},c:{$const:8}}},
 					expectedIsSimple: false
 				});
@@ -515,7 +520,7 @@ module.exports = {
 					source: {"_id":0},
 					expression: expr,
 					expected: {"_id":0, "a":{ "b":{ "c":6, "d":7}}},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: ["_id"],
 					expectedJsonRepresentation: {a:{b:{c:{$const:6},d:{$const:7}}}},
 					expectedIsSimple: false
 				});

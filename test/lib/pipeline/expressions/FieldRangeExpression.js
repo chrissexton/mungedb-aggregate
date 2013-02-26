@@ -117,9 +117,9 @@ module.exports = {
 		"#addDependencies()": {
 
 			"should return the range's path as a dependency": function testDependencies(){
-				var deps = new FieldRangeExpression(new FieldPathExpression("a.b.c"), "$eq", 0).addDependencies({});
-				assert.strictEqual(Object.keys(deps).length, 1);
-				assert.ok(deps['a.b.c']);
+				var deps = new FieldRangeExpression(new FieldPathExpression("a.b.c"), "$eq", 0).addDependencies([]);
+				assert.strictEqual(deps.length, 1);
+				assert.strictEqual(deps[0], "a.b.c");
 			}
 
 		},
