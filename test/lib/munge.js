@@ -97,7 +97,8 @@ module.exports = {
 				p = [{$project:{
 						e:1, 
 						a:{$add:["$e", "$e"]}, 
-						b:{$cond:[{$eq:["$e", 2]}, "two", "not two"]}	
+						b:{$cond:[{$eq:["$e", 2]}, "two", "not two"]}
+						//TODO: high level test of all other expression operators
 					}}],
 				e = [{_id:0, e:1, b:"not two", a:2}, {_id:2, e:2, b:"two", a:4}, {_id:4, e:3, b:"not two", a:6}],
 				munger = munge(p),
@@ -117,6 +118,61 @@ module.exports = {
 				e = [
 						{_id:null}, {_id:NaN},
 						{_id:-273.15}, {_id:1}, {_id:3.14159}, {_id:11}, {_id:42}
+					],
+				munger = munge(p),
+				a = munger(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			//assert.deepEqual(a, e); //does not work with NaN
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+		},
+		"should be able to construct an instance with $group operators properly": function(){
+			var i = [
+						{_id:0, a:1},
+						{_id:0, a:2},
+						{_id:0, a:3},
+						{_id:0, a:4},
+						{_id:0, a:1.5},
+						{_id:0, a:null},
+						{_id:1, b:"a"},
+						{_id:1, b:"b"},
+						{_id:1, b:"b"},
+						{_id:1, b:"c"}
+					],
+				p = [{$group:{
+						_id:"$_id",
+						sum_a:{$sum:"$a"},
+						//min_a:{$min:"$a"}, //this is busted in this version of mongo
+						max_a:{$max:"$a"},
+						avg_a:{$avg:"$a"},
+						first_b:{$first:"$b"},
+						last_b:{$last:"$b"},
+						addToSet_b:{$addToSet:"$b"},
+						push_b:{$push:"$b"}
+					}}],
+				e = [
+						{
+							_id:0,
+							sum_a:11.5,
+							//min_a:1,
+							max_a:4,
+							avg_a:2.3,
+							first_b:undefined,
+							last_b:undefined,
+							addToSet_b:[],
+							push_b:[]
+						},
+						{
+							_id:1,
+							sum_a:0,
+							//min_a:null,
+							max_a:undefined,
+							avg_a:0,
+							first_b:"a",
+							last_b:"c",
+							addToSet_b:["a", "b", "c"],
+							push_b:["a", "b", "b", "c"]
+						}
 					],
 				munger = munge(p),
 				a = munger(i);

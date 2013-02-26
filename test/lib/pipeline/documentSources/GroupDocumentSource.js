@@ -58,13 +58,13 @@ module.exports = {
 
 			// $group _id is an empty object. g
 			"should not throw when _id is an empty object": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:{}}}, throw:false});
+				assertExpectedResult({spec:{_id:{}}, throw:false});
 			},
 
 			// $group _id is specified as an invalid object expression. g
 			"should throw error when  _id is an invalid object expression": function testConstructor(){
 				assertExpectedResult({
-					spec:{$group:{_id:{$add:1, $and:1}}},
+					spec:{_id:{$add:1, $and:1}},
 				});	
 			},
 
@@ -76,62 +76,62 @@ module.exports = {
 
 			// $group _id is the empty string. g
 			"should not throw when _id is an empty string": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:""}}, throw:false});
+				assertExpectedResult({spec:{_id:""}, throw:false});
 			},
 
 			// $group _id is a string constant. g
 			"should not throw when _id is a string constant": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:"abc"}}, throw:false});
+				assertExpectedResult({spec:{_id:"abc"}, throw:false});
 			},
 
 			// $group with _id set to an invalid field path. g
 			"should throw when _id is an invalid field path": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:"$a.."}}});
+				assertExpectedResult({spec:{_id:"$a.."}});
 			},
 		
 			// $group _id is a numeric constant. g
 			"should not throw when _id is a numeric constant": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:2}}, throw:false});
+				assertExpectedResult({spec:{_id:2}, throw:false});
 			},
 
 			// $group _id is an array constant. g
 			"should not throw when _id is an array constant": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:[1,2]}}, throw:false});
+				assertExpectedResult({spec:{_id:[1,2]}, throw:false});
 			},
 
 			// $group _id is a regular expression (not supported). g
 			"should throw when _id is a regex": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:/a/}}});
+				assertExpectedResult({spec:{_id:/a/}});
 			},
 
 			// The name of an aggregate field is specified with a $ prefix. g
 			"should throw when aggregate field spec is specified with $ prefix": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:1, $foo:{$sum:1}}}});
+				assertExpectedResult({spec:{_id:1, $foo:{$sum:1}}});
 			},
 
 			// An aggregate field spec that is not an object. g
 			"should throw when aggregate field spec is not an object": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:1, a:1}}});
+				assertExpectedResult({spec:{_id:1, a:1}});
 			},
 
 			// An aggregate field spec that is not an object. g
 			"should throw when aggregate field spec is an empty object": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:1, a:{}}}});
+				assertExpectedResult({spec:{_id:1, a:{}}});
 			},
 
 			// An aggregate field spec with an invalid accumulator operator. g
 			"should throw when aggregate field spec is an invalid accumulator": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:1, a:{$bad:1}}}});
+				assertExpectedResult({spec:{_id:1, a:{$bad:1}}});
 			},
 
 			// An aggregate field spec with an array argument. g
 			"should throw when aggregate field spec with an array as an argument": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:1, a:{$sum:[]}}}});
+				assertExpectedResult({spec:{_id:1, a:{$sum:[]}}});
 			},
 
 			// Multiple accumulator operators for a field. g
 			"should throw when aggregate field spec with multiple accumulators": function advanceTest(){
-				assertExpectedResult({spec:{$group:{_id:1, a:{$sum:1, $push:1}}}});
+				assertExpectedResult({spec:{_id:1, a:{$sum:1, $push:1}}});
 			}
 
 			//Not Implementing, not way to support this in Javascript Objects
@@ -144,7 +144,7 @@ module.exports = {
 		"#getSourceName()": {
 
 			"should return the correct source name; $group": function testSourceName(){
-				var gds = new GroupDocumentSource({$group:{_id:{}}});
+				var gds = new GroupDocumentSource({_id:{}});
 				assert.strictEqual(gds.getSourceName(), "$group");
 			}
 		},
@@ -155,7 +155,7 @@ module.exports = {
 			"should compute _id from an object expression": function advanceTest(){
 				assertExpectedResult({
 					docs:[{a:6}],
-					spec:{$group:{_id:{z:"$a"}}},
+					spec:{_id:{z:"$a"}},
 					expected:{_id:{z:6}}
 				});
 			},
@@ -164,7 +164,7 @@ module.exports = {
 			"should compute _id a field path expression": function advanceTest(){
 				assertExpectedResult({
 					docs:[{a:5}],
-					spec:{$group:{_id:"$a"}},
+					spec:{_id:"$a"},
 					expected:{_id:5}
 				});
 			},
@@ -173,7 +173,7 @@ module.exports = {
 			"should aggregate the value of an object expression": function advanceTest(){
 				assertExpectedResult({
 					docs:[{a:6}],
-					spec:{$group:{_id:0, z:{$first:{x:"$a"}}}},
+					spec:{_id:0, z:{$first:{x:"$a"}}},
 					expected:{_id:0, z:{x:6}}
 				});
 			},
@@ -182,7 +182,7 @@ module.exports = {
 			"should aggregate the value of an operator expression": function advanceTest(){
 				assertExpectedResult({
 					docs:[{a:6}],
-					spec:{$group:{_id:0, z:{$first:"$a"}}},
+					spec:{_id:0, z:{$first:"$a"}},
 					expected:{_id:0, z:6}
 				});
 			}

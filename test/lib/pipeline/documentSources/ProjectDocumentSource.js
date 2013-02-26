@@ -183,7 +183,7 @@ module.exports = {
                 });
                 //Empty args
                 assert.throws(function() {
-                    pds = ProjectDocumentSource.createFromJson();
+                    var pds = ProjectDocumentSource.createFromJson();
                 });
                 //Top level operator
                 assert.throws(function() {

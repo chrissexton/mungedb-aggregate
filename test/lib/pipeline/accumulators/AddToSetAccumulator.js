@@ -44,13 +44,6 @@ module.exports = {
 					var acc = new createAccumulator();
 					acc.evaluate({}, {});
 				});
-			},
-
-			"should throw an error when given a non-array to evaluate": function testArrayValidity() {
-				assert.throws(function() {
-					var acc = createAccumulator();
-					acc.evaluate({b:5});
-				});
 			}
 
 		},
@@ -66,30 +59,33 @@ module.exports = {
 
 			"should return array with one element that equals 5": function test5InSet() {
 				var acc = createAccumulator();
-				acc.evaluate({b:[5]});
+				acc.evaluate({b:5});
+				acc.evaluate({b:5});
 				var value = acc.getValue();
-				assert.equal((value instanceof Array), true);
-				assert.equal(value.length, 1);
-				assert.equal(value[0], 5);
+				assert.deepEqual(value, [5]);
 			},
 
 			"should produce value that is an array of multiple elements": function testMultipleItems() {
 				var acc = createAccumulator();
-				acc.evaluate({b:[5, {key: "value"}]});
+				acc.evaluate({b:5});
+				acc.evaluate({b:{key: "value"}});
 				var value = acc.getValue();
-				assert.equal((value instanceof Array), true);
-				assert.equal(value.length, 2);
-				assert.equal((value[0] instanceof Object || value[1] instanceof Object) && (typeof value[0] == 'number' || typeof value[1] == 'number'), true);
-				//assert.equal(value[0], 5);
+				assert.deepEqual(value, [5, {key: "value"}]);
 			},
 
 			"should return array with one element that is an object containing a key/value pair": function testKeyValue() {
 				var acc = createAccumulator();
-				acc.evaluate({b:[{key: "value"}]});
+				acc.evaluate({b:{key: "value"}});
 				var value = acc.getValue();
-				assert.equal((value instanceof Object), true);
-				assert.equal(value.length, 1);
-				assert.equal(value[0].key == "value", true);
+				assert.deepEqual(value, [{key: "value"}]);
+			},
+
+			"should ignore undefined values": function testKeyValue() {
+				var acc = createAccumulator();
+				acc.evaluate({b:{key: "value"}});
+				acc.evaluate({a:5});
+				var value = acc.getValue();
+				assert.deepEqual(value, [{key: "value"}]);
 			}
 
 		}

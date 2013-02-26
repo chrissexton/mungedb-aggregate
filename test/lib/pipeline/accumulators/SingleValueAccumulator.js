@@ -30,7 +30,9 @@ module.exports = {
 		"#getValue()": {
 
 			"should return the correct value 'foo'": function testGetValue(){
-				assert.equal(new SingleValueAccumulator("foo").getValue(), "foo");
+				var sva = new SingleValueAccumulator();
+				sva.value = "foo";
+				assert.equal(sva.getValue(), "foo");
 			}
 
 		}
