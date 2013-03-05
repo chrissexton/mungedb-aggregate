@@ -107,6 +107,22 @@ module.exports = {
 			assert.deepEqual(munger(i), e, "Reuse of munger should yield the same results!");
 			assert.deepEqual(munge(p, i), e, "Alternate use of munge should yield the same results!");
 		},
+		
+		
+		"should be able to use a $project operator to exclude the _id field": function(){
+			var i = [{_id:0, e:1, f:23}, {_id:2, e:2, g:34}, {_id:4, e:3}],
+				p = [{$project:{
+						_id:0,
+						e:1
+						//TODO: high level test of all other expression operators
+					}}],
+				e = [{e:1}, {e:2}, {e:3}],
+				munger = munge(p),
+				a = munger(i);
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.deepEqual(munger(i), e, "Reuse of munger should yield the same results!");
+			assert.deepEqual(munge(p, i), e, "Alternate use of munge should yield the same results!");
+		},
 
 		"should be able to construct an instance with $sort operators properly (ascending)": function(){
 			var i = [
