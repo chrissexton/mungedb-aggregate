@@ -1,6 +1,6 @@
 {
 	"name": "munge",
-	"version": "0.4.2+2013.02.22",
+	"version": "0.4.3+2013.03.08",
 	"description": "A JavaScript data munging pipeline based on the MongoDB aggregation framework.",
 	"author": "Rivera Group <support@riverainc.com>",
 	"contributors": [
@@ -23,9 +23,9 @@
 		"alteration"
 	],
 	"dependencies": {
-		"stream-utils":"*",
-		"es6-shim":"*",
-		"sift":"*"
+		"stream-utils": "*",
+		"es6-shim": "*",
+		"sift": "*"
 	},
 	"devDependencies": {
 		"mocha": "*",
