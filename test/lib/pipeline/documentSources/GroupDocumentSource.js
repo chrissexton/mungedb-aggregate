@@ -43,7 +43,7 @@ module.exports = {
 
 			// $group spec is not an object. g
 			"should throw Error when constructing without args": function testConstructor(){
-				assertExpectedResult({throw:true});
+				assertExpectedResult({"throw":true});
 			},
 
 			// $group spec is not an object. g
@@ -58,7 +58,7 @@ module.exports = {
 
 			// $group _id is an empty object. g
 			"should not throw when _id is an empty object": function advanceTest(){
-				assertExpectedResult({spec:{_id:{}}, throw:false});
+				assertExpectedResult({spec:{_id:{}}, "throw":false});
 			},
 
 			// $group _id is specified as an invalid object expression. g
@@ -76,12 +76,12 @@ module.exports = {
 
 			// $group _id is the empty string. g
 			"should not throw when _id is an empty string": function advanceTest(){
-				assertExpectedResult({spec:{_id:""}, throw:false});
+				assertExpectedResult({spec:{_id:""}, "throw":false});
 			},
 
 			// $group _id is a string constant. g
 			"should not throw when _id is a string constant": function advanceTest(){
-				assertExpectedResult({spec:{_id:"abc"}, throw:false});
+				assertExpectedResult({spec:{_id:"abc"}, "throw":false});
 			},
 
 			// $group with _id set to an invalid field path. g
@@ -91,12 +91,12 @@ module.exports = {
 		
 			// $group _id is a numeric constant. g
 			"should not throw when _id is a numeric constant": function advanceTest(){
-				assertExpectedResult({spec:{_id:2}, throw:false});
+				assertExpectedResult({spec:{_id:2}, "throw":false});
 			},
 
 			// $group _id is an array constant. g
 			"should not throw when _id is an array constant": function advanceTest(){
-				assertExpectedResult({spec:{_id:[1,2]}, throw:false});
+				assertExpectedResult({spec:{_id:[1,2]}, "throw":false});
 			},
 
 			// $group _id is a regular expression (not supported). g

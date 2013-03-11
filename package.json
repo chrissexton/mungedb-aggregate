@@ -29,8 +29,8 @@
 	},
 	"devDependencies": {
 		"mocha": "*",
-		"jshint": "0.9.1",
-		"visionmedia-jscoverage": "*",
+		"jshint": "*",
+		"jscoverage": "*",
 		"jscheckstyle": "git+https://github.com/RiveraGroup/jscheckstyle.git"
 	},
 	"license": "AGPL",

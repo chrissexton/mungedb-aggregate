@@ -90,7 +90,7 @@ TEST_DIR=$(echo "$TEST_DIR" | sed 's/\/$//')	# remove trailing slash
 [ -n "$VERBOSE" ] && echo "TEST_DIR=$TEST_DIR"
 
 # Helper to check if given file is valid XML
-XMLLINT_BIN=$(which xmllint || echo)
+XMLLINT_BIN=$(which xmllint || true)
 validate_xml() {
 	REPORT_FILE="$1"
 	if [ -n "$XMLLINT_BIN" ]; then
@@ -111,7 +111,7 @@ if [ -z "$NO_SYNTAX" ]; then
 
 	# Deps
 	JSHINT_BIN="$npm_package_config_jshint_bin"
-	#[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || JSHINT_BIN=$(which jshint || echo)
+	#[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || JSHINT_BIN=$(which jshint || true)
 	[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || JSHINT_BIN="./node_modules/.bin/jshint"
 	[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || die "ERROR: Unable to find 'jshint' binary! Install via 'npm install jshint' to proceed!"
 
@@ -159,7 +159,7 @@ if [ -z "$NO_UNIT" ]; then
 
 	# Deps
 	MOCHA_BIN="$npm_package_config_mocha_bin"
-	[ -n "$MOCHA_BIN" ] && [ -x "$MOCHA_BIN" ] || MOCHA_BIN=$(which mocha || echo)
+	[ -n "$MOCHA_BIN" ] && [ -x "$MOCHA_BIN" ] || MOCHA_BIN=$(which mocha || true)
 	[ -n "$MOCHA_BIN" ] && [ -x "$MOCHA_BIN" ] || die "ERROR: Unable to find 'mocha' binary! Install via 'npm install mocha' to proceed!"
 
 	# Prep
@@ -198,13 +198,10 @@ if [ -z "$NO_COVERAGE" ]; then
 
 	# Deps
 	JSCOVERAGE_BIN="$npm_package_config_jscoverage_bin"
-	[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || JSCOVERAGE_BIN=$(which jscoverage || echo "./node_modules/visionmedia-jscoverage/jscoverage") # TODO: jscoverage does not install itself.  Renable this when it does.
+	#[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || JSCOVERAGE_BIN=$(which jscoverage || true)
+	[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || JSCOVERAGE_BIN="./node_modules/.bin/jscoverage"
 	[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || die "$(cat<<-ERROR_DOCS_EOF
-		ERROR: Unable to find node.js jscoverage binary!
-		To install the nodejs jscoverage binary run the following commands:
-		# git clone https://github.com/visionmedia/node-jscoverage.git
-		# cd node-coverage
-		# ./configure && make && make install
+		ERROR: Unable to find node.js jscoverage binary! Run 'npm install' first!
 	ERROR_DOCS_EOF
 	)"
 
@@ -220,7 +217,8 @@ if [ -z "$NO_COVERAGE" ]; then
 	fi
 
 	# Exec
-	"$JSCOVERAGE_BIN" "$CODE_DIR" "$JSCOVERAGE_TMP_DIR"
+	JSCOVERAGE_EXCLUDES="$(find "$CODE_DIR" -type f -not -path '*/.svn/*' -not -name '*.js' | xargs -n1 basename | sort -u | tr '\n' , | sed 's/,$//')"
+	"$JSCOVERAGE_BIN" "$CODE_DIR" "$JSCOVERAGE_TMP_DIR" --exclude "$JSCOVERAGE_EXCLUDES"
 	# - Backup the actual code and replace it with jscoverage results
 	[ -n "$VERBOSE" ] && echo "Replacing $CODE_DIR with $JSCOVERAGE_TMP_DIR ..."
 
@@ -230,7 +228,7 @@ if [ -z "$NO_COVERAGE" ]; then
 
 	mv "$CODE_DIR" "$CODE_DIR.ORIGINAL"	\
 		&& mv "$JSCOVERAGE_TMP_DIR" "$CODE_DIR"	\
-		&& LOGGER_PREFIX='' LOGGER_LEVEL=NOTICE "$MOCHA_BIN" --ui exports --reporter "html-cov" --recursive "$TEST_DIR" 2> "$REPORT_FILE_ERR" 1> "$REPORT_FILE"	\
+		&& LOGGER_PREFIX='' LOGGER_LEVEL=NOTICE "$MOCHA_BIN" --ui "exports" --reporter "html-cov" --recursive "$TEST_DIR" 2> "$REPORT_FILE_ERR" | sed 's|'"`pwd`/lib/"'||g' > "$REPORT_FILE"	\
 		|| echo "WARNING: JSCoverage: insufficient coverage (exit code $?)."
 #		|| die "ERROR: JSCoverage errors during coverage tests! $(rm -fr "$CODE_DIR" && mv "$CODE_DIR.ORIGINAL" "$CODE_DIR"; echo; cat "$REPORT_FILE")"
 #	[ -n "$VERBOSE" ] && echo "REPORT OUTPUT: $REPORT_FILE" && cat "$REPORT_FILE" && echo
@@ -280,7 +278,7 @@ if [ -z "$NO_JSCHECKSTYLE" ]; then
 	echo "Running jscheckstyle ..."
 
 	JSCHECKSTYLE_BIN="$npm_package_config_jscheckstyle_bin"
-	#[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || JSCHECKSTYLE_BIN=$(which jscheckstyle || echo)
+	#[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || JSCHECKSTYLE_BIN=$(which jscheckstyle || true)
 	[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || JSCHECKSTYLE_BIN="./node_modules/.bin/jscheckstyle"
 	[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || die "ERROR: Unable to find 'jscheckstyle' binary! Install via 'npm install jscheckstyle' to proceed!"
 
