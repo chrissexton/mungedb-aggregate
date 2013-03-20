@@ -196,7 +196,20 @@ module.exports = {
 			//assert.deepEqual(a, e); //does not work with NaN
 			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
 			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
-		}
+		},
+
+		"should be able to use a $split operator": function(){
+			var i = [{_id:0, a:1}, {_id:1, a:1}, {_id:2, a:1}, {_id:3, a:1}, {_id:4, a:1}, {_id:5, a:1}],
+				p = [{$match:{_id:0}}, {$split:{aX2:[{$project:{a:{$multiply:["$a", 2]}}}], aX3:[{$project:{a:{$multiply:["$a", 3]}}}]}}, {$unwind:"$aX2"}, {$unwind:"$aX3"}],
+				//e = [{aX2:[{_id:0, a:2}], aX3:[{_id:0, a:3}]}],
+				e = [{aX2:{_id:0, a:2}, aX3:{_id:0, a:3}}],
+				munger = munge(p),
+				a = munger(i);
+			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
+			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+		},
 
 	}
 
