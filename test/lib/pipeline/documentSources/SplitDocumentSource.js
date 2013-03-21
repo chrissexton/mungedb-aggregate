@@ -3,6 +3,7 @@ var assert = require("assert"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor");
 
+
 module.exports = {
 
 	"SplitDocumentSource": {
@@ -25,14 +26,14 @@ module.exports = {
 
 		"#getSourceName()": {
 
-            "should return the correct source name; $split": function testSourceName(){
-                var pds = new SplitDocumentSource();
-                assert.strictEqual(pds.getSourceName(), SplitDocumentSource.splitName);
-            }
+			"should return the correct source name; $split": function testSourceName(){
+				var pds = new SplitDocumentSource();
+				assert.strictEqual(pds.getSourceName(), SplitDocumentSource.splitName);
+			}
 
-        },
+		},
 
-        "#eof()": {
+		"#eof()": {
 
 			"shouldn't be eof after init": function testEOF(){
 				var cwc = new CursorDocumentSource.CursorWithContext();
@@ -43,31 +44,31 @@ module.exports = {
 				assert.ok(!split.eof());
 			},
 
-            "should be eof after one call to get current": function testAdvanceFirst() {
-                var cwc = new CursorDocumentSource.CursorWithContext();
-                var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
-                cwc._cursor = new Cursor( input );
-                var cds = new CursorDocumentSource(cwc);
-                var split = new SplitDocumentSource();
-                split.setSource(cds);
-                assert.ok(split.getCurrent()); 
-                assert.ok(split.eof);
-            }
+			"should be eof after one call to get current": function testAdvanceFirst() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
+				var split = new SplitDocumentSource();
+				split.setSource(cds);
+				assert.ok(split.getCurrent()); 
+				assert.ok(split.eof);
+			}
 
-        },
+		},
 
-        "#advance()": {
+		"#advance()": {
 
-            "can't advance after one call to getCurrent": function testAdvanceFirst() {
-                var cwc = new CursorDocumentSource.CursorWithContext();
-                var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
-                cwc._cursor = new Cursor( input );
-                var cds = new CursorDocumentSource(cwc);
-                var split = new SplitDocumentSource();
-                split.setSource(cds);
-                assert.ok(split.getCurrent()); 
-                assert.ok(!split.advance());
-            },
+			"can't advance after one call to getCurrent": function testAdvanceFirst() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
+				var split = new SplitDocumentSource();
+				split.setSource(cds);
+				assert.ok(split.getCurrent()); 
+				assert.ok(!split.advance());
+			},
 
 			"throws exception if advanced beyond eof": function throwsBeyondEof() {
 				assert.throws(function() {
@@ -112,42 +113,41 @@ module.exports = {
 
 		"#createFromJson()": {
 
-            "should error if called with non-object": function testNonObjectPassed() {
-                //String as arg
-                assert.throws(function() {
-                    var split = SplitDocumentSource.createFromJson("not an object");
-                });
-                //Date as arg
-                assert.throws(function() {
+			"should error if called with non-object": function testNonObjectPassed() {
+				//String as arg
+				assert.throws(function() {
+					var split = SplitDocumentSource.createFromJson("not an object");
+				});
+				//Date as arg
+				assert.throws(function() {
 					var split = SplitDocumentSource.createFromJson(new Date());
-                });
-                //Array as arg
-                assert.throws(function() {
+				});
+				//Array as arg
+				assert.throws(function() {
 					var split = SplitDocumentSource.createFromJson([]);
-                });
-                //Empty args
-                assert.throws(function() {
+				});
+				//Empty args
+				assert.throws(function() {
 					var split = SplitDocumentSource.createFromJson();
-                });
-            },
+				});
+			},
 
-            "should error if spec has no keys": function testNoKeys() {
+			"should error if spec has no keys": function testNoKeys() {
 				assert.throws(function() {
 					var split = SplitDocumentSource.createFromJson({});
-                });
-            },
+				});
+			},
 
-            "should error if value of a key in top level is not an array": function testNoKeys() {
-                assert.throws(function() {
-                    var split = SplitDocumentSource.createFromJson({a: "not an array"});
-                });
-            }
+			"should error if value of a key in top level is not an array": function testNoKeys() {
+				assert.throws(function() {
+					var split = SplitDocumentSource.createFromJson({a: "not an array"});
+				});
+			}
 
-        },
+		},
 
 	}
 
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-
