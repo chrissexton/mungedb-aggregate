@@ -46,7 +46,21 @@ module.exports = {
 				"should return false if first > second {$eq:[1,0]}": function testEqGt(){
 					assert.equal(Expression.parseOperand({$eq:[1,0]}).evaluate({}), false);
 				},
-
+				"should return false if first and second are different types {$eq:[null,0]}": function testEqGt(){
+					assert.equal(Expression.parseOperand({$eq:[null,0]}).evaluate({}), false);
+				},
+				"should return false if first and second are different types {$eq:[undefined,0]}": function testEqGt(){
+					assert.equal(Expression.parseOperand({$eq:[undefined,0]}).evaluate({}), false);
+				},
+				"should return false if first and second are different arrays {$eq:[[1],[null]]}": function testEqGt(){
+					assert.equal(Expression.parseOperand({$eq:[[1],[null]]}).evaluate({}), false);
+				},
+				"should return false if first and second are different arrays {$eq:[[1],[]]}": function testEqGt(){
+					assert.equal(Expression.parseOperand({$eq:[[1],[]]}).evaluate({}), false);
+				},
+				"should return true if first and second are the same arrays {$eq:[[1],[1]]}": function testEqGt(){
+					assert.equal(Expression.parseOperand({$eq:[[1],[1]]}).evaluate({}), true);
+				}
 			},
 
 			"$ne": {
