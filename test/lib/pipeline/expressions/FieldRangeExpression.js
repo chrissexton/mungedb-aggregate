@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
 	FieldRangeExpression = require("../../../../lib/pipeline/expressions/FieldRangeExpression");
+
 
 module.exports = {
 

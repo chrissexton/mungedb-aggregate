@@ -1,7 +1,9 @@
+"use strict";
 var assert = require("assert"),
 	CompareExpression = require("../../../../lib/pipeline/expressions/CompareExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression"),
 	FieldRangeExpression = require("../../../../lib/pipeline/expressions/FieldRangeExpression");
+
 
 module.exports = {
 

@@ -1,9 +1,9 @@
+"use strict";
 var assert = require("assert"),
 	Pipeline = require("../../../lib/pipeline/Pipeline"),
 	PipelineD = require("../../../lib/pipeline/PipelineD"),
 	DocumentSource = require('../../../lib/pipeline/documentSources/DocumentSource'),
 	CursorDocumentSource = require('../../../lib/pipeline/documentSources/CursorDocumentSource');
-
 
 
 module.exports = {

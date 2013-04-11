@@ -1,5 +1,7 @@
+"use strict";
 var assert = require("assert"),
 	FieldPath = require("../../../lib/pipeline/FieldPath");
+
 
 module.exports = {
 

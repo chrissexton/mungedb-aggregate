@@ -1,13 +1,16 @@
+"use strict";
 var assert = require("assert"),
 	AddToSetAccumulator = require("../../../../lib/pipeline/accumulators/AddToSetAccumulator"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
+
 
 var createAccumulator = function createAccumulator() {
 	var myAccumulator = new AddToSetAccumulator();
 	myAccumulator.addOperand(new FieldPathExpression("b") );
 	return myAccumulator;
 };
+
 
 //TODO: refactor these test cases using Expression.parseOperand() or something because these could be a whole lot cleaner...
 module.exports = {

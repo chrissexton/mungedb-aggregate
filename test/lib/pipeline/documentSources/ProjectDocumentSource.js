@@ -1,9 +1,10 @@
-
+"use strict";
 var assert = require("assert"),
-DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
-ProjectDocumentSource = require("../../../../lib/pipeline/documentSources/ProjectDocumentSource"),
-CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
-Cursor = require("../../../../lib/Cursor");
+	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
+	ProjectDocumentSource = require("../../../../lib/pipeline/documentSources/ProjectDocumentSource"),
+	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
+	Cursor = require("../../../../lib/Cursor");
+
 
 //HELPERS
 var assertExhausted = function assertExhausted(pds) {
@@ -32,6 +33,7 @@ var createProject = function createProject(projection) {
     checkJsonRepresentation(project, spec);
     return project;
 };
+
 
 //TESTS
 module.exports = {

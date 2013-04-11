@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	MultiplyExpression = require("../../../../lib/pipeline/expressions/MultiplyExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

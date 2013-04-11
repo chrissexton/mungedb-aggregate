@@ -10,7 +10,7 @@
 		"Spencer Rathbun <SRathbun@riverainc.com>",
 		"Charles Ezell <CEzell@riverainc.com>"
 	],
-	"main": "./munge.js",
+	"main": "./mungedb-aggregate.js",
 	"scripts": {
 		"test": "npm_scripts/test/test.sh"
 	},

@@ -1,3 +1,4 @@
+"use strict";
 var assert = require("assert"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor"),
@@ -32,8 +33,8 @@ function assertExpectedResult(args) {
 				GroupDocumentSource.createFromJson(args.spec);
 			});
 	}
-
 }
+
 
 module.exports = {
 
@@ -192,5 +193,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-
-

@@ -1,5 +1,7 @@
+"use strict";
 var assert = require("assert"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression");
+
 
 module.exports = {
 

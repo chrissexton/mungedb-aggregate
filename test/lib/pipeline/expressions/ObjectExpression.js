@@ -1,3 +1,4 @@
+"use strict";
 var assert = require("assert"),
 	ObjectExpression = require("../../../../lib/pipeline/expressions/ObjectExpression"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),

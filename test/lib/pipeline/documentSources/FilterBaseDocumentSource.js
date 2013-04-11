@@ -1,11 +1,7 @@
+"use strict";
 var assert = require("assert"),
 	FilterBaseDocumentSource = require("../../../../lib/pipeline/documentSources/FilterBaseDocumentSource");
 
-function createSource(){
-	var fbds = new FilterBaseDocumentSource();
-	fbds.addOperand(new FieldPathExpression("a") );
-	return fbds;
-}
 
 /**
  * none of the rest of this class can be tested, since all the methods depend on 
@@ -53,4 +49,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-

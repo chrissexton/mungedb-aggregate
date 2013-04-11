@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	ToLowerExpression = require("../../../../lib/pipeline/expressions/ToLowerExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

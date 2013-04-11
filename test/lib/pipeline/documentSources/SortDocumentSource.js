@@ -1,8 +1,10 @@
+"use strict";
 var assert = require("assert"),
 	SortDocumentSource = require("../../../../lib/pipeline/documentSources/SortDocumentSource"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
+
 
 module.exports = {
 
@@ -347,4 +349,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-

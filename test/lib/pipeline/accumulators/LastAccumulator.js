@@ -1,3 +1,4 @@
+"use strict";
 var assert = require("assert"),
 	LastAccumulator = require("../../../../lib/pipeline/accumulators/LastAccumulator"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");

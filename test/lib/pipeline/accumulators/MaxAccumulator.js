@@ -1,12 +1,15 @@
+"use strict";
 var assert = require("assert"),
 	MaxAccumulator = require("../../../../lib/pipeline/accumulators/MinMaxAccumulator"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
+
 
 function createAccumulator(){
 	var maxAccumulator = MaxAccumulator.createMax();
 	maxAccumulator.addOperand(new FieldPathExpression("a") );
 	return maxAccumulator;
 }
+
 
 module.exports = {
 
@@ -77,4 +80,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-

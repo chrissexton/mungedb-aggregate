@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	WeekExpression = require("../../../../lib/pipeline/expressions/WeekExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

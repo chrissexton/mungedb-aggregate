@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	AddExpression = require("../../../../lib/pipeline/expressions/AddExpression"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression");
+
 
 //TODO: refactor these test cases using Expression.parseOperand() or something because these could be a whole lot cleaner...
 module.exports = {

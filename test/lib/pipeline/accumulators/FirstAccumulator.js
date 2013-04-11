@@ -1,12 +1,15 @@
+"use strict";
 var assert = require("assert"),
 	FirstAccumulator = require("../../../../lib/pipeline/accumulators/FirstAccumulator"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
+
 
 function createAccumulator(){
 	var firstAccumulator = new FirstAccumulator();
 	firstAccumulator.addOperand(new FieldPathExpression("a") );
 	return firstAccumulator;
 }
+
 
 module.exports = {
 
@@ -78,4 +81,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-

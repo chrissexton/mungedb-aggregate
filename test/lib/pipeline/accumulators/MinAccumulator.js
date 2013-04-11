@@ -1,12 +1,15 @@
+"use strict";
 var assert = require("assert"),
 	MinAccumulator = require("../../../../lib/pipeline/accumulators/MinMaxAccumulator"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
+
 
 function createAccumulator(){
 	var minAccumulator = MinAccumulator.createMin();
 	minAccumulator.addOperand(new FieldPathExpression("a") );
 	return minAccumulator;
 }
+
 
 module.exports = {
 
@@ -77,4 +80,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-

@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	MinuteExpression = require("../../../../lib/pipeline/expressions/MinuteExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 
