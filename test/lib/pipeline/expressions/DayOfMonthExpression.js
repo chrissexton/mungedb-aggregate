@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	DayOfMonthExpression = require("../../../../lib/pipeline/expressions/DayOfMonthExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

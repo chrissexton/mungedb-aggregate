@@ -1,7 +1,7 @@
 {
-	"name": "munge",
-	"version": "0.4.4+2013.03.22",
-	"description": "A JavaScript data munging pipeline based on the MongoDB aggregation framework.",
+	"name": "mungedb-aggregate",
+	"version": "0.4.6+2013.04.19",
+	"description": "A JavaScript data aggregation pipeline based on the MongoDB aggregation framework.",
 	"author": "Rivera Group <support@riverainc.com>",
 	"contributors": [
 		"Adam Bell <ABell@riverainc.com>",
@@ -10,7 +10,7 @@
 		"Spencer Rathbun <SRathbun@riverainc.com>",
 		"Charles Ezell <CEzell@riverainc.com>"
 	],
-	"main": "./munge.js",
+	"main": "./mungedb-aggregate.js",
 	"scripts": {
 		"test": "npm_scripts/test/test.sh"
 	},
@@ -39,8 +39,5 @@
 		"node": ">=0.8"
 	},
 	"config": {
-		"test_syntax": true,
-		"test_unit": true,
-		"test_coverage": true
 	}
 }

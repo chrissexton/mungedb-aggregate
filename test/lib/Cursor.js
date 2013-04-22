@@ -1,3 +1,4 @@
+"use strict";
 var assert = require("assert"),
 	Cursor = require("../../lib/Cursor");
 

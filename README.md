@@ -1,15 +1,14 @@
-munge
-=====
-A JavaScript data munging pipeline based on the MongoDB aggregation framework.
+mungedb-aggregation
+===================
+A JavaScript data aggregation pipeline based on the MongoDB aggregation framework.
 
 In general, this code is a port from the MongoDB C++ code (v2.4.0) to JavaScript.
 
 
-
 exports
 -------
-**TODO:** document the major exports and a little about each here
-
+aggregate
+Aggregator
 
 
 Deviations

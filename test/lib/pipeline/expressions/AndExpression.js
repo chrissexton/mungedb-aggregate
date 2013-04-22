@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	AndExpression = require("../../../../lib/pipeline/expressions/AndExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

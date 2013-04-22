@@ -1,9 +1,10 @@
-
+"use strict";
 var assert = require("assert"),
-DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
-UnwindDocumentSource = require("../../../../lib/pipeline/documentSources/UnwindDocumentSource"),
-CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
-Cursor = require("../../../../lib/Cursor");
+	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
+	UnwindDocumentSource = require("../../../../lib/pipeline/documentSources/UnwindDocumentSource"),
+	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
+	Cursor = require("../../../../lib/Cursor");
+
 
 //HELPERS
 var assertExhausted = function assertExhausted(pds) {
@@ -70,6 +71,7 @@ var throwsException = function throwsException(data, path, expectedResults){
 		checkResults(data, path, expectedResults);
 	});
 };
+
 
 //TESTS
 module.exports = {

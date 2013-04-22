@@ -1,7 +1,9 @@
+"use strict";
 var assert = require("assert"),
 	CoerceToBoolExpression = require("../../../../lib/pipeline/expressions/CoerceToBoolExpression"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression");
+
 
 module.exports = {
 

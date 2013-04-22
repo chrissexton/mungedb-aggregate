@@ -1,3 +1,4 @@
+"use strict";
 var assert = require("assert"),
 	PushAccumulator = require("../../../../lib/pipeline/accumulators/PushAccumulator"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
@@ -68,5 +69,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-
-

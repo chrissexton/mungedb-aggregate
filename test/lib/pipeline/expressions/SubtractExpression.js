@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	SubtractExpression = require("../../../../lib/pipeline/expressions/SubtractExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

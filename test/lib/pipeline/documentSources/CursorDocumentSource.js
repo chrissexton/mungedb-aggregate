@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor");
+
 
 module.exports = {
 

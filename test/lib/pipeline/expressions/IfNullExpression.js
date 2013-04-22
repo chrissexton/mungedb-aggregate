@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	IfNullExpression = require("../../../../lib/pipeline/expressions/IfNullExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

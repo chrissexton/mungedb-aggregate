@@ -1,20 +1,21 @@
+"use strict";
 var assert = require("assert"),
-	munge = require("../../");
+	aggregate = require("../../");
 
 module.exports = {
 
-	"munge": {
+	"aggregate": {
 
 		"should be able to use an empty pipeline (no-op)": function(){
 			var i = [1, 2, 3],
 				p = [],
 				e = [1, 2, 3],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 
 
@@ -22,47 +23,47 @@ module.exports = {
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$limit:2}],
 				e = [{_id:0}, {_id:1}],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 
 		"should be able to use a $match operator": function(){
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$match:{e:1}}],
 				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 		
 		"should be able to use a $skip operator": function(){
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$skip:2}, {$skip:1}],	//testing w/ 2 ensures independent state variables
 				e = [{_id:3}, {_id:4}, {_id:5}],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 		"should be able to use a $skip and then a $limit operator together in the same pipeline": function(){
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$skip:2}, {$limit:1}],
 				e = [{_id:2, e:1}],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 
 		"should be able to construct an instance with $unwind operators properly": function(){
@@ -83,12 +84,12 @@ module.exports = {
 					{_id:0,nodes:{one:[1,1],two:22}},
 					{_id:1,nodes:{two:22,three:[333]}}
 				],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 
 
@@ -101,11 +102,11 @@ module.exports = {
 						//TODO: high level test of all other expression operators
 					}}],
 				e = [{_id:0, e:1, b:"not two", a:2}, {_id:2, e:2, b:"two", a:4}, {_id:4, e:3, b:"not two", a:6}],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.deepEqual(munger(i), e, "Reuse of munger should yield the same results!");
-			assert.deepEqual(munge(p, i), e, "Alternate use of munge should yield the same results!");
+			assert.deepEqual(aggregater(i), e, "Reuse of aggregater should yield the same results!");
+			assert.deepEqual(aggregate(p, i), e, "Alternate use of aggregate should yield the same results!");
 		},
 		
 		
@@ -117,11 +118,11 @@ module.exports = {
 						//TODO: high level test of all other expression operators
 					}}],
 				e = [{e:1}, {e:2}, {e:3}],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.deepEqual(munger(i), e, "Reuse of munger should yield the same results!");
-			assert.deepEqual(munge(p, i), e, "Alternate use of munge should yield the same results!");
+			assert.deepEqual(aggregater(i), e, "Reuse of aggregater should yield the same results!");
+			assert.deepEqual(aggregate(p, i), e, "Alternate use of aggregate should yield the same results!");
 		},
 
 		"should be able to construct an instance with $sort operators properly (ascending)": function(){
@@ -135,12 +136,12 @@ module.exports = {
 						{_id:null}, {_id:NaN},
 						{_id:-273.15}, {_id:1}, {_id:3.14159}, {_id:11}, {_id:42}
 					],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			//assert.deepEqual(a, e); //does not work with NaN
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 		"should be able to construct an instance with $group operators properly": function(){
 			var i = [
@@ -190,12 +191,12 @@ module.exports = {
 							push_b:["a", "b", "b", "c"]
 						}
 					],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			//assert.deepEqual(a, e); //does not work with NaN
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 
 		"should be able to use a $split operator": function(){
@@ -203,12 +204,12 @@ module.exports = {
 				p = [{$match:{_id:0}}, {$split:{aX2:[{$project:{a:{$multiply:["$a", 2]}}}], aX3:[{$project:{a:{$multiply:["$a", 3]}}}]}}, {$unwind:"$aX2"}, {$unwind:"$aX3"}],
 				//e = [{aX2:[{_id:0, a:2}], aX3:[{_id:0, a:3}]}],
 				e = [{aX2:{_id:0, a:2}, aX3:{_id:0, a:3}}],
-				munger = munge(p),
-				a = munger(i);
+				aggregater = aggregate(p),
+				a = aggregater(i);
 			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(munger(i)), JSON.stringify(e), "Reuse of munger should yield the same results!");
-			assert.equal(JSON.stringify(munge(p, i)), JSON.stringify(e), "Alternate use of munge should yield the same results!");
+			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 		},
 
 	}

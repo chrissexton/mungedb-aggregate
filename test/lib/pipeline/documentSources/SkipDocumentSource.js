@@ -1,5 +1,7 @@
+"use strict";
 var assert = require("assert"),
 	SkipDocumentSource = require("../../../../lib/pipeline/documentSources/SkipDocumentSource");
+
 
 module.exports = {
 
@@ -155,4 +157,3 @@ module.exports = {
 };
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
-

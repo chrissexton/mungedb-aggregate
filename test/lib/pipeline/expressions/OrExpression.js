@@ -1,6 +1,8 @@
+"use strict";
 var assert = require("assert"),
 	OrExpression = require("../../../../lib/pipeline/expressions/OrExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 module.exports = {
 

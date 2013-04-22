@@ -1,8 +1,10 @@
+"use strict";
 var assert = require("assert"),
 	NaryExpression = require("../../../../lib/pipeline/expressions/NaryExpression"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
+
 
 // A dummy child of NaryExpression used for testing
 var TestableExpression = (function(){
@@ -37,6 +39,7 @@ var TestableExpression = (function(){
 
 	return klass;
 })();
+
 
 module.exports = {
 
@@ -122,7 +125,6 @@ module.exports = {
 		},
 		
 		//the following test case is eagerly awaiting ObjectExpression
-/*
 		"#addDependencies()": function testDependencies(){
 			var testableExpr = new TestableExpression();
 
@@ -139,9 +141,9 @@ module.exports = {
 
 			// add an object expression
 			testableExpr.addOperand(Expression.parseObject({a:"$x",q:"$r"}, new Expression.ObjectCtx({isDocumentOk:1})));
-			assert.deepEqual(testableExpr.addDependencies([]), ["ab.c", "r", "x"]);
+			assert.deepEqual(testableExpr.addDependencies([]), ["ab.c", "x", "r"]);
 		}
-*/
+
 	}
 
 };

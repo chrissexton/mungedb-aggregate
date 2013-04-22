@@ -1,6 +1,6 @@
+"use strict";
 var assert = require("assert"),
 	Pipeline = require("../../../lib/pipeline/Pipeline");
-
 
 
 module.exports = {
