@@ -1,43 +1,42 @@
 {
-	"name": "mungedb-aggregate",
-	"version": "0.4.6+2013.04.19",
-	"description": "A JavaScript data aggregation pipeline based on the MongoDB aggregation framework.",
-	"author": "Rivera Group <support@riverainc.com>",
-	"contributors": [
-		"Adam Bell <ABell@riverainc.com>",
-		"Kyle Davis <KDavis@riverainc.com>",
-		"Phil Murray <PMurray@riverainc.com>",
-		"Spencer Rathbun <SRathbun@riverainc.com>",
-		"Charles Ezell <CEzell@riverainc.com>"
-	],
-	"main": "./mungedb-aggregate.js",
-	"scripts": {
-		"test": "npm_scripts/test/test.sh"
-	},
-	"repository": {
-		"type": "svn",
-		"url": "http://svn.rcg.local/svn/devrd/eagle6/"
-	},
-	"keywords": [
-		"manipulation",
-		"alteration"
-	],
-	"dependencies": {
-		"stream-utils": "*",
-		"es6-shim": "*",
-		"sift": "*"
-	},
-	"devDependencies": {
-		"mocha": "*",
-		"jshint": "*",
-		"jscoverage": "*",
-		"jscheckstyle": "git+https://github.com/RiveraGroup/jscheckstyle.git"
-	},
-	"license": "AGPL",
-	"private": true,
-	"engine": {
-		"node": ">=0.8"
-	},
-	"config": {
-	}
+  "name": "mungedb-aggregate",
+  "version": "0.4.7+2013.05.06",
+  "description": "A JavaScript data aggregation pipeline based on the MongoDB aggregation framework.",
+  "author": "Rivera Group <support@riverainc.com>",
+  "contributors": [
+    "Adam Bell <ABell@riverainc.com>",
+    "Kyle Davis <KDavis@riverainc.com>",
+    "Phil Murray <PMurray@riverainc.com>",
+    "Spencer Rathbun <SRathbun@riverainc.com>",
+    "Charles Ezell <CEzell@riverainc.com>"
+  ],
+  "main": "./mungedb-aggregate.js",
+  "scripts": {
+    "test": "npm_scripts/test/test.sh"
+  },
+  "repository": {
+    "type": "svn",
+    "url": "http://svn.rcg.local/svn/devrd/eagle6/"
+  },
+  "keywords": [
+    "manipulation",
+    "alteration"
+  ],
+  "dependencies": {
+    "stream-utils": "*",
+    "es6-shim": "*",
+    "sift": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "jshint": "*",
+    "jscoverage": "*",
+    "jscheckstyle": "git+https://github.com/RiveraGroup/jscheckstyle.git"
+  },
+  "license": "AGPL",
+  "private": true,
+  "engine": {
+    "node": ">=0.8"
+  },
+  "config": {}
 }
