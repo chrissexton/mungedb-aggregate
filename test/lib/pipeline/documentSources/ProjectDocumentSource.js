@@ -206,14 +206,14 @@ module.exports = {
                 var cwc = new CursorDocumentSource.CursorWithContext();
                 var input = {a:true,x:'$b',y:{$and:['$c','$d']}};
                 var pds = createProject(input);
-                var deps = [];
-                assert.equal(DocumentSource.GetDepsReturn.EXHAUSTIVE, pds.getDependencies(deps));
-                assert.equal(5, deps.length);
-                assert.equal(1, deps.filter(function(val) { return "_id" == val; }).length);
-                assert.equal(1, deps.filter(function(val) { return "a" == val; }).length);
-                assert.equal(1, deps.filter(function(val) { return "b" == val; }).length);
-                assert.equal(1, deps.filter(function(val) { return "c" == val; }).length);
-                assert.equal(1, deps.filter(function(val) { return "d" == val; }).length);
+                var dependencies = {};
+                assert.equal(DocumentSource.GetDepsReturn.EXHAUSTIVE, pds.getDependencies(dependencies));
+                assert.equal(5, Object.keys(dependencies).length);
+                assert.ok(dependencies._id);
+                assert.ok(dependencies.a);
+                assert.ok(dependencies.b);
+                assert.ok(dependencies.c);
+                assert.ok(dependencies.d);
             }
 
         }
