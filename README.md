@@ -7,8 +7,8 @@ In general, this code is a port from the MongoDB C++ code (v2.4.0) to JavaScript
 
 exports
 -------
-aggregate
-Aggregator
+* aggregate
+* Aggregator
 
 
 Deviations
@@ -35,7 +35,6 @@ Here is a list of the major items where we have deviated from the MongoDB code a
       * DESIGN: The `{FOO}Expression` classes do not provide `create` statics since calling new is easy enough
         * DESIGN: To further this, the `CompareExpression` class doesn't provide any of it's additional `create{FOO}` helpers so instead I'm binding the appropriate args to the `constructor`
       * EXTENSIONS: The following are extended `munge`-only expressions that have not been ported back to MongoDB yet
-        * `IndexOfExpression` or `$indexOf` - A new `Expression` that returns the index of an item in an `Array` or `String`
     * `DocumentSource` classes
       * DESIGN: We have implemented a `reset` method for all document sources so that we can reuse them against different streams of data
 
