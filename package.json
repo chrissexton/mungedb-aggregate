@@ -24,7 +24,8 @@
   "dependencies": {
     "stream-utils": "*",
     "es6-shim": "*",
-    "sift": "*"
+    "sift": "*",
+    "async":"*"
   },
   "devDependencies": {
     "mocha": "*",

@@ -6,67 +6,117 @@ module.exports = {
 
 	"aggregate": {
 
-		"should be able to use an empty pipeline (no-op)": function(){
+		"should be able to use an empty pipeline (no-op)": function(next){
 			var i = [1, 2, 3],
 				p = [],
 				e = [1, 2, 3],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
 
 
-		"should be able to use a $limit operator": function(){
+		"should be able to use a $limit operator": function(next){
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$limit:2}],
 				e = [{_id:0}, {_id:1}],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
 
-		"should be able to use a $match operator": function(){
+		"should be able to use a $match operator": function(next){
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$match:{e:1}}],
 				e = [{_id:0, e:1}, {_id:2, e:1}, {_id:4, e:1}],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
 		
-		"should be able to use a $skip operator": function(){
+		"should be able to use a $skip operator": function(next){
 			var i = [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
 				p = [{$skip:2}, {$skip:1}],	//testing w/ 2 ensures independent state variables
 				e = [{_id:3}, {_id:4}, {_id:5}],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
-		"should be able to use a $skip and then a $limit operator together in the same pipeline": function(){
+		"should be able to use a $skip and then a $limit operator together in the same pipeline": function(next){
 			var i = [{_id:0, e:1}, {_id:1, e:0}, {_id:2, e:1}, {_id:3, e:0}, {_id:4, e:1}, {_id:5, e:0}],
 				p = [{$skip:2}, {$limit:1}],
 				e = [{_id:2, e:1}],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
 
-		"should be able to construct an instance with $unwind operators properly": function(){
+		"should be able to construct an instance with $unwind operators properly": function(next){
 			var i = [
 					{_id:0, nodes:[
 						{one:[11], two:[2,2]},
@@ -84,16 +134,26 @@ module.exports = {
 					{_id:0,nodes:{one:[1,1],two:22}},
 					{_id:1,nodes:{two:22,three:[333]}}
 				],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
 
 
-		"should be able to use a $project operator": function(){
+		"should be able to use a $project operator": function(next){
 			var i = [{_id:0, e:1, f:23}, {_id:2, e:2, g:34}, {_id:4, e:3}],
 				p = [{$project:{
 						e:1, 
@@ -101,16 +161,28 @@ module.exports = {
 						b:{$cond:[{$eq:["$e", 2]}, "two", "not two"]}
 						//TODO: high level test of all other expression operators
 					}}],
-				e = [{_id:0, e:1, b:"not two", a:2}, {_id:2, e:2, b:"two", a:4}, {_id:4, e:3, b:"not two", a:6}],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.deepEqual(aggregater(i), e, "Reuse of aggregater should yield the same results!");
-			assert.deepEqual(aggregate(p, i), e, "Alternate use of aggregate should yield the same results!");
+				e = [{_id:0, e:1, a:2, b:"not two"}, {_id:2, e:2, a:4, b:"two"}, {_id:4, e:3, a:6, b:"not two"}],
+				aggregater = aggregate(p);	
+
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
 		
 		
-		"should be able to use a $project operator to exclude the _id field": function(){
+		"should be able to use a $project operator to exclude the _id field": function(next){
 			var i = [{_id:0, e:1, f:23}, {_id:2, e:2, g:34}, {_id:4, e:3}],
 				p = [{$project:{
 						_id:0,
@@ -118,14 +190,25 @@ module.exports = {
 						//TODO: high level test of all other expression operators
 					}}],
 				e = [{e:1}, {e:2}, {e:3}],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
-			assert.deepEqual(aggregater(i), e, "Reuse of aggregater should yield the same results!");
-			assert.deepEqual(aggregate(p, i), e, "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
 
-		"should be able to construct an instance with $sort operators properly (ascending)": function(){
+		"should be able to construct an instance with $sort operators properly (ascending)": function(next){
 			var i = [
 						{_id:3.14159}, {_id:-273.15},
 						{_id:42}, {_id:11}, {_id:1},
@@ -136,14 +219,23 @@ module.exports = {
 						{_id:null}, {_id:NaN},
 						{_id:-273.15}, {_id:1}, {_id:3.14159}, {_id:11}, {_id:42}
 					],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			//assert.deepEqual(a, e); //does not work with NaN
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		},
-		"should be able to construct an instance with $group operators properly": function(){
+		"should be able to construct an instance with $group operators properly": function(next){
 			var i = [
 						{_id:0, a:1},
 						{_id:0, a:2},
@@ -191,12 +283,22 @@ module.exports = {
 							push_b:["a", "b", "b", "c"]
 						}
 					],
-				aggregater = aggregate(p),
-				a = aggregater(i);
-			assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
-			//assert.deepEqual(a, e); //does not work with NaN
-			assert.equal(JSON.stringify(aggregater(i)), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
-			assert.equal(JSON.stringify(aggregate(p, i)), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results.result;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		}
 
 	}
