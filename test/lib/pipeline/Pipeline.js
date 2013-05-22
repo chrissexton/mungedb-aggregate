@@ -100,20 +100,22 @@ module.exports = {
 		},
 
 		"#run": {
-			"should set the parent source for all sources in the pipeline except the first one":function(){
+			"should set the parent source for all sources in the pipeline except the first one":function(next){
 				var p = Pipeline.parseCommand([{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]);
-				p.run({}, [], function(err, result){
+				p.run({}, function(err, result){
 					assert.equal(p.sourceVector[1].pSource, p.sourceVector[0]);
 					assert.equal(p.sourceVector[2].pSource, p.sourceVector[1]);
+					next();
 				});
 
 			},
-			"should iterate through sources and return resultant array":function(){
+			"should iterate through sources and return resultant array":function(next){
 				var p = Pipeline.parseCommand([{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]),
 					result = {};
-				p.run(result, [], function(err, result){
+				p.run(result, function(err, result){
 
 					assert.deepEqual(result.result, [5,4,3,2,1,0]);//see the test source for why this should be so
+					next();
 				});
 
 			}
