@@ -99,6 +99,50 @@ module.exports = {
 					cs = PipelineD.prepareCursorSource(p, [1,2,3,4,5]);
 				
 				assert.deepEqual(cs._projection, {"_id":0,"testDep":1});
+			},
+
+			"should get projection's deps": function(){
+				var cmdObj = [
+					{$match:{
+						x:{$exists:true},
+						y:{$exists:false}
+					}},
+					{$project:{
+						a:"$a.b.c",
+						b:"$d",
+						c:"$e.f.g"
+					}},
+					{$group:{
+						_id:"$a",
+						x:{$push:"b"}
+					}}
+				];
+				var p = Pipeline.parseCommand(cmdObj),
+					cs = PipelineD.prepareCursorSource(p, [1,2,3,4,5]);
+					assert.equal(JSON.stringify(cs._projection), JSON.stringify({ 'a.b.c': 1, d: 1, 'e.f.g': 1, _id: 1 }));
+			},
+
+			"should get group's deps": function(){
+				var cmdObj = [
+					{$match:{
+						x:{$exists:true},
+						y:{$exists:false}
+					}},
+					{$group:{
+						_id:"$a",
+						x:{$push:"$b"},
+						y:{$addToSet:"$x.y.z"},
+						z:{$sum:"$x.y.z.w"}
+					}},
+					{$project:{
+						a:"$a.b.c",
+						b:"$d",
+						c:"$e.f.g"
+					}}
+				];
+				var p = Pipeline.parseCommand(cmdObj),
+					cs = PipelineD.prepareCursorSource(p, [1,2,3,4,5]);
+					assert.equal(JSON.stringify(cs._projection), JSON.stringify({ _id: 0, a: 1, b: 1, 'x.y.z': 1 }));
 			}
 		}
 	}
