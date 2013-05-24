@@ -21,6 +21,9 @@ Here is a list of the major items where we have deviated from the MongoDB code a
       * DESIGN: Basically all of the `BSON`-specific code has become equivalent `JSON`-specific code since that's what we're working with (no need for needless conversions)
       * DESIGN: A lot of these have a `addToBson...` and other `BSONObjBuilder`-related methods that take in an instance to be modified but it's owned by the caller; in `munge` we build a new `Object` and return it because it's simpler and that's how they're generally used anyhow
     * TESTING: Many of the tests have been written without the use of the testing base classes as they are in the MongoDB code to try and simplify and make things more clear (but never less complete)
+  * **`Aggregator` class**
+    * This is a helper class that runs a pipeline.  If you provide a dictionary `pipelineArgs` after the document sources, `pipelineArgs` will be
+	  pass as the `theCtx` to your Pipeline class (the current implementation does not use it for anything).
   * **Pipeline components**
     * `Document` class
       * DESIGN: `Document` now provides static helpers rather than instance helpers to avoid unecessary boxing/unboxing since that seems to make more sense here (we treat any `Object` like a `Document`)
