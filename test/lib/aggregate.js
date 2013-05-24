@@ -13,15 +13,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -36,15 +36,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -58,15 +58,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -80,15 +80,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -101,15 +101,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -137,15 +137,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -166,15 +166,15 @@ module.exports = {
 
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -193,15 +193,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -222,14 +222,14 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
@@ -286,15 +286,15 @@ module.exports = {
 				aggregater = aggregate(p);	
 
 			aggregater(i, function(err, results){
-				var a = results.result;
+				var a = results;
 				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
 				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
 
 				aggregater(i, function(err, results){
-					assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
 
 					aggregate(p, i, function(err, results){
-						assert.equal(JSON.stringify(results.result), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
 						next();
 					});
 				});
