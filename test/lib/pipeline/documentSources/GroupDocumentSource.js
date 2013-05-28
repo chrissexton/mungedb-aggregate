@@ -5,6 +5,16 @@ var assert = require("assert"),
 	GroupDocumentSource = require("../../../../lib/pipeline/documentSources/GroupDocumentSource");
 
 
+/**
+*   Tests if the given spec is the same as what the DocumentSource resolves to as JSON.
+*   MUST CALL WITH A DocumentSource AS THIS (e.g. checkJsonRepresentation.call(this, spec) where this is a DocumentSource and spec is the JSON used to create the source).
+**/
+var checkJsonRepresentation = function checkJsonRepresentation(self, spec) {
+    var rep = {};
+    self.sourceToJson(rep, true);
+    assert.deepEqual(rep, {$group:spec});
+};
+
 /// An assertion for `ObjectExpression` instances based on Mongo's `ExpectedResultBase` class
 function assertExpectedResult(args) {
 	{// check for required args
@@ -23,6 +33,7 @@ function assertExpectedResult(args) {
 		gds.setSource(cds);
 		var result = gds.getCurrent();
 		assert.deepEqual(result, args.expected);
+		checkJsonRepresentation(gds, args.spec);
 	}else{
 		if(args.throw)
 			assert.throws(function(){
@@ -30,8 +41,11 @@ function assertExpectedResult(args) {
 			});
 		else
 			assert.doesNotThrow(function(){
-				GroupDocumentSource.createFromJson(args.spec);
+				var gds = GroupDocumentSource.createFromJson(args.spec);
+				checkJsonRepresentation(gds, args.spec);
 			});
+
+
 	}
 }
 
@@ -188,6 +202,7 @@ module.exports = {
 				});
 			}
 		}
+
 	}
 
 };
