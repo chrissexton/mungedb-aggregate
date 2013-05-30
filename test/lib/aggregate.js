@@ -299,6 +299,49 @@ module.exports = {
 					});
 				});
 			});
+		},
+
+		"should be able to construct an instance with $group using concat": function(next){
+			var i = [
+						{_id:0, a:null},
+						{_id:1, a:"a"},
+						{_id:1, a:"b"},
+						{_id:1, a:"b"},
+						{_id:1, a:"c"}
+					],
+				p = [{$group:{
+						_id:{$concat:["$a"]},
+					}}],
+				e = [
+						{
+							_id:null,
+						},
+						{
+							_id:"a",
+						},
+						{
+							_id:"b",
+						},
+						{
+							_id:"c",
+						}
+					],
+				aggregater = aggregate(p);	
+
+			aggregater(i, function(err, results){
+				var a = results;
+				assert.equal(JSON.stringify(a), JSON.stringify(e), "Unexpected value!");
+				assert.deepEqual(a, e, "Unexpected value (not deepEqual)!");
+
+				aggregater(i, function(err, results){
+					assert.equal(JSON.stringify(results), JSON.stringify(e), "Reuse of aggregater should yield the same results!");
+
+					aggregate(p, i, function(err, results){
+						assert.equal(JSON.stringify(results), JSON.stringify(e), "Alternate use of aggregate should yield the same results!");
+						next();
+					});
+				});
+			});
 		}
 
 	}
