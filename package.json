@@ -31,7 +31,7 @@
     "mocha": "*",
     "jshint": "*",
     "jscoverage": "*",
-    "jscheckstyle": "git+https://github.com/RiveraGroup/jscheckstyle.git"
+    "jscheckstyle": "*"
   },
   "license": "AGPL",
   "private": true,

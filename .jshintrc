@@ -1,9 +1,8 @@
 {
-    "node": true,
-    "browser": true,
-	"jquery": true,
-    "strict": false,
+	"node": true,
+	"strict": false,
 	"unused": false,
 	"forin": false,
-	"newcap": true
+	"newcap": true,
+	"expr": true
 }
