@@ -200,7 +200,17 @@ module.exports = {
 					spec:{_id:0, z:{$first:"$a"}},
 					expected:{_id:0, z:6}
 				});
+			},
+
+			// Aggregate the value of an operator expression. g
+			"should aggregate the value of an operator expression with a null id": function nullTest(){
+				assertExpectedResult({
+					docs:[{a:6}],
+					spec:{_id:null, z:{$first:"$a"}},
+					expected:{_id:null, z:6}
+				});
 			}
+
 		}
 
 	}
