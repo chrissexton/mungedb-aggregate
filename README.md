@@ -40,6 +40,7 @@ Here is a list of the major items where we have deviated from the MongoDB code a
       * EXTENSIONS: The following are extended `munge`-only expressions that have not been ported back to MongoDB yet
     * `DocumentSource` classes
       * DESIGN: We have implemented a `reset` method for all document sources so that we can reuse them against different streams of data
+	  * MatchDocumentSource: getDependencies is implemented, because magic unwinds depends on it
 
 
 TODO
