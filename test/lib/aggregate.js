@@ -348,4 +348,4 @@ module.exports = {
 
 };
 
-if(!module.parent) (new (require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run();
+if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).grep(process.env.MOCHA_GREP || '').run(process.exit);

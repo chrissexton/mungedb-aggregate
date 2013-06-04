@@ -119,7 +119,7 @@ module.exports = {
 				];
 				var p = Pipeline.parseCommand(cmdObj),
 					cs = PipelineD.prepareCursorSource(p, [1,2,3,4,5]);
-					assert.equal(JSON.stringify(cs._projection), JSON.stringify({ 'a.b.c': 1, d: 1, 'e.f.g': 1, _id: 1 }));
+					assert.equal(JSON.stringify(cs._projection), JSON.stringify({_id: 1, 'a.b.c': 1, d: 1, 'e.f.g': 1}));
 			},
 
 			"should get group's deps": function(){
@@ -149,4 +149,4 @@ module.exports = {
 
 };
 
-if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run();
+if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).grep(process.env.MOCHA_GREP || '').run(process.exit);
