@@ -55,7 +55,6 @@ module.exports = {
 				assert.deepEqual(t, { location : { $in : ['Kentucky'] } });
 			}
 
-
 		},
 
 		"#createFromJson()": {
@@ -65,23 +64,11 @@ module.exports = {
 				assert.strictEqual(t instanceof MatchDocumentSource, true);
 			}
 
-		},
-
-        "#getDependencies()": {
-
-            "should properly detect dependencies in match": function testGetDependencies(){
-				var t = MatchDocumentSource.createFromJson({ someval:{$exists:true} });
-                var dependencies = {};
-                assert.equal("SEE_NEXT", t.getDependencies(dependencies));
-                assert.equal(1, Object.keys(dependencies).length);
-                assert.ok(dependencies.someval);
-            }
-
-        }
-
+		}
 
 	}
 
 };
+
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
