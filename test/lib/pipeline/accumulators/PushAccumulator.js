@@ -55,11 +55,25 @@ module.exports = {
 				assert.deepEqual(accumulator.getValue(), [1,2]);
 			},
 
-			"should evaluate one document with null and one document with a value and return an array of 1": function testStuff(){
+			"should evaluate one document with null and one document with a value and return an array of 1, null": function testStuff(){
 				var accumulator = createAccumulator();
 				accumulator.evaluate({b:1});
 				accumulator.evaluate({b:null});
-				assert.deepEqual(accumulator.getValue(), [1]);
+				assert.deepEqual(accumulator.getValue(), [1, null]);
+			},
+
+			"should evaluate one document with undefined and one document with a value and return an array of 1, null": function testStuff(){
+				var accumulator = createAccumulator();
+				accumulator.evaluate({b:1});
+				accumulator.evaluate({b:undefined});
+				assert.deepEqual(accumulator.getValue(), [1, null]);
+			},
+
+			"should evaluate one document with zero and one document with a value and return an array of 1, 0": function testStuff(){
+				var accumulator = createAccumulator();
+				accumulator.evaluate({b:1});
+				accumulator.evaluate({b:0});
+				assert.deepEqual(accumulator.getValue(), [1, 0]);
 			}
 
 		}
