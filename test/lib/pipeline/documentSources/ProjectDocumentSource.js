@@ -42,9 +42,9 @@ module.exports = {
 
         "constructor()": {
 
-            "should throw Error when constructing with args": function testConstructor(){
-                assert.throws(function(){
-                    new ProjectDocumentSource({ctx: [1,2]});
+            "should not throw Error when constructing without args": function testConstructor(){
+                assert.doesNotThrow(function(){
+                    new ProjectDocumentSource();
                 });
             }
 
@@ -61,7 +61,7 @@ module.exports = {
 
         "#eof()": {
 
-            "should return same as this.pSource.eof": function testEOF(){
+            "should return same as this.source.eof": function testEOF(){
                 var pds = new ProjectDocumentSource();
                 pds.setSource({
                     eof: function eof() {

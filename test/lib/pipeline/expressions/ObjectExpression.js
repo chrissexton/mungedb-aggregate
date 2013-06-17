@@ -35,7 +35,7 @@ function assertExpectedResult(args) {
 	var dependencies = args.expression.addDependencies({}, [/*FAKING: includePath=true*/]);
 	//dependencies.sort(), args.expectedDependencies.sort();	// NOTE: this is a minor hack added for munge because I'm pretty sure order doesn't matter for this anyhow
 	assertEqualJson(Object.keys(dependencies).sort(), Object.keys(args.expectedDependencies).sort(), "unexpected dependencies");
-	assertEqualJson(args.expression.toJson(true), args.expectedJsonRepresentation, "unexpected JSON representation");
+	assertEqualJson(args.expression.toJSON(true), args.expectedJsonRepresentation, "unexpected JSON representation");
 	assertEqualJson(args.expression.getIsSimple(), args.expectedIsSimple, "unexpected isSimple status");
 }
 
@@ -79,13 +79,13 @@ module.exports = {
 
 		},
 
-		"#toJson": {
+		"#toJSON": {
 
 			"should be able to convert to JSON representation and have constants represented by expressions": function testJson(){
 				/** Serialize to a BSONObj, with constants represented by expressions. */
 				var expr = new ObjectExpression();
 				expr.addField("foo.a", new ConstantExpression(5));
-				assertEqualJson({foo:{a:{$const:5}}}, expr.toJson(true));
+				assertEqualJson({foo:{a:{$const:5}}}, expr.toJSON(true));
 			}
 
 		},
@@ -101,7 +101,7 @@ module.exports = {
 				expr.addField( "b", new AndExpression());
 				expr.optimize();
 				// Optimizing 'expression' optimizes its non inclusion sub expressions, while inclusion sub expressions are passed through.
-				assertEqualJson({a:true, b:{$const:true}}, expr.toJson(true));
+				assertEqualJson({a:true, b:{$const:true}}, expr.toJSON(true));
 			},
 
 		},

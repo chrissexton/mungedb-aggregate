@@ -129,7 +129,7 @@ module.exports = {
 //		"#intersect()": {
 //		},
 
-//		"#toJson()": {
+//		"#toJSON()": {
 //		}
 
 	}

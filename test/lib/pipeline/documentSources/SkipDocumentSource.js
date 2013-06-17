@@ -45,7 +45,7 @@ module.exports = {
 				var lds = new SkipDocumentSource();
 				lds.skip = 9;
 				lds.count = 0;
-				lds.pSource = {
+				lds.source = {
 					eof: function(){
 						return true;
 					}
@@ -58,7 +58,7 @@ module.exports = {
 				lds.count = 9;
 				
 				var i = 1;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:i };},
 					eof: function(){return false;},
 					advance: function(){i++; return true;}
@@ -75,7 +75,7 @@ module.exports = {
 				lds.skip = 1;
 				
 				var i = 0;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:i };},
 					eof: function(){return false;},
 					advance: function(){i++; return true;}
@@ -92,7 +92,7 @@ module.exports = {
 				lds.skip = 1;
 				
 				var i = 0;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:i };},
 					eof: function(){return false;},
 					advance: function(){i++; return true;}
@@ -105,7 +105,7 @@ module.exports = {
 				lds.skip = 1;
 				
 				var i = 0;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:i };},
 					eof: function(){return true;},
 					advance: function(){return false;}
@@ -118,7 +118,7 @@ module.exports = {
 				lds.skip = 3;
 				
 				var i = 0;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:i };},
 					eof: function(){return i>=5;},
 					advance: function(){i++; return i<5;}

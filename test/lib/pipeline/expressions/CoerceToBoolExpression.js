@@ -44,11 +44,11 @@ module.exports = {
 
 		},
 
-		"#toJson()": {
+		"#toJSON()": {
 
 			"should serialize as $and which will coerceToBool; '$foo'": function(){
 				var expr = new CoerceToBoolExpression(new FieldPathExpression('foo'));
-				assert.deepEqual(expr.toJson(), {$and:['$foo']});
+				assert.deepEqual(expr.toJSON(), {$and:['$foo']});
 			}
 
 		}

@@ -17,15 +17,15 @@ var assertExhausted = function assertExhausted(pds) {
 *   MUST CALL WITH A PDS AS THIS (e.g. checkJsonRepresentation.call(this, rep) where this is a PDS)
 **/
 var checkJsonRepresentation = function checkJsonRepresentation(self, rep) {
-    var pdsRep = {};
-    self.sourceToJson(pdsRep, true);
-    assert.deepEqual(pdsRep, rep);
+	var pdsRep = {};
+	self.sourceToJson(pdsRep, true);
+	assert.deepEqual(pdsRep, rep);
 };
 
 var createUnwind = function createUnwind(unwind) {
     //let unwind be optional
-    if(!unwind){
-        unwind = "$a";
+    if (!unwind) {
+		unwind = "$a";
     }
     var spec = {"$unwind": unwind},
         specElement = unwind,
@@ -35,39 +35,45 @@ var createUnwind = function createUnwind(unwind) {
 };
 
 var addSource = function addSource(unwind, data) {
-    var cwc = new CursorDocumentSource.CursorWithContext();
-    cwc._cursor = new Cursor( data );
-    var cds = new CursorDocumentSource(cwc);
-    var pds = new UnwindDocumentSource();
-    unwind.setSource(cds);
+	var cwc = new CursorDocumentSource.CursorWithContext();
+	cwc._cursor = new Cursor(data);
+	var cds = new CursorDocumentSource(cwc);
+	var pds = new UnwindDocumentSource();
+	unwind.setSource(cds);
 };
 
-var checkResults = function checkResults(data, expectedResults, path){
+var checkResults = function checkResults(data, expectedResults, path) {
+	//poplateData?
+	//createSource?
+
 	var unwind = createUnwind(path);
 	addSource(unwind, data || []);
-	
+
 	expectedResults = expectedResults || [];
-	
+
+	//Load the results from the DocumentSourceUnwind
 	var resultSet = [];
-    while( !unwind.eof() ) {
+    while (!unwind.eof()) {
+		// If not eof, current is non null.
+		assert.ok(unwind.getCurrent());
 
-        // If not eof, current is non null.
-        assert.ok( unwind.getCurrent() );
+		// Get the current result.
+		resultSet.push(unwind.getCurrent());
 
-        // Get the current result.
-        resultSet.push( unwind.getCurrent() );
-
-        // Advance.
-        if ( unwind.advance() ) {
-            // If advance succeeded, eof() is false.
-            assert.equal( unwind.eof(), false );
-        }
+		// Advance.
+		if (unwind.advance()) {
+			// If advance succeeded, eof() is false.
+			assert.equal(unwind.eof(), false);
+		}
     }
-    assert.deepEqual( resultSet, expectedResults );
+	// Verify the DocumentSourceUnwind is exhausted.
+	assertExhausted(unwind);
+
+    assert.deepEqual(resultSet, expectedResults);
 };
 
-var throwsException = function throwsException(data, path, expectedResults){
-	assert.throws(function(){
+var throwsException = function throwsException(data, path, expectedResults) {
+	assert.throws(function () {
 		checkResults(data, path, expectedResults);
 	});
 };
@@ -80,9 +86,9 @@ module.exports = {
 
         "constructor()": {
 
-            "should throw Error when constructing with args": function (){
-                assert.throws(function(){
-                    new UnwindDocumentSource("$a");
+            "should not throw Error when constructing without args": function (){
+                assert.doesNotThrow(function(){
+                    new UnwindDocumentSource();
                 });
             }
 
@@ -120,12 +126,14 @@ module.exports = {
                 addSource(pds, []);
                 assert.strictEqual(pds.advance(), false);
             },
+
             "should return true if source documents exist and advance the source": function (){
                 var pds = createUnwind();
                 addSource(pds, [{_id:0, a:[1,2]}]);
                 assert.strictEqual(pds.advance(), true);
                 assert.strictEqual(pds.getCurrent().a, 2);
             }
+
         },
 
         "#getCurrent()": {
@@ -135,6 +143,7 @@ module.exports = {
                 addSource(pds, []);
                 assert.strictEqual(pds.getCurrent(), null);
             },
+
             "should return unwound documents": function (){
                 var pds = createUnwind();
                 addSource(pds, [{_id:0, a:[1,2]}]);
@@ -145,48 +154,59 @@ module.exports = {
             "A document without the unwind field produces no results.": function(){
 				checkResults([{}]);
             },
+
             "A document with a null field produces no results.": function(){
 				checkResults([{a:null}]);
             },
+
             "A document with an empty array produces no results.": function(){
 				checkResults([{a:[]}]);
             },
+
             "A document with a number field produces a UserException.": function(){
 				throwsException([{a:1}]);
             },
+
             "An additional document with a number field produces a UserException.": function(){
 				throwsException([{a:[1]}, {a:1}]);
             },
+
             "A document with a string field produces a UserException.": function(){
 				throwsException([{a:"foo"}]);
             },
+
             "A document with an object field produces a UserException.": function(){
 				throwsException([{a:{}}]);
             },
+
             "Unwind an array with one value.": function(){
 				checkResults(
 					[{_id:0, a:[1]}],
 					[{_id:0,a:1}]
 				);
             },
+
             "Unwind an array with two values.": function(){
 				checkResults(
 					[{_id:0, a:[1, 2]}],
 					[{_id:0,a:1}, {_id:0,a:2}]
 				);
             },
+
             "Unwind an array with two values, one of which is null.": function(){
 				checkResults(
 					[{_id:0, a:[1, null]}],
 					[{_id:0,a:1}, {_id:0,a:null}]
 				);
             },
+
             "Unwind two documents with arrays.": function(){
 				checkResults(
 					[{_id:0, a:[1,2]}, {_id:0, a:[3,4]}],
 					[{_id:0,a:1}, {_id:0,a:2}, {_id:0,a:3}, {_id:0,a:4}]
 				);
             },
+
             "Unwind an array in a nested document.": function(){
 				checkResults(
 					[{_id:0,a:{b:[1,2],c:3}}],
@@ -194,6 +214,7 @@ module.exports = {
 					"$a.b"
 				);
             },
+
             "A missing array (that cannot be nested below a non object field) produces no results.": function(){
 				checkResults(
 					[{_id:0,a:4}],
@@ -201,6 +222,7 @@ module.exports = {
 					"$a.b"
 				);
             },
+
             "Unwind an array in a doubly nested document.": function(){
 				checkResults(
 					[{_id:0,a:{b:{d:[1,2],e:4},c:3}}],
@@ -208,6 +230,7 @@ module.exports = {
 					"$a.b.d"
 				);
             },
+
             "Unwind several documents in a row.": function(){
 				checkResults(
 					[
@@ -227,6 +250,7 @@ module.exports = {
                     ]
 				);
             },
+
             "Unwind several more documents in a row.": function(){
 				checkResults(
 					[
@@ -276,18 +300,19 @@ module.exports = {
                 assert.throws(function() {
                     var pds = createUnwind({$add: []});
                 });
-
             }
 
         },
+
         "#getDependencies": {
-			"should Dependant field paths.": function () {
+
+			"should get dependent field paths": function () {
                 var pds = createUnwind("$x.y.z"),
 					deps = {};
                 assert.strictEqual(pds.getDependencies(deps), DocumentSource.GetDepsReturn.SEE_NEXT);
                 assert.deepEqual(deps, {"x.y.z":1});
-                
 			}
+
         }
 
     }

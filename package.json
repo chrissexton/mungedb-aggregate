@@ -22,7 +22,6 @@
     "alteration"
   ],
   "dependencies": {
-    "stream-utils": "*",
     "es6-shim": "*",
     "sift": "*",
     "async":"*"

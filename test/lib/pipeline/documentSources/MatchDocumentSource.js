@@ -29,7 +29,7 @@ module.exports = {
 		"#accept()": {
 
 			"should return true on the input document": function acceptTest(){
-				var mds = new MatchDocumentSource({ location : { $in : ['Kentucky'] } });
+				var mds = new MatchDocumentSource({ location : { $in : ['Kentucky'] } }, {});
 				assert.strictEqual(mds.accept({ name: 'Adam', location: 'Kentucky'}), true);
 			}
 

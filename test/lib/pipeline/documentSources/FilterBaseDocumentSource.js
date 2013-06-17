@@ -4,9 +4,7 @@ var assert = require("assert"),
 
 
 /**
- * none of the rest of this class can be tested, since all the methods depend on 
- * accept, which is not implemented.
- *
+ * none of the rest of this class can be tested, since all the methods depend on accept, which is not implemented.
  **/
 module.exports = {
 
@@ -47,5 +45,6 @@ module.exports = {
 	}
 
 };
+
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);

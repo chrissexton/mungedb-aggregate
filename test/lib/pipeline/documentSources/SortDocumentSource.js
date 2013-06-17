@@ -41,7 +41,7 @@ module.exports = {
 
 			"should return true if there are no more sources": function noSources(){
 				var sds = new SortDocumentSource();
-				sds.pSource = {
+				sds.source = {
 					eof: function(){
 						return true;
 					}

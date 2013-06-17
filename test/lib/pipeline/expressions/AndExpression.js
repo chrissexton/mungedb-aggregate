@@ -89,47 +89,47 @@ module.exports = {
 		"#optimize()": {
 
 			"should optimize a constant expression to a constant; {$and:[1]} == true": function testOptimizeConstantExpression(){
-				assert.deepEqual(Expression.parseOperand({$and:[1]}).optimize().toJson(true), {$const:true});
+				assert.deepEqual(Expression.parseOperand({$and:[1]}).optimize().toJSON(true), {$const:true});
 			},
 
 			"should not optimize a non-constant expression; {$and:['$a']}": function testNonConstant(){
-				assert.deepEqual(Expression.parseOperand({$and:['$a']}).optimize().toJson(), {$and:['$a']});
+				assert.deepEqual(Expression.parseOperand({$and:['$a']}).optimize().toJSON(), {$and:['$a']});
 			},
 
 			"should not optimize an expression beginning with a constant; {$and:[1,'$a']}; SERVER-6192": function testConstantNonConstant(){
-				assert.deepEqual(Expression.parseOperand({$and:[1,'$a']}).optimize().toJson(), {$and:[1,'$a']});
+				assert.deepEqual(Expression.parseOperand({$and:[1,'$a']}).optimize().toJSON(), {$and:[1,'$a']});
 			},
 
 			"should optimize an expression with a path and a '1' (is entirely constant); {$and:['$a',1]}": function testNonConstantOne(){
-				assert.deepEqual(Expression.parseOperand({$and:['$a',1]}).optimize().toJson(), {$and:['$a']});
+				assert.deepEqual(Expression.parseOperand({$and:['$a',1]}).optimize().toJSON(), {$and:['$a']});
 			},
 
 			"should optimize an expression with a field path and a '0'; {$and:['$a',0]}": function testNonConstantZero(){
-				assert.deepEqual(Expression.parseOperand({$and:['$a',0]}).optimize().toJson(true), {$const:false});
+				assert.deepEqual(Expression.parseOperand({$and:['$a',0]}).optimize().toJSON(true), {$const:false});
 			},
 
 			"should optimize an expression with two field paths and '1'; {$and:['$a','$b',1]}": function testNonConstantNonConstantOne(){
-				assert.deepEqual(Expression.parseOperand({$and:['$a','$b',1]}).optimize().toJson(), {$and:['$a','$b']});
+				assert.deepEqual(Expression.parseOperand({$and:['$a','$b',1]}).optimize().toJSON(), {$and:['$a','$b']});
 			},
 
 			"should optimize an expression with two field paths and '0'; {$and:['$a','$b',0]}": function testNonConstantNonConstantZero(){
-				assert.deepEqual(Expression.parseOperand({$and:['$a','$b',0]}).optimize().toJson(true), {$const:false});
+				assert.deepEqual(Expression.parseOperand({$and:['$a','$b',0]}).optimize().toJSON(true), {$const:false});
 			},
 
 			"should optimize an expression with '0', '1', and a field path; {$and:[0,1,'$a']}": function testZeroOneNonConstant(){
-				assert.deepEqual(Expression.parseOperand({$and:[0,1,'$a']}).optimize().toJson(true), {$const:false});
+				assert.deepEqual(Expression.parseOperand({$and:[0,1,'$a']}).optimize().toJSON(true), {$const:false});
 			},
 
 			"should optimize an expression with '1', '1', and a field path; {$and:[1,1,'$a']}": function testOneOneNonConstant(){
-				assert.deepEqual(Expression.parseOperand({$and:[1,1,'$a']}).optimize().toJson(), {$and:['$a']});
+				assert.deepEqual(Expression.parseOperand({$and:[1,1,'$a']}).optimize().toJSON(), {$and:['$a']});
 			},
 
 			"should optimize nested $and expressions properly and optimize out values evaluating to true; {$and:[1,{$and:[1]},'$a','$b']}": function testNested(){
-				assert.deepEqual(Expression.parseOperand({$and:[1,{$and:[1]},'$a','$b']}).optimize().toJson(), {$and:['$a','$b']});
+				assert.deepEqual(Expression.parseOperand({$and:[1,{$and:[1]},'$a','$b']}).optimize().toJSON(), {$and:['$a','$b']});
 			},
 
 			"should optimize nested $and expressions containing a nested value evaluating to false; {$and:[1,{$and:[1]},'$a','$b']}": function testNested(){
-				assert.deepEqual(Expression.parseOperand({$and:[1,{$and:[{$and:[0]}]},'$a','$b']}).optimize().toJson(true), {$const:false});
+				assert.deepEqual(Expression.parseOperand({$and:[1,{$and:[{$and:[0]}]},'$a','$b']}).optimize().toJSON(true), {$const:false});
 			}
 
 		}

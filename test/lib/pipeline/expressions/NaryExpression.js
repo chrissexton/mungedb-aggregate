@@ -54,8 +54,8 @@ module.exports = {
 		},
 
 		"#addOperand() should be able to add operands to expressions": function testAddOperand(){
-			assert.deepEqual(new TestableExpression([new ConstantExpression(9)]).toJson(), {$testable:[9]});
-			assert.deepEqual(new TestableExpression([new FieldPathExpression("ab.c")]).toJson(), {$testable:["$ab.c"]});
+			assert.deepEqual(new TestableExpression([new ConstantExpression(9)]).toJSON(), {$testable:[9]});
+			assert.deepEqual(new TestableExpression([new FieldPathExpression("ab.c")]).toJSON(), {$testable:["$ab.c"]});
 		},
 
 		"#checkArgLimit() should throw Error iff number of operands is over given limit": function testCheckArgLimit(){

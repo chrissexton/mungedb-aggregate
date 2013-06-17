@@ -118,10 +118,10 @@ module.exports = {
 
 		},
 
-		"#toJson()": {
+		"#toJSON()": {
 
 			"should output path String with a '$'-prefix": function testJson(){
-				assert.equal(new FieldPathExpression('a.b.c').toJson(), "$a.b.c");
+				assert.equal(new FieldPathExpression('a.b.c').toJSON(), "$a.b.c");
 			}
 
 		}
