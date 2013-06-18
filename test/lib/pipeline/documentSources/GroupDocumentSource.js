@@ -183,6 +183,16 @@ module.exports = {
 					expected:{_id:5}
 				});
 			},
+			
+			// $group _id is a field path expression. g
+			"should compute _id a field path expression if expression evaluates to a Date": function advanceDateTest(){
+				var d = new Date();
+				assertExpectedResult({
+					docs:[{a:d}],
+					spec:{_id:"$a"},
+					expected:{_id:d}
+				});
+			},
 
 			// Aggregate the value of an object expression. g
 			"should aggregate the value of an object expression": function advanceTest(){
