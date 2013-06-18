@@ -22,7 +22,6 @@
     "alteration"
   ],
   "dependencies": {
-    "es6-shim": "*",
     "sift": "*",
     "async":"*"
   },

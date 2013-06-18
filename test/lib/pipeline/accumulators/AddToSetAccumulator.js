@@ -7,7 +7,7 @@ var assert = require("assert"),
 
 var createAccumulator = function createAccumulator() {
 	var myAccumulator = new AddToSetAccumulator();
-	myAccumulator.addOperand(new FieldPathExpression("b") );
+	myAccumulator.addOperand(new FieldPathExpression("b"));
 	return myAccumulator;
 };
 
@@ -21,7 +21,7 @@ module.exports = {
 
 			"should error if called with args": function testArgsGivenToCtor() {
 				assert.throws(function() {
-					var acc = new AddToSetAccumulator('arg');
+					new AddToSetAccumulator('arg');
 				});
 			},
 
@@ -65,7 +65,7 @@ module.exports = {
 				acc.evaluate({b:5});
 				acc.evaluate({b:5});
 				var value = acc.getValue();
-				assert.deepEqual(value, [5]);
+				assert.deepEqual(JSON.stringify(value), JSON.stringify([5]));
 			},
 
 			"should produce value that is an array of multiple elements": function testMultipleItems() {
@@ -73,14 +73,14 @@ module.exports = {
 				acc.evaluate({b:5});
 				acc.evaluate({b:{key: "value"}});
 				var value = acc.getValue();
-				assert.deepEqual(value, [5, {key: "value"}]);
+				assert.deepEqual(JSON.stringify(value), JSON.stringify([5, {key: "value"}]));
 			},
 
 			"should return array with one element that is an object containing a key/value pair": function testKeyValue() {
 				var acc = createAccumulator();
 				acc.evaluate({b:{key: "value"}});
 				var value = acc.getValue();
-				assert.deepEqual(value, [{key: "value"}]);
+				assert.deepEqual(JSON.stringify(value), JSON.stringify([{key: "value"}]));
 			},
 
 			"should ignore undefined values": function testKeyValue() {
@@ -88,11 +88,22 @@ module.exports = {
 				acc.evaluate({b:{key: "value"}});
 				acc.evaluate({a:5});
 				var value = acc.getValue();
-				assert.deepEqual(value, [{key: "value"}]);
+				assert.deepEqual(JSON.stringify(value), JSON.stringify([{key: "value"}]));
+			},
+
+			"should coalesce different instances of equivalent objects": function testGetValue_() {
+				var acc = createAccumulator();
+				acc.evaluate({b:{key: "value"}});
+				acc.evaluate({b:{key: "value"}});
+				var value = acc.getValue();
+				assert.deepEqual(JSON.stringify(value), JSON.stringify([{key: "value"}]));
 			}
 
 		}
+
 	}
+
 };
+
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
