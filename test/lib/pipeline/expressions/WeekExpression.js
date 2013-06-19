@@ -37,7 +37,7 @@ module.exports = {
 		"#evaluate()": {
 
 			"should return week; 8 for 2013-02-18": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$week:"$someDate"}).evaluate({someDate:new Date("Mon Feb 18 2013 00:00:00 GMT-0500 (EST)")}), 7);
+				assert.strictEqual(Expression.parseOperand({$week:"$someDate"}).evaluate({someDate:new Date("2013-02-18T00:00:00.000Z")}), 7);
 			}
 
 		}

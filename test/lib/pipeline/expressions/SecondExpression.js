@@ -37,7 +37,7 @@ module.exports = {
 		"#evaluate()": {
 
 			"should return the current second in the date; 19 for 2013-02-18 11:24:19 EST": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$second:"$someDate"}).evaluate({someDate:new Date("2013-02-18 11:24:19 EST")}), 19);
+				assert.strictEqual(Expression.parseOperand({$second:"$someDate"}).evaluate({someDate:new Date("2013-02-18T11:24:19.000Z")}), 19);
 			}
 
 				/*
