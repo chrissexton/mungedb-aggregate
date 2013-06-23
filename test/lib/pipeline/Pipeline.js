@@ -119,6 +119,14 @@ module.exports = {
 					assert.deepEqual(result.result, [5,4,3,2,1,0]);//see the test source for why this should be so
 					next();
 				});
+			},
+
+			"should call callback with errors from pipeline components": function (next) {
+				var p = Pipeline.parseCommand({pipeline:[{$match:{$foo:{bar:"baz"}}}]});
+				p.run(new DocumentSource({}), function(err, results){
+					assert(err instanceof Error);
+					return next();
+				});
 			}
 
 		}
