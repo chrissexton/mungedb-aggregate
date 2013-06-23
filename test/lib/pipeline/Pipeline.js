@@ -58,20 +58,20 @@ module.exports = {
 
 		"parseCommand": {
 
-			"should fail if given non-objects in the array": function () {
+			"should throw Error if given non-objects in the array": function () {
 				assert.throws(function(){
 					Pipeline.parseCommand({pipeline:[5]});
 				});
 			},
 
-			"should fail if given objects with more/less than one field": function () {
+			"should throw Error if given objects with more / less than one field": function () {
 				assert.throws(function(){
 					Pipeline.parseCommand({pipeline:[{}]});
 					Pipeline.parseCommand({pipeline:[{a:1,b:2}]});
 				});
 			},
 
-			"should fail if given objects that dont match any known document sources": function () {
+			"should throw Error on unknown document sources": function () {
 				assert.throws(function(){
 					Pipeline.parseCommand({pipeline:[{$foo:"$sdfdf"}]});
 				});
@@ -105,19 +105,18 @@ module.exports = {
 
 			"should set the parent source for all sources in the pipeline except the first one": function (next) {
 				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]});
-				p.run(new DocumentSource({}), function(err, result){
+				p.run(new DocumentSource({}), function(err, results){
 					assert.equal(p.sourceVector[1].source, p.sourceVector[0]);
 					assert.equal(p.sourceVector[2].source, p.sourceVector[1]);
-					next();
+					return next();
 				});
 			},
 
 			"should iterate through sources and return resultant array": function (next) {
-				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]}),
-					result = {};
-				p.run(new DocumentSource({}), function(err, result){
-					assert.deepEqual(result.result, [5,4,3,2,1,0]);//see the test source for why this should be so
-					next();
+				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]});
+				p.run(new DocumentSource({}), function(err, results){
+					assert.deepEqual(results.result, [5,4,3,2,1,0]); //see the test source for why this should be so
+					return next();
 				});
 			},
 

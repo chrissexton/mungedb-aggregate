@@ -113,3 +113,4 @@ Here is a list of global items that I know about that may need to be done in the
   * Consider ditching `PipelineD` entirely here; might be more confusing than helpful and can still achieve the same results with ease
   * UNWRAP ALL CLASSES SINCE THIS IS NODE AFTERALL (A BUILD STEP COULD REWRAP THEM FOR BROWSER-LAND IF NEEDED)
   * MAKE THIS WORK IN A BROWSER -- THAT'D BE NICE
+  * $group and $group.$addToSet both use JSON.stringify for key checks but really need a deepEqual (via Document.compare) or maybe use jsonPlus (faster?) ... fix me now!
