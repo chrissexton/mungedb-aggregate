@@ -6,18 +6,31 @@ var assert = require("assert"),
 // Utility to test the various use cases of `aggregate`
 function testAggregate(opts){
 
-	// test one-off usage
+	// SYNC: test one-off usage
+	var results = aggregate(opts.pipeline, opts.inputs);
+	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
+
+	// SYNC: test reusable aggregator functionality
+	var aggregator = aggregate(opts.pipeline);
+	results = aggregator(opts.inputs);
+	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
+
+	// SYNC: test that it is actually reusable
+	results = aggregator(opts.inputs); 
+	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected), "Reuse of aggregator should yield the same results!");
+
+	// ASYNC: test one-off usage
 	aggregate(opts.pipeline, opts.inputs, function(err, results){
 		assert.ifError(err);
 		assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
 
-		// test reusable aggregator functionality
+		// ASYNC: test reusable aggregator functionality
 		var aggregator = aggregate(opts.pipeline);
 		aggregator(opts.inputs, function(err, results){
 			assert.ifError(err);
 			assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
 
-			// test that it is actually reusable
+			// ASYNC: test that it is actually reusable
 			aggregator(opts.inputs, function(err, results){
 				assert.ifError(err);
 				assert.equal(JSON.stringify(results), JSON.stringify(opts.expected), "Reuse of aggregator should yield the same results!");

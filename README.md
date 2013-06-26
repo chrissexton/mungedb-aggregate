@@ -108,9 +108,8 @@ Here is a list of global items that I know about that may need to be done in the
   * Make sure that all of the pure `virtual`s (i.e., `/virtual .* = 0;$/`) are implemented as a proto with a throw new Error("NOT IMPLEMENTED BY INHERITOR") or similar
   * Go through uses of `throw` and make them actually use `UserException` vs `SystemException` (or whatever they're called)
   * Currently using the `sift` package to fake the `MatchDocumentSource` class but need to actually port the real code
-  * Async support has been partially implemented but this needs to go deeper into the APIs; all layers need async capabilities (but not requirements?), and layers that require it but recieve no callback should throw an Error()
-  * Remove `reset` stuff if we're not going to use it
+  * Async support has been partially implemented but this needs to go deeper into the APIs; all layers need async capabilities (but not requirements), and layers that require it but recieve no callback should throw an Error()
   * Consider ditching `PipelineD` entirely here; might be more confusing than helpful and can still achieve the same results with ease
-  * UNWRAP ALL CLASSES SINCE THIS IS NODE AFTERALL (A BUILD STEP COULD REWRAP THEM FOR BROWSER-LAND IF NEEDED)
-  * MAKE THIS WORK IN A BROWSER -- THAT'D BE NICE
-  * $group and $group.$addToSet both use JSON.stringify for key checks but really need a deepEqual (via Document.compare) or maybe use jsonPlus (faster?) ... fix me now!
+  * Setup a browserify build step to create a browser version of this or something
+  * $group and $group.$addToSet both use JSON.stringify for key checks but really need a deepEqual (via Document.compare) or maybe use jsonplus (faster?) ... fix me now!
+  * Consider moving async stuff out of here and up to a higher level package if possible just to keep things clean and as close to the MongoDB implementations as possible
