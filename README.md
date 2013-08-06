@@ -94,6 +94,7 @@ Here is a list of the major items where we have deviated from the MongoDB code a
         * DESIGN: To further this, the `CompareExpression` class doesn't provide any of it's various `create{FOO}` helpers so compensate I am just binding the appropriate args to the `constructor` to create a similar factory
     * `DocumentSource` classes
       * DESIGN: We have implemented a `reset` method for all document sources so that we can reuse them against different streams of data
+	  * DESIGN: GroupDocumentSource stores copies of all unique _id's that it accumulates to dodge a javascript Stringify/Parse issue with dates
 
 
 TODO
