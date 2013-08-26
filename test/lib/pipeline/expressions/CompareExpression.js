@@ -192,29 +192,29 @@ module.exports = {
 		"#optimize()": {
 
 			"should optimize constants; {$eq:[1,1]}": function testOptimizeConstants(){
-				assert.deepEqual(Expression.parseOperand({$eq:[1,1]}).optimize().toJson(true), {$const:true});
+				assert.deepEqual(Expression.parseOperand({$eq:[1,1]}).optimize().toJSON(true), {$const:true});
 			},
 
 			"should not optimize if $cmp op; {$cmp:[1,'$a']}": function testNoOptimizeCmp(){
-				assert.deepEqual(Expression.parseOperand({$cmp:[1,'$a']}).optimize().toJson(), {$cmp:[1,'$a']});
+				assert.deepEqual(Expression.parseOperand({$cmp:[1,'$a']}).optimize().toJSON(), {$cmp:[1,'$a']});
 			},
 
 			"should not optimize if $ne op; {$ne:[1,'$a']}": function testNoOptimizeNe(){
-				assert.deepEqual(Expression.parseOperand({$ne:[1,'$a']}).optimize().toJson(), {$ne:[1,'$a']});
+				assert.deepEqual(Expression.parseOperand({$ne:[1,'$a']}).optimize().toJSON(), {$ne:[1,'$a']});
 			},
 
 			"should not optimize if no constants; {$ne:['$a','$b']}": function testNoOptimizeNoConstant(){
-				assert.deepEqual(Expression.parseOperand({$ne:['$a','$b']}).optimize().toJson(), {$ne:['$a','$b']});
+				assert.deepEqual(Expression.parseOperand({$ne:['$a','$b']}).optimize().toJSON(), {$ne:['$a','$b']});
 			},
 
 			"should not optimize without an immediate field path;": {
 
 				"{$eq:[{$and:['$a']},1]}": function testNoOptimizeWithoutFieldPath(){
-					assert.deepEqual(Expression.parseOperand({$eq:[{$and:['$a']},1]}).optimize().toJson(), {$eq:[{$and:['$a']},1]});
+					assert.deepEqual(Expression.parseOperand({$eq:[{$and:['$a']},1]}).optimize().toJSON(), {$eq:[{$and:['$a']},1]});
 				},
 
 				"(reversed); {$eq:[1,{$and:['$a']}]}": function testNoOptimizeWithoutFieldPathReverse(){
-					assert.deepEqual(Expression.parseOperand({$eq:[1,{$and:['$a']}]}).optimize().toJson(), {$eq:[1,{$and:['$a']}]});
+					assert.deepEqual(Expression.parseOperand({$eq:[1,{$and:['$a']}]}).optimize().toJSON(), {$eq:[1,{$and:['$a']}]});
 				}
 
 			},
@@ -224,13 +224,13 @@ module.exports = {
 				"{$eq:['$a',1]}": function testOptimizeEq(){
 					var expr = Expression.parseOperand({$eq:['$a',1]}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$eq:['$a',1]});
+					assert.deepEqual(expr.toJSON(), {$eq:['$a',1]});
 				},
 
 				"{$eq:[1,'$a']} (reversed)": function testOptimizeEqReverse(){
 					var expr = Expression.parseOperand({$eq:[1,'$a']}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$eq:['$a',1]});
+					assert.deepEqual(expr.toJSON(), {$eq:['$a',1]});
 				}
 
 			},
@@ -240,13 +240,13 @@ module.exports = {
 				"{$lt:['$a',1]}": function testOptimizeLt(){
 					var expr = Expression.parseOperand({$lt:['$a',1]}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$lt:['$a',1]});
+					assert.deepEqual(expr.toJSON(), {$lt:['$a',1]});
 				},
 
 				"{$lt:[1,'$a']} (reversed)": function testOptimizeLtReverse(){
 					var expr = Expression.parseOperand({$lt:[1,'$a']}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$gt:['$a',1]});
+					assert.deepEqual(expr.toJSON(), {$gt:['$a',1]});
 				}
 
 			},
@@ -256,13 +256,13 @@ module.exports = {
 				"{$lte:['$b',2]}": function testOptimizeLte(){
 					var expr = Expression.parseOperand({$lte:['$b',2]}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$lte:['$b',2]});
+					assert.deepEqual(expr.toJSON(), {$lte:['$b',2]});
 				},
 
 				"{$lte:[2,'$b']} (reversed)": function testOptimizeLteReverse(){
 					var expr = Expression.parseOperand({$lte:[2,'$b']}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$gte:['$b',2]});
+					assert.deepEqual(expr.toJSON(), {$gte:['$b',2]});
 				}
 
 			},
@@ -272,13 +272,13 @@ module.exports = {
 				"{$gt:['$b',2]}": function testOptimizeGt(){
 					var expr = Expression.parseOperand({$gt:['$b',2]}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$gt:['$b',2]});
+					assert.deepEqual(expr.toJSON(), {$gt:['$b',2]});
 				},
 
 				"{$gt:[2,'$b']} (reversed)": function testOptimizeGtReverse(){
 					var expr = Expression.parseOperand({$gt:[2,'$b']}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$lt:['$b',2]});
+					assert.deepEqual(expr.toJSON(), {$lt:['$b',2]});
 				}
 
 			},
@@ -288,13 +288,13 @@ module.exports = {
 				"{$gte:['$b',2]}": function testOptimizeGte(){
 					var expr = Expression.parseOperand({$gte:['$b',2]}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$gte:['$b',2]});
+					assert.deepEqual(expr.toJSON(), {$gte:['$b',2]});
 				},
 
 				"{$gte:[2,'$b']} (reversed)": function testOptimizeGteReverse(){
 					var expr = Expression.parseOperand({$gte:[2,'$b']}).optimize();
 					assert(expr instanceof FieldRangeExpression, "not optimized");
-					assert.deepEqual(expr.toJson(), {$lte:['$b',2]});
+					assert.deepEqual(expr.toJSON(), {$lte:['$b',2]});
 				}
 
 			},

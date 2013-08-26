@@ -70,6 +70,14 @@ module.exports = {
 				assert.strictEqual(Expression.parseOperand({$substr:["$s", "$start", "$end"]}).evaluate({s:s, start:start, end:end}), "");
 			},
 
+			"Should return the entire string if end is -1": function testIndexTooLarge(){
+				var s = "mystring",
+				start = 0,
+				end = -1;
+				assert.strictEqual(Expression.parseOperand({$substr:["$s", "$start", "$end"]}).evaluate({s:s, start:start, end:end}), "mystring");
+			},
+
+
 			"Should fail if end is before begin": function testUnorderedIndexes(){
 				var s = "mystring",
 				start = s.length,
@@ -82,7 +90,8 @@ module.exports = {
 				start = 0,
 				end = s.length+1;
 				assert.throws(function(){Expression.parseOperand({$substr:["$s", "$start"]}).evaluate({s:s, start:start, end:end});});
-			}
+			},
+
 
 		}
 

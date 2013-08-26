@@ -29,7 +29,7 @@ module.exports = {
 		"#accept()": {
 
 			"should return true on the input document": function acceptTest(){
-				var mds = new MatchDocumentSource({ location : { $in : ['Kentucky'] } });
+				var mds = new MatchDocumentSource({ location : { $in : ['Kentucky'] } }, {});
 				assert.strictEqual(mds.accept({ name: 'Adam', location: 'Kentucky'}), true);
 			}
 
@@ -55,7 +55,6 @@ module.exports = {
 				assert.deepEqual(t, { location : { $in : ['Kentucky'] } });
 			}
 
-
 		},
 
 		"#createFromJson()": {
@@ -65,12 +64,11 @@ module.exports = {
 				assert.strictEqual(t instanceof MatchDocumentSource, true);
 			}
 
-
 		}
-
 
 	}
 
 };
+
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);

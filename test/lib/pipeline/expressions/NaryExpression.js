@@ -54,8 +54,8 @@ module.exports = {
 		},
 
 		"#addOperand() should be able to add operands to expressions": function testAddOperand(){
-			assert.deepEqual(new TestableExpression([new ConstantExpression(9)]).toJson(), {$testable:[9]});
-			assert.deepEqual(new TestableExpression([new FieldPathExpression("ab.c")]).toJson(), {$testable:["$ab.c"]});
+			assert.deepEqual(new TestableExpression([new ConstantExpression(9)]).toJSON(), {$testable:[9]});
+			assert.deepEqual(new TestableExpression([new FieldPathExpression("ab.c")]).toJSON(), {$testable:["$ab.c"]});
 		},
 
 		"#checkArgLimit() should throw Error iff number of operands is over given limit": function testCheckArgLimit(){
@@ -129,19 +129,19 @@ module.exports = {
 			var testableExpr = new TestableExpression();
 
 			// no arguments
-			assert.deepEqual(testableExpr.addDependencies([]), []);
+			assert.deepEqual(testableExpr.addDependencies({}), {});
 
 			// add a constant argument
 			testableExpr.addOperand(new ConstantExpression(1));
-			assert.deepEqual(testableExpr.addDependencies([]), []);
+			assert.deepEqual(testableExpr.addDependencies({}), {});
 
 			// add a field path argument
 			testableExpr.addOperand(new FieldPathExpression("ab.c"));
-			assert.deepEqual(testableExpr.addDependencies([]), ["ab.c"]);
+			assert.deepEqual(testableExpr.addDependencies({}), {"ab.c":1});
 
 			// add an object expression
 			testableExpr.addOperand(Expression.parseObject({a:"$x",q:"$r"}, new Expression.ObjectCtx({isDocumentOk:1})));
-			assert.deepEqual(testableExpr.addDependencies([]), ["ab.c", "x", "r"]);
+			assert.deepEqual(testableExpr.addDependencies({}), {"ab.c":1, "x":1, "r":1});
 		}
 
 	}

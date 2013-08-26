@@ -53,7 +53,7 @@ module.exports = {
 				var lds = new LimitDocumentSource();
 				lds.limit = 9;
 				lds.count = 0;
-				lds.pSource = {
+				lds.source = {
 					eof: function(){
 						return true;
 					}
@@ -64,7 +64,7 @@ module.exports = {
 				var lds = new LimitDocumentSource();
 				lds.limit = 9;
 				lds.count = 9;
-				lds.pSource = {
+				lds.source = {
 					eof: function(){
 						return false;
 					}
@@ -75,7 +75,7 @@ module.exports = {
 				var lds = new LimitDocumentSource();
 				lds.limit = 10;
 				lds.count = 9;
-				lds.pSource = {
+				lds.source = {
 					eof: function(){
 						return false;
 					}
@@ -90,7 +90,7 @@ module.exports = {
 			"should return the current document source": function currSource(){
 				var lds = new LimitDocumentSource();
 				lds.limit = 1;
-				lds.pSource = {getCurrent:function(){return { item:1 };}};
+				lds.source = {getCurrent:function(){return { item:1 };}};
 				assert.deepEqual(lds.getCurrent(), { item:1 }); 
 			}
 
@@ -102,7 +102,7 @@ module.exports = {
 				var lds = new LimitDocumentSource();
 				lds.count = 0;
 				lds.limit = 2;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:1 };},
 					advance:function(){return true;}
 				};
@@ -112,7 +112,7 @@ module.exports = {
 			"should return false for no sources remaining": function noMoar(){
 				var lds = new LimitDocumentSource();
 				lds.limit = 1;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:1 };},
 					advance:function(){return false;}
 				};
@@ -122,7 +122,7 @@ module.exports = {
 			"should return false if we hit our limit": function noMoar(){
 				var lds = new LimitDocumentSource();
 				lds.limit = 1;
-				lds.pSource = {
+				lds.source = {
 					getCurrent:function(){return { item:1 };},
 					advance:function(){return true;}
 				};

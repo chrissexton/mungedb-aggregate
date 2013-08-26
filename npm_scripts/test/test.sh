@@ -113,6 +113,7 @@ if [ -z "$NO_SYNTAX" ]; then
 	JSHINT_BIN="$npm_package_config_jshint_bin"
 	#[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || JSHINT_BIN=$(which jshint || true)
 	[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || JSHINT_BIN="./node_modules/.bin/jshint"
+	[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || JSHINT_BIN=$(node -e 'console.log("%s/bin/jshint",require("path").dirname(require.resolve("jshint/package.json")))')
 	[ -n "$JSHINT_BIN" ] && [ -x "$JSHINT_BIN" ] || die "ERROR: Unable to find 'jshint' binary! Install via 'npm install jshint' to proceed!"
 
 	# Prep
@@ -124,7 +125,7 @@ if [ -z "$NO_SYNTAX" ]; then
 
 	# Exec require on all js files
 	echo "  Testing via NodeJS require function ..."
-    node -e "[$(find "./$CODE_DIR" "./$TEST_DIR" -type f -name '*.js' -not -iregex '.*/public/.*' -not -iregex '.*/node_modules/.*' | sed -e 's/^/ "/' -e 's/$/",/')].forEach(require);"	\
+    node -e "[$(find "./$CODE_DIR" "./$TEST_DIR" -type f -name '*.js' -not -iregex '.*/public/.*' -not -iregex '.*/node_modules/.*' | sed -e 's/^/ "/' -e 's/$/",/')].forEach(function(req){try{require(req)}catch(e){console.error({file:req,error:e});console.error(e.stack);process.exit(1)}});"	\
 		|| die "ERROR: NodeJS require error!"
 
 	# Exec jshint to get jslint output	#TODO: is this even needed?
@@ -200,6 +201,7 @@ if [ -z "$NO_COVERAGE" ]; then
 	JSCOVERAGE_BIN="$npm_package_config_jscoverage_bin"
 	#[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || JSCOVERAGE_BIN=$(which jscoverage || true)
 	[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || JSCOVERAGE_BIN="./node_modules/.bin/jscoverage"
+	[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || JSCOVERAGE_BIN=$(node -e 'console.log("%s/bin/jscoverage",require("path").dirname(require.resolve("jscoverage/package.json")))')
 	[ -n "$JSCOVERAGE_BIN" ] && [ -x "$JSCOVERAGE_BIN" ] || die "$(cat<<-ERROR_DOCS_EOF
 		ERROR: Unable to find node.js jscoverage binary! Run 'npm install' first!
 	ERROR_DOCS_EOF
@@ -280,6 +282,7 @@ if [ -z "$NO_JSCHECKSTYLE" ]; then
 	JSCHECKSTYLE_BIN="$npm_package_config_jscheckstyle_bin"
 	#[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || JSCHECKSTYLE_BIN=$(which jscheckstyle || true)
 	[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || JSCHECKSTYLE_BIN="./node_modules/.bin/jscheckstyle"
+	[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || JSCHECKSTYLE_BIN=$(node -e 'console.log("%s/bin/jscheckstyle",require("path").dirname(require.resolve("jscheckstyle/package.json")))')
 	[ -n "$JSCHECKSTYLE_BIN" ] && [ -x "$JSCHECKSTYLE_BIN" ] || die "ERROR: Unable to find 'jscheckstyle' binary! Install via 'npm install jscheckstyle' to proceed!"
 
 	JSCHECKSTYLE_OUTPUT_DIR="$npm_package_config_jscheckstyle_output_dir"

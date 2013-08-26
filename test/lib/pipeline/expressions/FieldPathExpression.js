@@ -109,17 +109,19 @@ module.exports = {
 		"#addDependencies()": {
 
 			"should return the field path itself as a dependency": function testDependencies(){
-				var deps = new FieldPathExpression('a.b').addDependencies([]);
-				assert.strictEqual(deps.length, 1);
-				assert.strictEqual(deps[0], 'a.b');
+				var deps = {};
+				var fpe = new FieldPathExpression('a.b');
+				fpe.addDependencies(deps);
+				assert.strictEqual(Object.keys(deps).length, 1);
+				assert.ok(deps['a.b']);
 			}
 
 		},
 
-		"#toJson()": {
+		"#toJSON()": {
 
 			"should output path String with a '$'-prefix": function testJson(){
-				assert.equal(new FieldPathExpression('a.b.c').toJson(), "$a.b.c");
+				assert.equal(new FieldPathExpression('a.b.c').toJSON(), "$a.b.c");
 			}
 
 		}

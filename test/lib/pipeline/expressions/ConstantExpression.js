@@ -38,12 +38,12 @@ module.exports = {
 
 		},
 
-		"#toJson()": {
+		"#toJSON()": {
 
 			"should output proper JSON": function testJson(){
 				var expr = new ConstantExpression(5);
-				assert.strictEqual(expr.toJson(), 5);
-				assert.deepEqual(expr.toJson(true), {$const:5});
+				assert.strictEqual(expr.toJSON(), 5);
+				assert.deepEqual(expr.toJSON(true), {$const:5});
 			}
 
 		}
