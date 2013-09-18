@@ -1,0 +1,8 @@
+Things that have been moved around or changed.
+
+
+getFieldDottedOrArray -> ElementPath.getFieldDottedOrArray (was unattached function, now static function on ElementPath class)
+isAllDigits -> ElementPath.isAllDigits ( now static function )
+
+
+
