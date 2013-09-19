@@ -10,5 +10,6 @@ Status objects are now generic objects having a 'code' property that is a string
 debugString takes one argument 'level', as does debugAddSpace. Debug statements are printed to console.debug()
 
 
+verify is a macro function that throws an exception if the input is falsey, with the current file and lineno, so there is no need for the function itself
 
 
