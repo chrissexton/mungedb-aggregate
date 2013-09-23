@@ -7,6 +7,8 @@ isAllDigits -> ElementPath.isAllDigits ( now static function )
 
 Status objects are now generic objects having a 'code' property that is a string of the error code that mongo uses (e.g. {code:'OK'}).
 
+StatusWith is now rolled into status as a result field. status.getValue() is now status.result
+
 debugString takes one argument 'level', as does debugAddSpace. Debug statements are printed to console.debug()
 
 
