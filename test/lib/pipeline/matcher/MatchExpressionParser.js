@@ -29,7 +29,8 @@ module.exports = {
 				q2 = {'x':5, '$isolated':1},
 				q3 = {'x':5, 'y':{'$isolated':1}};
 			var parser = new MatchExpressionParser();
-
+			var t = parser.parse(q1);
+			debugger;
 			assert.strictEqual(parser.parse(q1).code, 'OK');
 			assert.strictEqual(parser.parse(q2).code, 'OK');
 			assert.strictEqual(parser.parse(q3).code, 'BAD_VALUE');
