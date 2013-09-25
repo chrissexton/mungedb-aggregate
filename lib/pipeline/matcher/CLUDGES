@@ -14,4 +14,9 @@ debugString takes one argument 'level', as does debugAddSpace. Debug statements 
 
 verify is a macro function that throws an exception if the input is falsey, with the current file and lineno, so there is no need for the function itself
 
+.get() returns a copy of whatever called it. Since we don't manually manage memory, we don't need this.
+
+.release() is manual memory management, it gets dropped.
+
+obj.reset( arg ) is replaced with obj = arg; Everything else that happens in reset is manual memory management.
 
