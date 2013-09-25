@@ -22,7 +22,6 @@
     "alteration"
   ],
   "dependencies": {
-    "sift": "*",
     "async": "*"
   },
   "devDependencies": {
