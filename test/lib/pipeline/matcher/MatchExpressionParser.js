@@ -99,7 +99,7 @@ module.exports = {
 		"Should parse and match $all:[1,2]" : function() {
 			var parser = new MatchExpressionParser();
 			var q = {'x':{'$all':[1,2]}};
-			debugger;
+			
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
@@ -119,7 +119,7 @@ module.exports = {
 		"Should not allow large regex patterns": function () {
 			var parser = new MatchExpressionParser();
 			var q = {'x':{'$all':[new RegExp((new Array(50*1000+1)).join('z'))] }};
-
+			
 			var res = parser.parse( q );
 			assert.strictEqual( res.code, 'BAD_VALUE' );	
 		},
@@ -170,7 +170,7 @@ module.exports = {
 		},
 		"Should properly not parse bad $all $elemMatch queries": function() {
 			var parser = new MatchExpressionParser();
-			var q = {'x':{'$all':[{'$elemMatch':{'x':1,'y':2}}]}};
+			var q = {'x':{'$all':[{'$elemMatch':{'x':1,'y':2}}, 5]}};
 
 			var res = parser.parse( q );
 			assert.strictEqual( res.code, 'BAD_VALUE' );
@@ -327,7 +327,7 @@ module.exports = {
 			var a = /^a/;
 			var b = /B/i;
 			var q = {'a': {'$in': [a,b,"2",4]}};
-
+			debugger;
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'a':'ax'}) );
@@ -450,7 +450,7 @@ module.exports = {
 		"Should parse but not match a type beyond typemax in $type": function() {
 			var parser = new MatchExpressionParser();
 			var q = {'x':{'$type': 1000}};
-			debugger;
+			
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':5}) );
@@ -522,7 +522,6 @@ module.exports = {
 			var parser = new MatchExpressionParser();
 			var a = /abc/i;
 			var q = {'x':{'$not': a}};
-			debugger;
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':'abc'}) );
