@@ -78,28 +78,28 @@ module.exports = {
 			assert.ok(!op.matches({"a":4},null));
 		},
 
-		"Should match an array object": function() {
+		"Should match an object in an array": function() {
 			var baseOperand={"b":5},
 				eq = new EqualityMatchExpression(),
-				op = ElemMatchObjectMatchExpression;
+				op = new ElemMatchObjectMatchExpression();
 
 			assert.strictEqual(eq.init("b", baseOperand.b).code, 'OK');
 			assert.strictEqual(op.init("a", eq).code, 'OK');
-			assert.strictEqual(op.matches({"a":[{"b":5}]},null));
-			assert.strictEqual(op.matches({"a":[4,{"b":5}]},null));
-			assert.strictEqual(op.matches({"a":[{},{"b":5}]},null));
-			assert.strictEqual(op.matches({"a":[{"b":6},{"b":5}]},null));
+			assert.ok(op.matches({"a":[{"b":5}]}, null));
+			assert.ok(op.matches({"a":[4,{"b":5}]}, null));
+			assert.ok(op.matches({"a":[{},{"b":5}]}, null));
+			assert.ok(op.matches({"a":[{"b":6},{"b":5}]}, null));
 		},
 
-		"Should match multiple named values": function() {
+		"Should match a path inside an array": function() {
 			var baseOperand={"c":5},
 				eq = new EqualityMatchExpression(),
 				op = new ElemMatchObjectMatchExpression();
 
 			assert.strictEqual(eq.init("c", baseOperand.c).code, 'OK');
 			assert.strictEqual(op.init("a.b", eq).code, 'OK');
-			assert.strictEqual(op.matches({"a":[{"b":[{"c":5}]}]},null));
-			assert.strictEqual(op.matches({"a":[{"b":[{"c":1}]}, {"b":[{"c":5}]}]},null));
+			assert.ok(op.matches({"a":[{"b":[{"c":5}]}]},null));
+			assert.ok(op.matches({"a":[{"b":[{"c":1}]}, {"b":[{"c":5}]}]},null));
 		},
 
 		"ElemMatchKey should return the appropriate values": function() {
@@ -111,15 +111,15 @@ module.exports = {
 			assert.strictEqual(eq.init("c", baseOperand.c).code, 'OK');
 			assert.strictEqual(op.init("a.b", eq).code, 'OK');
 			details.requestElemMatchKey();
-			assert.strictEqual(!op.matches({}, details));
-			assert.strictEqual(!details.hasElemMatchKey());
-			assert.strictEqual(!op.matches({"a":{"b":[{"c":7}]}}, details));
-			assert.strictEqual(!details.hasElemMatchKey());
-			assert.strictEqual(op.matches({"a":{"b":[3, {"c":6}]}}, details));
+			assert.ok(!op.matches({}, details));
+			assert.ok(!details.hasElemMatchKey());
+			assert.ok(!op.matches({"a":{"b":[{"c":7}]}}, details));
+			assert.ok(!details.hasElemMatchKey());
+			assert.ok(op.matches({"a":{"b":[3, {"c":6}]}}, details));
 			assert.ok(details.hasElemMatchKey());
 			// The entry within the $elemMatch array is reported.
 			assert.strictEqual("1", details.elemMatchKey());
-			assert.strictEqual(op.matches({"a":[1, 2, {"b":[3, 5, {"c":6}]}]}, details));
+			assert.ok(op.matches({"a":[1, 2, {"b":[3, 5, {"c":6}]}]}, details));
 			assert.ok(details.hasElemMatchKey());
 			// The entry within a parent of the $elemMatch array is reported.
 			assert.strictEqual("2", details.elemMatchKey());
