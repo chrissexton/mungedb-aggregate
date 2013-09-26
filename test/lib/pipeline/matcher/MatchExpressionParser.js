@@ -9,7 +9,7 @@ module.exports = {
 			var goodQ = {'x':2},badQ = {'x':3};
 			var parser =  new MatchExpressionParser();
 			var res = parser.parse(goodQ);
-			assert.strictEqual(res['code'], 'OK');
+			assert.strictEqual(res.code,'OK',res.description);
 			assert.ok( res['result'].matches(goodQ));
 			assert.ok( ! res['result'].matches(badQ));
 		},
@@ -17,7 +17,7 @@ module.exports = {
 			var q = {'x':5, 'y':{'$gt':5, '$lt':8}};
 			var parser = new MatchExpressionParser();
 			var res = parser.parse( q );
-			assert.strictEqual(res.code, 'OK');
+			assert.strictEqual(res.code,'OK',res.description);
 			assert.ok( res.result.matches({'x':5, 'y':7}) );
 			assert.ok( res.result.matches({'x':5, 'y':6}) );
 			assert.ok( ! res.result.matches({'x':6, 'y':7}) );
@@ -40,7 +40,7 @@ module.exports = {
 			var q = {'x':{'$size':2}};
 				
 			var res = parser.parse(q);
-			assert.strictEqual(res.code, 'OK');
+			assert.strictEqual(res.code,'OK',res.description);
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( res.result.matches({'x':[1,2]}) );
 			assert.ok( ! res.result.matches({'x':[1]}) );
@@ -51,7 +51,7 @@ module.exports = {
 			var q = {'x':{'$size':'a'}};
 			
 			var res = parser.parse( q );
-			assert.strictEqual(res.code, 'OK');
+			assert.strictEqual(res.code,'OK',res.description);
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':[1,2]}) );
 			assert.ok( res.result.matches({'x':[]}) );
@@ -62,7 +62,7 @@ module.exports = {
 			var q = {'x': {'$size': 2.5}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':[1,2]}) );
 			assert.ok( ! res.result.matches({'x':[]}) );
@@ -78,9 +78,9 @@ module.exports = {
 		"Should parse $elemMatch : {x:1,y:2}": function() {
 			var parser = new MatchExpressionParser();
 			var q = {'x':{'$elemMatch': {'x':1,'y':2}}};
-			debugger;
+			
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':[1,2]}) );
 			assert.ok( ! res.result.matches({'x':[{'x':1}]}) );
@@ -91,7 +91,7 @@ module.exports = {
 			var q = {'x': {'$elemMatch': {'$gt':5}}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':[4]}) );
 			assert.ok( res.result.matches({'x':[6]}) );
@@ -99,9 +99,9 @@ module.exports = {
 		"Should parse and match $all:[1,2]" : function() {
 			var parser = new MatchExpressionParser();
 			var q = {'x':{'$all':[1,2]}};
-
+			debugger;
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':[1]}) );
 			assert.ok( ! res.result.matches({'x':[2]}) );
@@ -118,7 +118,7 @@ module.exports = {
 		},
 		"Should not allow large regex patterns": function () {
 			var parser = new MatchExpressionParser();
-			var q = {'x':{'$all':[new Regexp((new Array(50*1000+1)).join('z'))] }};
+			var q = {'x':{'$all':[new RegExp((new Array(50*1000+1)).join('z'))] }};
 
 			var res = parser.parse( q );
 			assert.strictEqual( res.code, 'BAD_VALUE' );	
@@ -130,7 +130,7 @@ module.exports = {
 			var q = {'a': {'$all': [ a , b ]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'a':'ax'}) );
 			assert.ok( ! res.result.matches({'a':'qqb'}) );
 			assert.ok( res.result.matches({'a':'ab'}) );
@@ -142,7 +142,7 @@ module.exports = {
 			var q = {'a': {'$all': [a, b]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'a':'ax'}) );
 			assert.ok( res.result.matches({'a':'abc'}) );
 		},
@@ -151,7 +151,7 @@ module.exports = {
 			var q = {'x':{'$all':[5]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':5}) );
 			assert.ok( res.result.matches({'x':[5]}) );
 			assert.ok( ! res.result.matches({'x':4}) );
@@ -162,7 +162,7 @@ module.exports = {
 			var q = {'x':{'$all':[{'$elemMatch': {'x':1,'y':2}}]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':[1,2]}) );
 			assert.ok( ! res.result.matches({'x':[{'x':1}]}) );
@@ -184,7 +184,7 @@ module.exports = {
 			var q = {'x': {'$eq': 2}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( res.result.matches({'x':2}) );
 			assert.ok( ! res.result.matches({'x':3}) );
@@ -194,7 +194,7 @@ module.exports = {
 			var q = {'x': {'$gt':2}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':2}) );
 			assert.ok( res.result.matches({'x':3}) );
 		},
@@ -203,7 +203,7 @@ module.exports = {
 			var q = {'x':{'$lt':2}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':2}) );
 			assert.ok( ! res.result.matches({'x':3}) );	
@@ -213,7 +213,7 @@ module.exports = {
 			var q = {'x': {'$gte':2}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( res.result.matches({'x':2}) );
 			assert.ok( res.result.matches({'x':3}) );	
@@ -223,7 +223,7 @@ module.exports = {
 			var q = {'x': {'$lte':2}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':1}) );
 			assert.ok( res.result.matches({'x':2}) );
 			assert.ok( ! res.result.matches({'x':3}) );
@@ -233,7 +233,7 @@ module.exports = {
 			var q = {'x': {'$ne':2}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':2}) );
 			assert.ok( res.result.matches({'x':3}) );
@@ -243,7 +243,7 @@ module.exports = {
 			var q = {'x':{'$mod':[3,2]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 
 			q = {'x':{'$mod':[3]}};
 			res = parser.parse( q );
@@ -270,7 +270,7 @@ module.exports = {
 			var q = {'x':{'$mod':[3,2]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':5}) );
 			assert.ok( ! res.result.matches({'x':4}) );	
 			assert.ok( res.result.matches({'x':8}) );
@@ -280,7 +280,7 @@ module.exports = {
 			var q = {'x':{'$mod':[2,'r']}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':2}) );
 			assert.ok( res.result.matches({'x':4}) );
 			assert.ok( ! res.result.matches({'x':5}) );
@@ -291,7 +291,7 @@ module.exports = {
 			var q = {'x': {'$in':[2,3]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( res.result.matches({'x':2}) );
 			assert.ok( res.result.matches({'x':3}) );
@@ -329,7 +329,7 @@ module.exports = {
 			var q = {'a': {'$in': [a,b,"2",4]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'a':'ax'}) );
 			assert.ok( res.result.matches({'a':/^a/}) );
 			assert.ok( res.result.matches({'a':'qqb'}) );
@@ -343,7 +343,7 @@ module.exports = {
 			var q = {'x': {'$nin': [2,3]}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'x':2}) );
 			assert.ok( ! res.result.matches({'x':3}) );
@@ -361,7 +361,7 @@ module.exports = {
 			var q = {'x': a };
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':'ABC'}) );
 			assert.ok( res.result.matches({'x':'abc'}) );
 			assert.ok( ! res.result.matches({'x':'AC'}) );
@@ -371,7 +371,7 @@ module.exports = {
 			var q = {'x': {'$regex': 'abc', '$options':'i'}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':'abc'}) );
 			assert.ok( res.result.matches({'x':'ABC'}) );
 			assert.ok( ! res.result.matches({'x':'AC'}) );
@@ -381,14 +381,14 @@ module.exports = {
 			var q = {'x':{'$options': 'i', '$regex': 'abc'}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':'abc'}) );
 			assert.ok( res.result.matches({'x':'ABC'}) );
 			assert.ok( ! res.result.matches({'x':'AC'}) );
 		},
 		"Should not accept $optionas":function() {
 			var parser = new MatchExpressionParser();
-			var q = {'x':{'$regex':'abc', '$optionas':i}};
+			var q = {'x':{'$regex':'abc', '$optionas':'i'}};
 
 			var res = parser.parse( q );
 			assert.strictEqual( res.code, 'BAD_VALUE' );
@@ -406,7 +406,7 @@ module.exports = {
 			var q = {'x':{'$exists': true}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':'abc'}) );
 			assert.ok( ! res.result.matches({'y':'AC'}) );
 		},
@@ -415,7 +415,7 @@ module.exports = {
 			var q = {'x':{'$exists':false}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':'abc'}) );
 			assert.ok( ! res.result.matches({'y':'AC'}) );
 		},
@@ -424,7 +424,7 @@ module.exports = {
 			var q = {'x':{'$type': 2 }};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x': 'abc'}) );
 			assert.ok( ! res.result.matches({'x': 2}) );
 		},
@@ -433,7 +433,7 @@ module.exports = {
 			var q = {'x':{'$type':1}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':2}) );
 			assert.ok( ! res.result.matches({'x': 'f'}) );
 		},
@@ -442,7 +442,7 @@ module.exports = {
 			var q = {'x':{'$type': 10}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':{}}) );
 			assert.ok( ! res.result.matches({'x':5}) );
 			assert.ok( res.result.matches({'x':null}) );		
@@ -452,7 +452,7 @@ module.exports = {
 			var q = {'x':{'$type': 1000}};
 			debugger;
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':5}) );
 			assert.ok( ! res.result.matches({'x':'abc'}) );
 		},
@@ -468,7 +468,7 @@ module.exports = {
 			var q = {'$or':[{'x':1},{'y':2}]};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':1}) );
 			assert.ok( res.result.matches({'y':2}) );
 			assert.ok( ! res.result.matches({'x':3}) );
@@ -479,7 +479,7 @@ module.exports = {
 			var q = {'$or':[{'$or':[{'x':1},{'y':2}]}]};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );	
+			assert.strictEqual( res.code,'OK',res.description );	
 			assert.ok( res.result.matches({'x':1}) );
 			assert.ok( res.result.matches({'y':2}) );
 			assert.ok( ! res.result.matches({'x':3}) );
@@ -490,7 +490,7 @@ module.exports = {
 			var q = {'$and':[{'x':1},{'y':2}]};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'y':2}) );
 			assert.ok( ! res.result.matches({'x':3}) );
@@ -503,7 +503,7 @@ module.exports = {
 			var q = {'$nor':[{'x':1},{'y':2}]};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );	
+			assert.strictEqual( res.code,'OK',res.description );	
 			assert.ok( ! res.result.matches({'x':1}) );
 			assert.ok( ! res.result.matches({'y':2}) );
 			assert.ok( res.result.matches({'x':3}) );
@@ -514,7 +514,7 @@ module.exports = {
 			var q = {'x':{'$not':{'$gt':5}}};
 
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x':2}) );
 			assert.ok( ! res.result.matches({'x':8}) );
 		},
@@ -524,7 +524,7 @@ module.exports = {
 			var q = {'x':{'$not': a}};
 			debugger;
 			var res = parser.parse( q );
-			assert.strictEqual( res.code, 'OK' );
+			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( ! res.result.matches({'x':'abc'}) );
 			assert.ok( ! res.result.matches({'x':'ABC'}) );
 			assert.ok( res.result.matches({'x':'AC'}) );
