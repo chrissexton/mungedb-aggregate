@@ -53,8 +53,8 @@ module.exports = {
 			assert.strictEqual(op.init("a", gt).code, 'OK');
 			// Directly nested objects are not matched with $elemMatch.  An intervening array is
 			// required.
-			assert.strictEqual(!op.matches({"a":6},null));
-			assert.strictEqual(!op.matches({"a":{"0":6}},null));
+			assert.ok(!op.matches({"a":6},null));
+			assert.ok(!op.matches({"a":{"0":6}},null));
 		},
 
 		"Should match an array scalar": function() {
@@ -64,9 +64,9 @@ module.exports = {
 
 			assert.strictEqual(gt.init("", baseOperand.$gt).code, 'OK');
 			assert.strictEqual(op.init("a", gt).code, 'OK');
-			assert.strictEqual(op.matches({"a":[6]},null));
-			assert.strictEqual(op.matches({"a":[4,6]},null));
-			assert.strictEqual(op.matches({"a":[{},7]},null));
+			assert.ok(op.matches({"a":[6]},null));
+			assert.ok(op.matches({"a":[4,6]},null));
+			assert.ok(op.matches({"a":[{},7]},null));
 		},
 
 		"Should match multiple named values": function() {
@@ -76,8 +76,8 @@ module.exports = {
 
 			assert.strictEqual(gt.init("", baseOperand.$gt).code, 'OK');
 			assert.strictEqual(op.init("a.b", gt).code, 'OK');
-			assert.strictEqual(op.matches({"a":[{"b":[6]}]}, null));
-			assert.strictEqual(op.matches({"a":[{"b":[4]}, {"b":[4,6]}]}, null));
+			assert.ok(op.matches({"a":[{"b":[6]}]}, null));
+			assert.ok(op.matches({"a":[{"b":[4]}, {"b":[4,6]}]}, null));
 		},
 
 		"ElemMatchKey should return the appropriate values": function() {
@@ -89,15 +89,15 @@ module.exports = {
 			assert.strictEqual(gt.init("", baseOperand.$gt).code, 'OK');
 			assert.strictEqual(op.init("a.b", gt).code, 'OK');
 			details.requestElemMatchKey();
-			assert.strictEqual(!op.matches({}, details));
+			assert.ok(!op.matches({}, details));
 			assert.ok(!details.hasElemMatchKey());
-			assert.strictEqual(!op.matches({"a":{"b":[2]}}, details));
+			assert.ok(!op.matches({"a":{"b":[2]}}, details));
 			assert.ok(!details.hasElemMatchKey());
-			assert.strictEqual(op.matches({"a":{"b":[3,7]}}, details));
+			assert.ok(op.matches({"a":{"b":[3,7]}}, details));
 			assert.ok(details.hasElemMatchKey());
 			// The entry within the $elemMatch array is reported.
 			assert.strictEqual("1", details.elemMatchKey());
-			assert.strictEqual(op.matches({"a":[1, 2, {"b":[3,7]}]}, details));
+			assert.ok(op.matches({"a":[1, 2, {"b":[3,7]}]}, details));
 			assert.ok(details.hasElemMatchKey());
 			// The entry within a parent of the $elemMatch array is reported.
 			assert.strictEqual("2", details.elemMatchKey());
