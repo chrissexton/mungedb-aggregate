@@ -48,8 +48,8 @@ module.exports = {
 		},
 		"Should parse and match $size with a string argument": function() {
 			var parser = new MatchExpressionParser();
-			var q = {'z':{'$size':'a'}};
-			debugger;
+			var q = {'x':{'$size':'a'}};
+			
 			var res = parser.parse( q );
 			assert.strictEqual(res.code, 'OK');
 			assert.ok( ! res.result.matches({'x':1}) );
@@ -77,8 +77,8 @@ module.exports = {
 		},
 		"Should parse $elemMatch : {x:1,y:2}": function() {
 			var parser = new MatchExpressionParser();
-			var q = {'$elemMatch': {'x':1,'y':2}};
-
+			var q = {'x':{'$elemMatch': {'x':1,'y':2}}};
+			debugger;
 			var res = parser.parse( q );
 			assert.strictEqual( res.code, 'OK' );
 			assert.ok( ! res.result.matches({'x':1}) );
