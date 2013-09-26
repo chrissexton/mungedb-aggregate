@@ -19,9 +19,9 @@ module.exports = {
 			var gt = new GTMatchExpression();
 			var rgx = new RegexMatchExpression();
 			var op = new AndMatchExpression();
-			assert.strictEqual( lt.init('a','z1')['code'],'OK');
-			assert.strictEqual( gt.init('a','a1')['code'],'OK');
-			assert.strictEqual( rgx.init('a','1','')['code'],'OK');
+			assert.strictEqual( lt.init('a','z1').code,'OK');
+			assert.strictEqual( gt.init('a','a1').code,'OK');
+			assert.strictEqual( rgx.init('a','1','').code,'OK');
 			op.add(lt);
 			op.add(gt);
 			op.add(rgx);
@@ -35,29 +35,29 @@ module.exports = {
 			var eq = new EqualityMatchExpression();
 			var op = new AndMatchExpression();
 
-			assert.strictEqual( eq.init('a', 5)['code'],'OK');	
-			assert.strictEqual( nop.init(eq)['code'],'OK');
+			assert.strictEqual( eq.init('a', 5).code,'OK');
+			assert.strictEqual( nop.init(eq).code,'OK');
 			op.add(nop);
 			assert.ok( op.matches({'a':4}) );
 			assert.ok( op.matches({'a':[4,6]}) );
 			assert.ok( !op.matches({'a':5}) );
-			assert.ok( !op.matches({'a'[4,5]}) );
+			assert.ok( !op.matches({'a':[4,5]}) );
 		},
 		"Should match three clauses": function(){
 		// File expression_tree_test.cpp lines 144-168
-		
+
 			assert.ok(false, 'Fill out test');
 
 		},
 		"Should have an elemMatchKey": function(){
 		// File expression_tree_test.cpp lines 170 - 195
-		
+
 			assert.ok(false, 'Fill out test');
 		}
 
 
 	}
-}
+};
 
 if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
 
