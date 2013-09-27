@@ -20,3 +20,4 @@ verify is a macro function that throws an exception if the input is falsey, with
 
 obj.reset( arg ) is replaced with obj = arg; Everything else that happens in reset is manual memory management.
 
+elementPath iteration is now encapsulated inside the elementPath class as a static method. It needs an input function to check the item at the end of the path.
