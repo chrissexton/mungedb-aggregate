@@ -1,14 +1,14 @@
 "use strict";
 var assert = require("assert"),
-	LTEMatchExpression = require("../../../../lib/pipeline/matcher/LTEMatchExpression");
+	GTMatchExpression = require("../../../../lib/pipeline/matcher/GTMatchExpression");
 
 
 module.exports = {
-	"LTEMatchExpression": {
+	"GTMatchExpression": {
 		"should match scalars and strings properly": function (){
-			var e = new LTEMatchExpression();
+			var e = new GTMatchExpression();
 			var s = e.init('x',5);
-			
+
 			assert.strictEqual(s.code, 'OK');
 			assert.ok( ! e.matches({'x':5}) );
 			assert.ok( ! e.matches({'x':4}) );
