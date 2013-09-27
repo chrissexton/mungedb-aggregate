@@ -1,13 +1,6 @@
 "use strict";
 var assert = require("assert"),
-	EqualityMatchExpression = require("../../../../lib/pipeline/matcher/EqualityMatchExpression.js"),
-	ElemMatchObjectMatchExpression = require("../../../../lib/pipeline/matcher/ElemMatchObjectMatchExpression.js"),
-	ElemMatchValueMatchExpression = require("../../../../lib/pipeline/matcher/ElemMatchValueMatchExpression.js"),
-	AndMatchExpression = require("../../../../lib/pipeline/matcher/AndMatchExpression.js"),
-	LTMatchExpression = require("../../../../lib/pipeline/matcher/LTMatchExpression.js"),
-	GTMatchExpression = require("../../../../lib/pipeline/matcher/GTMatchExpression.js"),
-	ElementPath = require("../../../../lib/pipeline/matcher/ElementPath.js"),
-	AllElemMatchOp = require("../../../../lib/pipeline/matcher/AllElemMatchOp.js");
+	ElementPath = require("../../../../lib/pipeline/matcher/ElementPath.js");
 
 module.exports = {
 	"ElementPath": {
