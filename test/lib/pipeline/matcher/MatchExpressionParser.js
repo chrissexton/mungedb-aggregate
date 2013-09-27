@@ -327,7 +327,7 @@ module.exports = {
 			var a = /^a/;
 			var b = /B/i;
 			var q = {'a': {'$in': [a,b,"2",4]}};
-			debugger;
+
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'a':'ax'}) );
@@ -416,13 +416,13 @@ module.exports = {
 
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
-			assert.ok( res.result.matches({'x':'abc'}) );
-			assert.ok( ! res.result.matches({'y':'AC'}) );
+			assert.ok( ! res.result.matches({'x':'abc'}) );
+			assert.ok( res.result.matches({'y':'AC'}) );
 		},
 		"Should parse and match String $type": function() {
 			var parser = new MatchExpressionParser();
 			var q = {'x':{'$type': 2 }};
-
+			debugger;
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x': 'abc'}) );
