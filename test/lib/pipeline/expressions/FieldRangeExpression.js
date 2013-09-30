@@ -102,6 +102,7 @@ module.exports = {
 			},
 
 			"should throw Error if given multikey values": function testMultikey(){
+				
 				assert.throws(function(){
 					new FieldRangeExpression(new FieldPathExpression("a"), "$eq", 0).evaluate({a:[1,0,2]});
 				});

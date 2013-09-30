@@ -68,9 +68,9 @@ module.exports = {
 			assert.ok( ! res.result.matches({'x':[]}) );
 			assert.ok( ! res.result.matches({'x':[1,2,3]}) );
 		},
-		"Should not accept $size null": function() {
+		"Should not accept  null": function() {
 			var parser = new MatchExpressionParser();
-			var q = {'x':null};
+			var q = {'x':{'$size':null}};
 
 			var res = parser.parse( q );
 			assert.strictEqual( res.code, 'BAD_VALUE' );
