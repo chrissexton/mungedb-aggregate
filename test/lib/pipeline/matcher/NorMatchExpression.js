@@ -1,6 +1,6 @@
 "use strict";
 var assert = require("assert"),
-    	NorMatchExpression = require("../../../../lib/pipeline/matcher/NorMatchExpression.js"),
+	NorMatchExpression = require("../../../../lib/pipeline/matcher/NorMatchExpression.js"),
 	AndMatchExpression = require("../../../../lib/pipeline/matcher/AndMatchExpression.js"),
 	LTMatchExpression = require("../../../../lib/pipeline/matcher/LTMatchExpression.js"),
 	GTMatchExpression = require("../../../../lib/pipeline/matcher/GTMatchExpression.js"),

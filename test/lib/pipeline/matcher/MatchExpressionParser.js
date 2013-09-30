@@ -10,8 +10,8 @@ module.exports = {
 			var parser =  new MatchExpressionParser();
 			var res = parser.parse(goodQ);
 			assert.strictEqual(res.code,'OK',res.description);
-			assert.ok( res['result'].matches(goodQ));
-			assert.ok( ! res['result'].matches(badQ));
+			assert.ok( res.result.matches(goodQ));
+			assert.ok( ! res.result.matches(badQ));
 		},
 		"Should parse {x:5,y:{$gt:5, :$lt:8}}": function() {
 			var q = {'x':5, 'y':{'$gt':5, '$lt':8}};
@@ -422,7 +422,7 @@ module.exports = {
 		"Should parse and match String $type": function() {
 			var parser = new MatchExpressionParser();
 			var q = {'x':{'$type': 2 }};
-			debugger;
+			
 			var res = parser.parse( q );
 			assert.strictEqual( res.code,'OK',res.description );
 			assert.ok( res.result.matches({'x': 'abc'}) );

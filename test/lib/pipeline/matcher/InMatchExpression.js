@@ -1,6 +1,6 @@
 "use strict";
 var assert = require("assert"),
-    	MatchDetails = require('../../../../lib/pipeline/matcher/MatchDetails'),
+	MatchDetails = require('../../../../lib/pipeline/matcher/MatchDetails'),
 	InMatchExpression = require("../../../../lib/pipeline/matcher/InMatchExpression");
 
 
@@ -66,7 +66,7 @@ module.exports = {
 			assert.strictEqual( s.code,'OK' );
 
 			e._arrayEntries._equalities = [null];
-			debugger;
+			
 			assert.ok( e.matches({}) );
 			assert.ok( e.matches({'a':null}) );
 			assert.ok( ! e.matches({'a':4}) );
