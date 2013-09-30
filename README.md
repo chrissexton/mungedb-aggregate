@@ -7,7 +7,7 @@ In general, this code is a port from the MongoDB C++ code (v2.4.0) to JavaScript
 
 WHY?!
 -----
-MongoDB is awesome. JavaScript is awesome. So we decided to put them together.
+MongoDB is awesome. JavaScript is awesome(ish). So we decided to put them together.
 
 Now, with the ease of JavaScript and the power of the MongoDB aggregation pipeline, we can provide a single API for data munging, regardless of where execution occurs.
 
@@ -95,6 +95,18 @@ Here is a list of the major items where we have deviated from the MongoDB code a
     * `DocumentSource` classes
       * DESIGN: We have implemented a `reset` method for all document sources so that we can reuse them against different streams of data
 	  * DESIGN: GroupDocumentSource stores copies of all unique _id's that it accumulates to dodge a javascript Stringify/Parse issue with dates
+  * **2.5 Matcher components**
+    * `ElementPath`
+	  * `getFieldDottedOrArray: ElementPath.getFieldDottedOrArray (was unattached function, now static function on ElementPath class)
+	  * `isAllDigits`: ElementPath.isAllDigits ( now static function )
+	  * `elementPath iteration`: This is now encapsulated inside the elementPath class as a static method. It needs an input function to check the item at the end of the path.
+	* `Status` return
+	  * Status objects are now generic objects having a 'code' property that is a string of the error code that mongo uses (e.g. {code:'OK'}).
+	  * StatusWith is now rolled into status as a result field. status.getValue() is now status.result
+	* `debugString`
+	  * debugString takes one argument 'level', as does debugAddSpace. Debug statements are printed to console.debug()
+    * `.get()`, `.release()`, and `.reset()` methods
+	  * All of these are for manual memory management, and are no longer necessary
 
 
 TODO
