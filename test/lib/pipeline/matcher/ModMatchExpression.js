@@ -51,7 +51,7 @@ module.exports = {
 			var e = new ModMatchExpression();
 			var s = e.init('a', 5,2);
 			var m = new MatchDetails();
-			m.requestMatchKey();
+			m.requestElemMatchKey();
 			assert.strictEqual( s.code, 'OK' );
 
 			assert.ok( ! e.matches({'a':4}, m) );
