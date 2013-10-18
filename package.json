@@ -1,6 +1,6 @@
 {
   "name": "mungedb-aggregate",
-  "version": "0.5.7+2013.09.23",
+  "version": "0.5.8+2013.10.07",
   "description": "A JavaScript data aggregation pipeline based on the MongoDB aggregation framework.",
   "author": "Rivera Group <support@riverainc.com>",
   "contributors": [
@@ -15,7 +15,7 @@
     "test": "npm_scripts/test/test.sh"
   },
   "repository": {
-    "url": "git+https://source.rd.rcg.local/git/private/mungedb-aggregate.git#master"
+    "url": "git+https://source.rd.rcg.local/git/private/mungedb-aggregate.git#release/v0.5.8+2013.10.07"
   },
   "keywords": [
     "manipulation",
