@@ -302,6 +302,27 @@ module.exports = {
 			});
 		},
 
+		"should be able to successfully compare a null to a null": function(next){
+			testAggregate({
+				inputs: [
+					{
+						cond:null,
+						value:"Authorized"
+					}
+				],
+				pipeline: [
+					{$project:{
+						retValue:{$cond:[
+							{$eq:["$cond", null]},
+							"$value",
+							null
+						]}
+					}}
+				],
+				expected: [{"retValue":"Authorized"}],
+				next: next
+			});
+		},
 	}
 
 };
