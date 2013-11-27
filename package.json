@@ -15,7 +15,7 @@
     "test": "npm_scripts/test/test.sh"
   },
   "repository": {
-    "url": "git+https://source.rd.rcg.local/git/private/mungedb-aggregate.git#release/v0.6.1+2013.11.18"
+    "url": "git+https://source.rd.rcg.local/git/private/mungedb-aggregate.git#master"
   },
   "keywords": [
     "manipulation",
