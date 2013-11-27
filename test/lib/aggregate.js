@@ -16,7 +16,7 @@ function testAggregate(opts){
 	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
 
 	// SYNC: test that it is actually reusable
-	results = aggregator(opts.inputs); 
+	results = aggregator(opts.inputs);
 	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected), "Reuse of aggregator should yield the same results!");
 
 	// ASYNC: test one-off usage
@@ -76,7 +76,7 @@ module.exports = {
 				next: next
 			});
 		},
-		
+
 		"should be able to use a $skip operator": function(next){
 			testAggregate({
 				inputs: [{_id:0}, {_id:1}, {_id:2}, {_id:3}, {_id:4}, {_id:5}],
@@ -123,8 +123,8 @@ module.exports = {
 				inputs: [{_id:0, e:1, f:23}, {_id:2, e:2, g:34}, {_id:4, e:3}],
 				pipeline: [
 					{$project:{
-						e:1, 
-						a:{$add:["$e", "$e"]}, 
+						e:1,
+						a:{$add:["$e", "$e"]},
 						b:{$cond:[{$eq:["$e", 2]}, "two", "not two"]}
 						//TODO: high level test of all other expression operators
 					}}
@@ -133,8 +133,8 @@ module.exports = {
 				next: next
 			});
 		},
-		
-		
+
+
 		"should be able to use a $project operator to exclude the _id field": function(next){
 			testAggregate({
 				inputs: [{_id:0, e:1, f:23}, {_id:2, e:2, g:34}, {_id:4, e:3}],
@@ -243,7 +243,64 @@ module.exports = {
 				],
 				next: next
 			});
-		}
+		},
+
+		"should be able to successfully use comparisions of objects to nulls without throwing an exception": function(next){
+			testAggregate({
+				inputs: [
+					{
+						cond:{$or:[
+							{$eq:["$server","Starmetal.demo.com"]},
+						]},
+						value:"PII"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Specium.demo.com"]},
+							{$eq:["$server","Germanium.demo.com"]},
+							{$eq:["$server","Runite.demo.com"]}
+						]},
+						value:"PI"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Primal.demo.com"]}
+						]},
+						value:"Confidential"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Polarite.demo.com"]},
+							{$eq:["$server","Ryanium.demo.com"]}
+						]},
+						value:"Proprietary"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Phazon.demo.com"]}
+						]},
+						value:"PHI"
+					},
+					{
+						cond:null,
+						value:"Authorized"
+					}
+				],
+				pipeline: [
+					{$skip:1},
+					{$limit:1},
+					{$project:{
+						retValue:{$cond:[
+							{$ne:["$cond", null]},
+							null,
+							"$value"
+						]}
+					}}
+				],
+				expected: [{"retValue":null}],
+				next: next
+			});
+		},
 
 		"should be able to successfully compare a null to a null": function(next){
 			testAggregate({
