@@ -2,6 +2,8 @@
 var assert = require("assert"),
 	async = require("async"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
+	LimitDocumentSource = require("../../../../lib/pipeline/documentSources/LimitDocumentSource"),
+	SkipDocumentSource = require("../../../../lib/pipeline/documentSources/SkipDocumentSource"),
 	Cursor = require("../../../../lib/Cursor");
 
 
@@ -22,6 +24,28 @@ module.exports = {
 				var cds = new CursorDocumentSource(cwc);
 
 				assert.ok(cds._cursorWithContext);
+			}
+		},
+
+		"#coalesce": {
+			"should be able to coalesce a limit into itself": function (){
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [] );
+
+				var lds = new LimitDocumentSource();
+				lds.limit = 1;
+
+				var cds = new CursorDocumentSource(cwc);
+				assert.equal(cds.coalesce(lds) instanceof LimitDocumentSource, true);
+			},
+			"should leave non-limit alone": function () {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [] );
+
+				var sds = new SkipDocumentSource(),
+					cds = new CursorDocumentSource(cwc);
+
+				assert.equal(cds.coalesce(sds), false);
 			}
 		},
 
