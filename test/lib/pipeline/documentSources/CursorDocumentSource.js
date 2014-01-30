@@ -1,6 +1,5 @@
 "use strict";
 var assert = require("assert"),
-	async = require("async"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor");
 
@@ -18,71 +17,79 @@ module.exports = {
 			"should get a accept a CursorWithContext and set it internally": function(){
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [] );
-
+				
 				var cds = new CursorDocumentSource(cwc);
-
+				
 				assert.ok(cds._cursorWithContext);
 			}
 		},
 
-		"#getNext": {
-			"should return the current cursor value sync": function(){
+		"#eof": {
+			"should return true if the cursor is empty": function(){
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [] );
+				
+				var cds = new CursorDocumentSource(cwc);
+				
+				assert.equal(cds.eof(), true);
+			},
+			"should return false if the cursor is non-empty": function(){
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [1,2,3] );
+				
+				var cds = new CursorDocumentSource(cwc);
+				
+				assert.equal(cds.eof(), false);
+			}
+		},
+		"#advance": {
+			"should return true if the cursor was advanced": function(){
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [1,2,3] );
+				
+				var cds = new CursorDocumentSource(cwc);
+				
+				assert.equal(cds.advance(), true);
+			},
+			"should return false if the cursor is empty": function(){
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [1,2,3] );
+				
+				var cds = new CursorDocumentSource(cwc);
+				cds.advance();cds.advance();cds.advance();
+				assert.equal(cds.advance(), false);
+			}
+		},
+		"#getCurrent": {
+			"should return the current cursor value": function(){
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [1,2,3,4] );
-
+				
 				var cds = new CursorDocumentSource(cwc);
-				assert.equal(cds.getNext(), 1);
-				assert.equal(cds.getNext(), 2);
-				assert.equal(cds.getNext(), 3);
-				assert.equal(cds.getNext(), 4);
-				assert.equal(cds.getNext(), undefined);
-			},
-			"should return the current cursor value async": function(next){
-				var cwc = new CursorDocumentSource.CursorWithContext();
-				cwc._cursor = new Cursor( [1,2,3,4] );
-
-				var cds = new CursorDocumentSource(cwc);
-				cds.getNext(function(val) {
-					assert.equal(val, 1);
-					cds.getNext(function(val) {
-						assert.equal(val, 2);
-						cds.getNext(function(val) {
-							assert.equal(val, 3);
-							cds.getNext(function(val) {
-								assert.equal(val, 4);
-								cds.getNext(function(val) {
-									assert.equal(val, undefined);
-									return next();
-								});
-							});
-						});
-					});
-				});
-			},
-			"should return values past the batch limit": function(){
-				var cwc = new CursorDocumentSource.CursorWithContext(),
-					n = 0,
-					arr = Array.apply(0, new Array(200)).map(function() { return n++; });
-				cwc._cursor = new Cursor( arr );
-
-				var cds = new CursorDocumentSource(cwc);
-				arr.forEach(function(v) {
-					assert.equal(cds.getNext(), v);
-				});
-				assert.equal(cds.getNext(), undefined);
-			},
+				assert.equal(cds.getCurrent(), 1);
+				cds.advance();
+				assert.equal(cds.getCurrent(), 2);
+				cds.advance();
+				assert.equal(cds.getCurrent(), 3);
+				cds.advance();
+				assert.equal(cds.getCurrent(), 4);
+				cds.advance();
+				assert.equal(cds.getCurrent(), undefined);
+			}
 		},
 		"#dispose": {
 			"should empty the current cursor": function(){
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [1,2,3] );
-
+				
 				var cds = new CursorDocumentSource(cwc);
-				assert.equal(cds.getNext(), 1);
-				assert.equal(cds.getNext(), 2);
-
+				assert.equal(cds.getCurrent(), 1);
+				cds.advance();
+				assert.equal(cds.getCurrent(), 2);
+				
 				cds.dispose();
-				assert.equal(cds.getNext(), undefined);
+				assert.equal(cds.advance(), false);
+				assert.equal(cds.eof(), true);
 			}
 		}
 
