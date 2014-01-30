@@ -1,6 +1,7 @@
 "use strict";
 var assert = require("assert"),
 	async = require("async"),
+	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	LimitDocumentSource = require("../../../../lib/pipeline/documentSources/LimitDocumentSource"),
 	SkipDocumentSource = require("../../../../lib/pipeline/documentSources/SkipDocumentSource"),
@@ -59,7 +60,7 @@ module.exports = {
 				assert.equal(cds.getNext(), 2);
 				assert.equal(cds.getNext(), 3);
 				assert.equal(cds.getNext(), 4);
-				assert.equal(cds.getNext(), undefined);
+				assert.equal(cds.getNext(), DocumentSource.EOF);
 			},
 			"should return the current cursor value async": function(next){
 				var cwc = new CursorDocumentSource.CursorWithContext();
@@ -75,7 +76,7 @@ module.exports = {
 							cds.getNext(function(val) {
 								assert.equal(val, 4);
 								cds.getNext(function(val) {
-									assert.equal(val, undefined);
+									assert.equal(val, DocumentSource.EOF);
 									return next();
 								});
 							});
@@ -93,7 +94,7 @@ module.exports = {
 				arr.forEach(function(v) {
 					assert.equal(cds.getNext(), v);
 				});
-				assert.equal(cds.getNext(), undefined);
+				assert.equal(cds.getNext(), DocumentSource.EOF);
 			},
 		},
 		"#dispose": {
@@ -106,7 +107,7 @@ module.exports = {
 				assert.equal(cds.getNext(), 2);
 
 				cds.dispose();
-				assert.equal(cds.getNext(), undefined);
+				assert.equal(cds.getNext(), DocumentSource.EOF);
 			}
 		}
 
