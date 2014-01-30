@@ -67,17 +67,17 @@ module.exports = {
 				cwc._cursor = new Cursor( [1,2,3,4] );
 
 				var cds = new CursorDocumentSource(cwc);
-				cds.getNext(function(val) {
+				cds.getNext(function(err,val) {
 					assert.equal(val, 1);
-					cds.getNext(function(val) {
+					cds.getNext(function(err,val) {
 						assert.equal(val, 2);
-						cds.getNext(function(val) {
+						cds.getNext(function(err,val) {
 							assert.equal(val, 3);
-							cds.getNext(function(val) {
+							cds.getNext(function(err,val) {
 								assert.equal(val, 4);
-								cds.getNext(function(val) {
+								cds.getNext(function(err,val) {
 									assert.equal(val, DocumentSource.EOF);
-									return next();
+									next();
 								});
 							});
 						});
