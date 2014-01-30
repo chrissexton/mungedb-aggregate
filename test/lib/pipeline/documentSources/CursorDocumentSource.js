@@ -63,26 +63,23 @@ module.exports = {
 				assert.equal(cds.getNext(), DocumentSource.EOF);
 			},
 			"should return the current cursor value async": function(next){
+				var expected = JSON.stringify([1,2]);
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [1,2,3,4] );
 
 				var cds = new CursorDocumentSource(cwc);
-				cds.getNext(function(err,val) {
-					assert.equal(val, 1);
-					cds.getNext(function(err,val) {
-						assert.equal(val, 2);
-						cds.getNext(function(err,val) {
-							assert.equal(val, 3);
-							cds.getNext(function(err,val) {
-								assert.equal(val, 4);
-								cds.getNext(function(err,val) {
-									assert.equal(val, DocumentSource.EOF);
-									next();
-								});
-							});
-						});
-					});
-				});
+				async.series([
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+					],
+					function(err,res) {
+						assert.deepEqual([1,2,3,4,DocumentSource.EOF], res);
+						next();
+					}
+				);
 			},
 			"should return values past the batch limit": function(){
 				var cwc = new CursorDocumentSource.CursorWithContext(),
