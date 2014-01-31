@@ -80,7 +80,7 @@ module.exports = {
 				});
 			},
 
-			"should return false if we hit our limit": function noMoar(next){
+			"should return EOF if we hit our limit": function noMoar(next){
 				var lds = new LimitDocumentSource();
 				lds.limit = 1;
 				lds.source = {
