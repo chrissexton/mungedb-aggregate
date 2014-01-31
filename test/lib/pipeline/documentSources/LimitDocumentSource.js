@@ -101,14 +101,13 @@ module.exports = {
 
 		},
 
-		"#sourceToJson()": {
+		"#serialize()": {
 
 			"should create an object with a key $limit and the value equal to the limit": function sourceToJsonTest(){
 				var lds = new LimitDocumentSource();
 				lds.limit = 9;
-				var t = {};
-				lds.sourceToJson(t, false);
-				assert.deepEqual(t, { "$limit": 9 });
+				var actual = lds.serialize(false);
+				assert.deepEqual(actual, { "$limit": 9 });
 			}
 
 		},
