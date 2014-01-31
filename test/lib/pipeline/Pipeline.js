@@ -1,8 +1,8 @@
 "use strict";
 var assert = require("assert"),
 	Pipeline = require("../../../lib/pipeline/Pipeline"),
+	FieldPath = require("../../../lib/pipeline/FieldPath"),
 	DocumentSource = require('../../../lib/pipeline/documentSources/DocumentSource');
-
 
 module.exports = {
 
@@ -34,17 +34,13 @@ module.exports = {
 					this.optimizeWasCalled = true;
 				};
 				
-				proto.eof = function(){
-					return this.current < 0;
-				};
-
-				proto.advance = function(){
-					this.current = this.current - 1;
-					return !this.eof();
-				};
-
-				proto.getCurrent = function(){
-					return this.current;
+				proto.getNext = function(callback){
+					var answer = this.current > 0 ? {val:this.current--} : null;
+					if(callback) {
+						return callback(null, answer);
+					} else {
+						return answer;
+					}
 				};
 
 				klass.createFromJson = function(options, ctx){
@@ -79,55 +75,78 @@ module.exports = {
 
 			"should swap $match and $sort if the $match immediately follows the $sort": function () {
 				var p = Pipeline.parseCommand({pipeline:[{$sort:{"xyz":1}}, {$match:{}}]});
-				assert.equal(p.sourceVector[0].constructor.matchName, "$match");
-				assert.equal(p.sourceVector[1].constructor.sortName, "$sort");
+				assert.equal(p.sources[0].constructor.matchName, "$match");
+				assert.equal(p.sources[1].constructor.sortName, "$sort");
 			},
 
 			"should attempt to coalesce all sources": function () {
 				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:true}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]});
-				assert.equal(p.sourceVector.length, 3);
-				p.sourceVector.slice(0,-1).forEach(function(source){
+				assert.equal(p.sources.length, 3);
+				p.sources.slice(0,-1).forEach(function(source){
 					assert.equal(source.coalesceWasCalled, true);
 				});
-				assert.equal(p.sourceVector[p.sourceVector.length -1].coalesceWasCalled, false);
+				assert.equal(p.sources[p.sources.length -1].coalesceWasCalled, false);
 			},
 
 			"should optimize all sources": function () {
 				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}]});
-				p.sourceVector.forEach(function(source){
+				p.sources.forEach(function(source){
 					assert.equal(source.optimizeWasCalled, true);
 				});
 			}
 
 		},
 
-		"#run": {
-
-			"should set the parent source for all sources in the pipeline except the first one": function (next) {
+		"#stitch": {
+			"should set the parent source for all sources in the pipeline except the first one": function () {
 				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]});
-				p.run(new DocumentSource({}), function(err, results){
-					assert.equal(p.sourceVector[1].source, p.sourceVector[0]);
-					assert.equal(p.sourceVector[2].source, p.sourceVector[1]);
-					return next();
-				});
-			},
+				p.stitch();
+				assert.equal(p.sources[1].source, p.sources[0]);
+			}
+		},
 
-			"should iterate through sources and return resultant array": function (next) {
-				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]});
-				p.run(new DocumentSource({}), function(err, results){
-					assert.deepEqual(results.result, [5,4,3,2,1,0]); //see the test source for why this should be so
-					return next();
-				});
+		"#_runSync": {
+
+			"should iterate through sources and return resultant array": function () {
+				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]}),
+					results = p.run();
+				assert.deepEqual(results.result, [ { val: 5 }, { val: 4 }, { val: 3 }, { val: 2 }, { val: 1 } ]);
 			},
 
 			"should call callback with errors from pipeline components": function (next) {
-				var p = Pipeline.parseCommand({pipeline:[{$match:{$foo:{bar:"baz"}}}]});
-				p.run(new DocumentSource({}), function(err, results){
+				var p = Pipeline.parseCommand({pipeline:[{$limit:1},{$project:{a:new Date()}}, {$project:{a:{$add:["$a", 1]}}}]}); //Can't add date
+				p.run(function(err, results){
 					assert(err instanceof Error);
 					return next();
 				});
 			}
 
+		},
+
+		"#_runAsync": {
+			"should iterate through sources and return resultant array asynchronously": function () {
+				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]}),
+					results = p.run(function(err, results) {
+						assert.deepEqual(results.result, [ { val: 5 }, { val: 4 }, { val: 3 }, { val: 2 }, { val: 1 } ]);
+					});
+			}
+		},
+
+		"#addInitialSource": {
+			"should put the given source at the beginning of the pipeline": function () {
+				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]}),
+					initialSource = Pipeline.stageDesc.$test({coalesce:false});
+				p.addInitialSource(initialSource);
+				assert.equal(initialSource, p.sources[0]);
+			},
+
+			"should be able to addInitialSource then stitch": function () {
+				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]}),
+					initialSource = Pipeline.stageDesc.$test({coalesce:false});
+				p.addInitialSource(initialSource);
+				p.stitch();
+				assert.equal(p.sources[1].source, p.sources[0]);
+			}
 		}
 
 	}
