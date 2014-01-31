@@ -138,12 +138,41 @@ module.exports = {
 		},
 
 		"#coalesce()": {
+
+			"should return false if nextSource is not $match": function dontSkip(){
+				var mds = new MatchDocumentSource({item: {$lt:3}});
+				assert.equal(mds.coalesce({}), false);
+			},
+			"should return true if nextSource is $limit": function changeLimit(){
+				var mds = new MatchDocumentSource({item:{$gt:1}}),
+					mds2 = new MatchDocumentSource({item:{$lt:3}}),
+					expected = {$and: [{item:{$gt:1}}, {item:{$lt:3}}]};
+
+				var actual = mds.coalesce(mds2);
+				assert.equal(actual, true);
+				assert.deepEqual(mds.getQuery(), expected);
+			}
+
 		},
 
 		"#getQuery()": {
+
+			"should return current query": function () {
+				var mds = new MatchDocumentSource({item: {$gt:1}});
+				var actual = mds.getQuery();
+
+				assert.deepEqual(actual, {item:{$gt:1}});
+			}
+
 		},
 
 		"#redactSafePortion()": {
+
+			"should throw unimplemented, for now": function() {
+				var mds = new MatchDocumentSource({$gt:1});
+				assert.throws(mds.redactSafePortion);
+			}
+
 		}
 
 	}
