@@ -35,7 +35,7 @@ module.exports = {
 				};
 				
 				proto.getNext = function(callback){
-					var answer = this.current > 0 ? {val:this.current--} : null;
+					var answer = this.current > 0 ? {val:this.current--} : DocumentSource.EOF;
 					if(callback) {
 						return callback(null, answer);
 					} else {
