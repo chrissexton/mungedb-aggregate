@@ -6,9 +6,7 @@ var assert = require("assert"),
 
 
 var createAccumulator = function createAccumulator() {
-	var myAccumulator = new AddToSetAccumulator();
-	myAccumulator.addOperand(new FieldPathExpression("b"));
-	return myAccumulator;
+	return new AddToSetAccumulator();
 };
 
 
@@ -33,20 +31,12 @@ module.exports = {
 
 		},
 
-		"#evaluate()" : {
-
-			"should error if evaluate is called with no args": function testNoArgs() {
-				assert.throws(function() {
-					var acc = new createAccumulator();
-					acc.evaluate();
-				});
-			},
-
-			"should error if evaluate is called with more than one arg": function testTooManyArgs() {
-				assert.throws(function() {
-					var acc = new createAccumulator();
-					acc.evaluate({}, {});
-				});
+		"#processInternal()" : {
+			"should add input to set": function testAddsToSet() {
+				var acc = createAccumulator();
+				acc.processInternal({b:5});
+				var value = acc.getValue();
+				assert.deepEqual(JSON.stringify(value), JSON.stringify([5]));
 			}
 
 		},
@@ -62,39 +52,39 @@ module.exports = {
 
 			"should return array with one element that equals 5": function test5InSet() {
 				var acc = createAccumulator();
-				acc.evaluate({b:5});
-				acc.evaluate({b:5});
+				acc.processInternal({b:5});
+				acc.processInternal({b:5});
 				var value = acc.getValue();
 				assert.deepEqual(JSON.stringify(value), JSON.stringify([5]));
 			},
 
 			"should produce value that is an array of multiple elements": function testMultipleItems() {
 				var acc = createAccumulator();
-				acc.evaluate({b:5});
-				acc.evaluate({b:{key: "value"}});
+				acc.processInternal({b:5});
+				acc.processInternal({b:{key: "value"}});
 				var value = acc.getValue();
 				assert.deepEqual(JSON.stringify(value), JSON.stringify([5, {key: "value"}]));
 			},
 
 			"should return array with one element that is an object containing a key/value pair": function testKeyValue() {
 				var acc = createAccumulator();
-				acc.evaluate({b:{key: "value"}});
+				acc.processInternal({b:{key: "value"}});
 				var value = acc.getValue();
 				assert.deepEqual(JSON.stringify(value), JSON.stringify([{key: "value"}]));
 			},
 
-			"should ignore undefined values": function testKeyValue() {
+			"should not require defining values": function testKeyValue() {
 				var acc = createAccumulator();
-				acc.evaluate({b:{key: "value"}});
-				acc.evaluate({a:5});
+				acc.processInternal({b:{key: "value"}});
+				acc.processInternal({a:5});
 				var value = acc.getValue();
-				assert.deepEqual(JSON.stringify(value), JSON.stringify([{key: "value"}]));
+				assert.deepEqual(JSON.stringify(value), JSON.stringify([5, {key: "value"}]));
 			},
 
 			"should coalesce different instances of equivalent objects": function testGetValue_() {
 				var acc = createAccumulator();
-				acc.evaluate({b:{key: "value"}});
-				acc.evaluate({b:{key: "value"}});
+				acc.processInternal({b:{key: "value"}});
+				acc.processInternal({b:{key: "value"}});
 				var value = acc.getValue();
 				assert.deepEqual(JSON.stringify(value), JSON.stringify([{key: "value"}]));
 			}
