@@ -9,7 +9,6 @@ function testAggregate(opts){
 	// SYNC: test one-off usage
 	var results = aggregate(opts.pipeline, opts.inputs);
 	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
-
 	// SYNC: test reusable aggregator functionality
 	var aggregator = aggregate(opts.pipeline);
 	results = aggregator(opts.inputs);
