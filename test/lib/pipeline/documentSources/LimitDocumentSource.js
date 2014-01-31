@@ -53,7 +53,7 @@ module.exports = {
 			"should return the current document source": function currSource(next){
 				var lds = new LimitDocumentSource();
 				lds.limit = 1;
-				lds.source = {getNext:function(err,cb){cb(null,{ item:1 });}};
+				lds.source = {getNext:function(cb){cb(null,{ item:1 });}};
 				lds.getNext(function(err,val) {
 					assert.deepEqual(val, { item:1 });
 					next();
@@ -65,7 +65,7 @@ module.exports = {
 				lds.limit = 10;
 				lds.source = {
 					calls: 0,
-					getNext:function(err,cb) {
+					getNext:function(cb) {
 						if (lds.source.calls)
 							return cb(null,DocumentSource.EOF);
 						lds.source.calls++;
@@ -85,7 +85,7 @@ module.exports = {
 				lds.limit = 1;
 				lds.source = {
 					calls: 0,
-					getNext:function(err,cb) {
+					getNext:function(cb) {
 						if (lds.source.calls)
 							return cb(null,DocumentSource.EOF);
 						return cb(null,{item:1});
