@@ -47,7 +47,7 @@ module.exports = {
 
 			"should throw an error if no callback is given": function() {
 				var sds = new SkipDocumentSource();
-				assert.throws(sds.getNext());
+				assert.throws(sds.getNext.bind(sds));
 			},
 
 			"should return EOF if there are no more sources": function noSources(next){
