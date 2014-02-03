@@ -24,8 +24,8 @@ module.exports = {
 		"#getSourceName()": {
 
 			"should return the correct source name; $skip": function testSourceName(){
-				var lds = new SkipDocumentSource();
-				assert.strictEqual(lds.getSourceName(), "$skip");
+				var sds = new SkipDocumentSource();
+				assert.strictEqual(sds.getSourceName(), "$skip");
 			}
 
 		},
@@ -33,22 +33,27 @@ module.exports = {
 		"#coalesce()": {
 
 			"should return false if nextSource is not $skip": function dontSkip(){
-				var lds = new SkipDocumentSource();
-				assert.equal(lds.coalesce({}), false);
+				var sds = new SkipDocumentSource();
+				assert.equal(sds.coalesce({}), false);
 			},
 			"should return true if nextSource is $skip": function changeSkip(){
-				var lds = new SkipDocumentSource();
-				assert.equal(lds.coalesce(new SkipDocumentSource()), true);
+				var sds = new SkipDocumentSource();
+				assert.equal(sds.coalesce(new SkipDocumentSource()), true);
 			}
 
 		},
 
 		"#getNext()": {
 
+			"should throw an error if no callback is given": function() {
+				var sds = new SkipDocumentSource();
+				assert.throws(sds.getNext());
+			},
+
 			"should return EOF if there are no more sources": function noSources(next){
-				var lds = new SkipDocumentSource();
-				lds.skip = 3;
-				lds.count = 0;
+				var sds = new SkipDocumentSource();
+				sds.skip = 3;
+				sds.count = 0;
 
 				var expected = [
 					{val:4},
@@ -64,31 +69,31 @@ module.exports = {
 				];
                 cwc._cursor = new Cursor( input );
                 var cds = new CursorDocumentSource(cwc);
-				lds.setSource(cds);
+				sds.setSource(cds);
 
 				async.series([
-						lds.getNext.bind(lds),
-						lds.getNext.bind(lds),
+						sds.getNext.bind(sds),
+						sds.getNext.bind(sds),
 					],
 					function(err,res) {
 						assert.deepEqual(expected, res);
 						next();
 					}
 				);
-				lds.getNext(function(err, actual) {
+				sds.getNext(function(err, actual) {
 					assert.equal(actual, DocumentSource.EOF);
 				});
 			},
 			"should return documents if skip count is not hit and there are more documents": function hitSkip(next){
-				var lds = SkipDocumentSource.createFromJson(1);
+				var sds = SkipDocumentSource.createFromJson(1);
 
                 var cwc = new CursorDocumentSource.CursorWithContext();
                 var input = [{val:1},{val:2},{val:3}];
                 cwc._cursor = new Cursor( input );
                 var cds = new CursorDocumentSource(cwc);
-				lds.setSource(cds);
+				sds.setSource(cds);
 
-				lds.getNext(function(err,actual) {
+				sds.getNext(function(err,actual) {
 					assert.notEqual(actual, DocumentSource.EOF);
 					assert.deepEqual(actual, {val:2});
 					next();
@@ -96,22 +101,22 @@ module.exports = {
 			},
 
 			"should return the current document source": function currSource(){
-				var lds = SkipDocumentSource.createFromJson(1);
+				var sds = SkipDocumentSource.createFromJson(1);
 
                 var cwc = new CursorDocumentSource.CursorWithContext();
                 var input = [{val:1},{val:2},{val:3}];
                 cwc._cursor = new Cursor( input );
                 var cds = new CursorDocumentSource(cwc);
-				lds.setSource(cds);
+				sds.setSource(cds);
 
-				lds.getNext(function(err, actual) {
+				sds.getNext(function(err, actual) {
 					assert.deepEqual(actual, { val:2 });
 				});
 			},
 
 			"should return false if we hit our limit": function noMoar(next){
-				var lds = new SkipDocumentSource();
-				lds.skip = 3;
+				var sds = new SkipDocumentSource();
+				sds.skip = 3;
 
 				var expected = [
 					{item:4},
@@ -119,7 +124,7 @@ module.exports = {
 				];
 
 				var i = 1;
-				lds.source = {
+				sds.source = {
 					getNext:function(cb){
 						if (i>=5)
 							return cb(null,DocumentSource.EOF);
@@ -128,8 +133,8 @@ module.exports = {
 				};
 
 				async.series([
-						lds.getNext.bind(lds),
-						lds.getNext.bind(lds),
+						sds.getNext.bind(sds),
+						sds.getNext.bind(sds),
 					],
 					function(err,res) {
 						assert.deepEqual(expected, res);
@@ -143,9 +148,9 @@ module.exports = {
 		"#serialize()": {
 
 			"should create an object with a key $skip and the value equal to the skip": function sourceToJsonTest(){
-				var lds = new SkipDocumentSource();
-				lds.skip = 9;
-				var t = lds.serialize(false);
+				var sds = new SkipDocumentSource();
+				sds.skip = 9;
+				var t = sds.serialize(false);
 				assert.deepEqual(t, { "$skip": 9 });
 			}
 

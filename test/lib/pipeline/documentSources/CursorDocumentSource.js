@@ -51,17 +51,13 @@ module.exports = {
 		},
 
 		"#getNext": {
-			"should return the current cursor value sync": function(){
+			"should throw an error if no callback is given": function() {
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [1,2,3,4] );
-
 				var cds = new CursorDocumentSource(cwc);
-				assert.equal(cds.getNext(), 1);
-				assert.equal(cds.getNext(), 2);
-				assert.equal(cds.getNext(), 3);
-				assert.equal(cds.getNext(), 4);
-				assert.equal(cds.getNext(), DocumentSource.EOF);
+				assert.throws(cds.getNext());
 			},
+
 			"should return the current cursor value async": function(next){
 				var expected = JSON.stringify([1,2]);
 				var cwc = new CursorDocumentSource.CursorWithContext();
@@ -81,30 +77,47 @@ module.exports = {
 					}
 				);
 			},
-			"should return values past the batch limit": function(){
+			"should return values past the batch limit": function(next){
 				var cwc = new CursorDocumentSource.CursorWithContext(),
 					n = 0,
 					arr = Array.apply(0, new Array(200)).map(function() { return n++; });
 				cwc._cursor = new Cursor( arr );
 
 				var cds = new CursorDocumentSource(cwc);
-				arr.forEach(function(v) {
-					assert.equal(cds.getNext(), v);
+				async.each(arr,
+					function(a,next) {
+						cds.getNext(function(err,val) {
+							assert.equal(val,a);
+							next(err);
+						});
+					},
+					function(err) {
+						assert.equal(err, null);
+					}
+				);
+				cds.getNext(function(err,val) {
+					assert.equal(val, DocumentSource.EOF);
+					next();
 				});
-				assert.equal(cds.getNext(), DocumentSource.EOF);
 			},
 		},
 		"#dispose": {
-			"should empty the current cursor": function(){
+			"should empty the current cursor": function(next){
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [1,2,3] );
 
 				var cds = new CursorDocumentSource(cwc);
-				assert.equal(cds.getNext(), 1);
-				assert.equal(cds.getNext(), 2);
-
-				cds.dispose();
-				assert.equal(cds.getNext(), DocumentSource.EOF);
+				async.series([
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+					],
+					function(err,res) {
+						assert.deepEqual([1,2,3,DocumentSource.EOF], res);
+						next();
+					}
+				);
 			}
 		}
 

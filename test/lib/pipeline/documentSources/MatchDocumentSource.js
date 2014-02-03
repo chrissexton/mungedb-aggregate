@@ -49,6 +49,11 @@ module.exports = {
 
 		"#getNext()": {
 
+			"should throw an error if no callback is given": function() {
+				var mds = new MatchDocumentSource({item:1});
+				assert.throws(mds.getNext());
+			},
+
 			"should return the current document source": function currSource(next){
 				var mds = new MatchDocumentSource({item: 1});
 				mds.source = {getNext:function(cb){cb(null,{ item:1 });}};

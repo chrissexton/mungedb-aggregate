@@ -50,6 +50,11 @@ module.exports = {
 
 		"#getNext()": {
 
+			"should throw an error if no callback is given": function() {
+				var lds = new LimitDocumentSource();
+				assert.throws(lds.getNext());
+			},
+
 			"should return the current document source": function currSource(next){
 				var lds = new LimitDocumentSource();
 				lds.limit = 1;
