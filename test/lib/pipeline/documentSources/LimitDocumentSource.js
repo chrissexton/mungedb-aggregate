@@ -52,7 +52,7 @@ module.exports = {
 
 			"should throw an error if no callback is given": function() {
 				var lds = new LimitDocumentSource();
-				assert.throws(lds.getNext());
+				assert.throws(lds.getNext.bind(lds));
 			},
 
 			"should return the current document source": function currSource(next){
