@@ -76,8 +76,22 @@ module.exports = {
 				accumulator.processInternal(1);
 				accumulator.processInternal(0);
 				assert.deepEqual(accumulator.getValue(), [1, 0]);
-			}
+			},
 
+			"should processInternal a 1 and a [0] and return [1,0]": function testprocessInternal_OneArrayZeroMerging(){
+				var accumulator = createAccumulator();
+				accumulator.processInternal(1);
+				accumulator.processInternal([0], true);
+				assert.deepEqual(accumulator.getValue(), [1, 0]);
+			},
+
+			"should processInternal a 1 and a 0 and throw an error if merging": function testprocessInternal_OneZeroMerging(){
+				var accumulator = createAccumulator();
+				accumulator.processInternal(1);
+				assert.throws(function() {
+					accumulator.processInternal(0, true);
+				});
+			}
 		}
 
 	}
