@@ -1,16 +1,11 @@
 "use strict";
 var assert = require("assert"),
+	async = require("async"),
 	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 	ProjectDocumentSource = require("../../../../lib/pipeline/documentSources/ProjectDocumentSource"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor");
 
-
-//HELPERS
-var assertExhausted = function assertExhausted(pds) {
-	assert.ok(pds.eof());
-	assert.ok(!pds.advance());
-};
 
 /**
  *   Tests if the given rep is the same as what the pds resolves to as JSON.
@@ -63,85 +58,66 @@ module.exports = {
 
 		},
 
-		"#returnNext()": {
+		"#getNext()": {
 
-			"should return EOF": function testEOF() {
+			"should return EOF": function testEOF(next) {
 				var pds = createProject();
 				pds.setSource({
-					getNext: function getNext() {
-						return DocumentSource.EOF;
+					getNext: function getNext(cb) {
+						return cb(null, DocumentSource.EOF);
 					}
 				});
 				pds.getNext(function(err, doc) {
 					assert.equal(DocumentSource.EOF, doc);
+					next();
 				});
 			},
 
 			"callback is required": function requireCallback() {
 				var pds = createProject();
-				pds.setSource({
-					getNext: function getNext() {
-						return false;
-					}
+				assert.throws(pds.getNext.bind(pds));
+			},
+
+			"should not return EOF when a document is still in cursor": function testNotEOFTrueIfDocPresent() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [{a: 1}] );
+				var cds = new CursorDocumentSource(cwc);
+				var pds = new ProjectDocumentSource();
+				pds.setSource(cds);
+				pds.getNext(function(err,actual) {
+					assert.notEqual(actual, DocumentSource.EOF);
 				});
-				assert.deepEqual(pds.getNext(/*no callback */), new Error('ProjectDocumentSource #getNext() requires callback'));
-			}
+			},
 
-			// "should return !eof == true when a document is still in cursor": function testNotEOFTrueIfDocPresent() {
-			//     var cwc = new CursorDocumentSource.CursorWithContext();
-			//     cwc._cursor = new Cursor( [{a: 1}] );
-			//     var cds = new CursorDocumentSource(cwc);
-			//     var pds = new ProjectDocumentSource();
-			//     pds.setSource(cds);
-			//     assert.ok(!pds.eof());
-			// }
+			"can retrieve second document from source": function testAdvanceFirst() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
+				var pds = createProject();
+				pds.setSource(cds);
 
-		},
+				pds.getNext(function(err,val) {
+					// eh, ignored
+					pds.getNext(function(err,val) {
+						assert.equal(2, val.a);
+					});
+				});
+			},
 
-		// "#advance()": {
+			"should get the first document out of a cursor": function getCurrentCalledFirst() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [{_id: 0, a: 1}];
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
+				var pds = createProject();
+				pds.setSource(cds);
+				pds.getNext(function(err, actual) {
+					assert.equal(1, actual.a);
+				});
+			},
 
-		//     "should return same as this.psource.advance": function testCallsThisPSourceAdvance() {
-		//         var pds = new ProjectDocumentSource();
-		//         pds.setSource({
-		//             advance: function advance() {
-		//                 return true;
-		//             }
-		//         });
-		//         assert.ok(pds.advance());
-		//     },
-
-		//     "can retrieve values from the project when advance is first function call": function testAdvanceFirst() {
-		//         var cwc = new CursorDocumentSource.CursorWithContext();
-		//         var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
-		//         cwc._cursor = new Cursor( input );
-		//         var cds = new CursorDocumentSource(cwc);
-		//         var pds = createProject();
-		//         pds.setSource(cds);
-		//         assert.ok(pds.advance()); 
-		//         assert.equal(2, pds.getCurrent().a);
-		//     }
-
-		// },
-
-		/* TODO : copy mongo tests, they will probably be more involved */
-		// "#getCurrent()": {
-
-		//     "should work when getCurrent is the first function call": function getCurrentCalledFirst() {
-		//         var cwc = new CursorDocumentSource.CursorWithContext();
-		//         var input = [{_id: 0, a: 1}];
-		//         cwc._cursor = new Cursor( input );
-		//         var cds = new CursorDocumentSource(cwc);
-		//         var pds = createProject();
-		//         pds.setSource(cds);
-		//         assert.ok(pds.getCurrent()); 
-		//         assert.equal(1, pds.getCurrent().a);                
-		//     }
-
-		// },
-
-		"combined": {
-
-			"The a and c.d fields are included but the b field is not": function testFullProject1() {
+			"The a and c.d fields are included but the b field is not": function testFullProject1(next) {
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				var input = [{
 					_id: 0,
@@ -154,20 +130,21 @@ module.exports = {
 				cwc._cursor = new Cursor(input);
 				var cds = new CursorDocumentSource(cwc);
 				var pds = createProject({
-					a: true,
-					c: {
-						d: true
-					}
-				});
+						a: true,
+						c: {
+							d: true
+						}
+					}),
+					expected = {a:1, c:{ d: 1 }};
 				pds.setSource(cds);
-				assert.ok(pds.getNext());
-				assert.equal(1, pds.getCurrent().a);
-				assert.ok(!pds.getCurrent().b);
-				assert.equal(0, pds.getCurrent()._id);
-				assert.equal(1, pds.getCurrent().c.d);
+
+				pds.getNext(function(err,val) {
+					assert.deepEqual(expected, val);
+					next();
+				});
 			},
 
-			"Two documents": function testTwoDocumentsProject() {
+			"Two documents": function testTwoDocumentsProject(next) {
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				var input = [{
 					a: 1,
@@ -175,7 +152,12 @@ module.exports = {
 				}, {
 					a: 3,
 					b: 4
-				}];
+				}],
+				expected = [
+					{a:1},
+					{a:3},
+					DocumentSource.EOF
+				];
 				cwc._cursor = new Cursor(input);
 				var cds = new CursorDocumentSource(cwc);
 				var pds = createProject({
@@ -185,15 +167,17 @@ module.exports = {
 					}
 				});
 				pds.setSource(cds);
-				assert.ok(!pds.eof());
-				assert.equal(1, pds.getCurrent().a);
-				assert.ok(!pds.getCurrent().b);
-				assert.ok(pds.advance());
-				assert.ok(!pds.eof());
-				assert.equal(3, pds.getCurrent().a);
-				assert.ok(!pds.getCurrent().b);
-				assert.ok(!pds.advance());
-				assertExhausted(pds);
+
+				async.series([
+						pds.getNext.bind(pds),
+						pds.getNext.bind(pds),
+						pds.getNext.bind(pds),
+					],
+					function(err,res) {
+						assert.deepEqual(expected, res);
+						next();
+					}
+				);
 			}
 		},
 
