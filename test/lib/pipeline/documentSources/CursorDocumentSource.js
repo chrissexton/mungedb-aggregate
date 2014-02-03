@@ -55,7 +55,7 @@ module.exports = {
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [1,2,3,4] );
 				var cds = new CursorDocumentSource(cwc);
-				assert.throws(cds.getNext());
+				assert.throws(cds.getNext.bind(cds));
 			},
 
 			"should return the current cursor value async": function(next){
