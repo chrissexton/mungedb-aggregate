@@ -3,6 +3,7 @@ var assert = require("assert"),
 	async = require("async"),
 	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 	SortDocumentSource = require("../../../../lib/pipeline/documentSources/SortDocumentSource"),
+	LimitDocumentSource = require("../../../../lib/pipeline/documentSources/LimitDocumentSource"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
 	Cursor = require("../../../../lib/Cursor"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression");
@@ -434,6 +435,29 @@ module.exports = {
 				);
 			}
 
+		},
+
+		"#coalesce()": {
+			"should return false when coalescing a non-limit source": function nonLimitSource() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var l = [{_id:0,a:[{b:1},{b:2}]}, {_id:1,a:[{b:1},{b:1}]} ];
+				cwc._cursor = new Cursor( l );
+				var cds = new CursorDocumentSource(cwc),
+					sds = SortDocumentSource.createFromJson({a:1});
+
+				var newSrc = sds.coalesce(cds);
+				assert.equal(newSrc, false);
+			},
+
+			"should return limit source when coalescing a limit source": function limitSource() {
+				var sds = SortDocumentSource.createFromJson({a:1}),
+					lds = LimitDocumentSource.createFromJson(1);
+
+				var newSrc = sds.coalesce(lds);
+				assert.ok(newSrc instanceof LimitDocumentSource);
+				assert.equal(newSrc.limit, 1);
+				assert.equal(sds.getLimit(), 1);
+			}
 		},
 
 		"#dependencies": {
