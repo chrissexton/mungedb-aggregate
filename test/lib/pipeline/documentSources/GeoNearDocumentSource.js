@@ -3,7 +3,8 @@ var assert = require("assert"),
 	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 	GeoNearDocumentSource = require("../../../../lib/pipeline/documentSources/GeoNearDocumentSource"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
-	Cursor = require("../../../../lib/Cursor");
+	Cursor = require("../../../../lib/Cursor"),
+	FieldPath = require("../../../../lib/pipeline/FieldPath");
 
 var createGeoNear = function(ctx) {
 	var ds = new GeoNearDocumentSource(ctx);
@@ -65,8 +66,33 @@ module.exports = {
 				});
 			}
 
-		}
+		},
 
+		"#createFromJson()":{
+
+			"method creates GeoNearDocumentSource with appropriate options":function() {
+				var optsObj = {
+						// example options
+						near:[40.724, -73.997],
+						limit:25,
+						query:{type:'public'},
+						distanceField: "dist.calculated",
+						maxDistance:0.8,
+						uniqueDocs:true,
+						includeLocs:"dist.location"
+					},
+					optsStr = JSON.stringify(optsObj),
+					gnds = GeoNearDocumentSource.createFromJson(optsStr);
+
+				assert.equal(gnds.source, null);
+				assert.equal(gnds.limit, optsObj.limit);
+				assert.deepEqual(gnds.query, optsObj.query);
+				assert.ok(gnds.distanceField instanceof FieldPath);
+				assert.equal(gnds.maxDistance, optsObj.maxDistance);
+				assert.equal(gnds.uniqueDocs, optsObj.uniqueDocs);
+				assert.ok(gnds.includeLocs instanceof FieldPath);
+			}
+		}
 	}
 };
 
