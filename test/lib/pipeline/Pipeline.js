@@ -13,16 +13,17 @@ module.exports = {
 			Pipeline.stageDesc.$test = (function(){
 				var klass = function TestDocumentSource(options, ctx){
 					base.call(this, ctx);
-					
+
 					this.shouldCoalesce = options.coalesce;
 					this.coalesceWasCalled = false;
 					this.optimizeWasCalled = false;
-					
+					this.works = options.works === false ? false : true; // don't judge
+
 					this.current = 5;
-					
+
 				}, TestDocumentSource = klass, base = DocumentSource, proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
-				
-				
+
+
 				proto.coalesce = function(){
 					this.coalesceWasCalled = true;
 					var c = this.shouldCoalesce;//only coalesce with the first thing we find
@@ -33,20 +34,25 @@ module.exports = {
 				proto.optimize = function(){
 					this.optimizeWasCalled = true;
 				};
-				
+
 				proto.getNext = function(callback){
-					var answer = this.current > 0 ? {val:this.current--} : DocumentSource.EOF;
+					var answer = this.current > 0 ? {val:this.current--} : DocumentSource.EOF,
+						err = null;
+
+					if (!this.works)
+						err = new Error("doesn't work"), answer = undefined;
+
 					if(callback) {
-						return callback(null, answer);
+						return callback(err, answer);
 					} else {
-						return answer;
+						return answer || err;
 					}
 				};
 
 				klass.createFromJson = function(options, ctx){
 					return new TestDocumentSource(options, ctx);
 				};
-				
+
 				return klass;
 			})().createFromJson;
 
@@ -114,7 +120,7 @@ module.exports = {
 			},
 
 			"should call callback with errors from pipeline components": function (next) {
-				var p = Pipeline.parseCommand({pipeline:[{$limit:1},{$project:{a:new Date()}}, {$project:{a:{$add:["$a", 1]}}}]}); //Can't add date
+				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false,works:false}}]});
 				p.run(function(err, results){
 					assert(err instanceof Error);
 					return next();
