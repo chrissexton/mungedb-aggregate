@@ -7,7 +7,7 @@ module.exports = {
 
 	"DocumentSource": {
 
-		"depsToProjection": {
+		"#depsToProjection()": {
 			"should be able to convert dependencies to a projection": function(){
 				var array = {'a':1,'b':1},
 					expected = '{"_id":0,"a":1,"b":1}',
@@ -36,6 +36,16 @@ module.exports = {
 
 				assert.equal(expected, JSON.stringify(proj));
 			},
+		},
+
+		"#documentFromJsonWithDeps()": {
+			"should be able to convert a document to its projected form": function() {
+				var deps = {'a': true, 'b': true},
+					doc = {a:23, b:64, c:92};
+
+				var proj = DocumentSource.documentFromJsonWithDeps(doc, deps);
+				assert.deepEqual({a:23,b:64}, proj);
+			}
 		}
 
 	}
