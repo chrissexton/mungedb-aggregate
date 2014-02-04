@@ -25,14 +25,13 @@ var createProject = function createProject(projection) {
 		};
 	}
 	var spec = {
-		"$project": projection
-	},
+			"$project": projection
+		},
 		specElement = projection,
 		project = ProjectDocumentSource.createFromJson(specElement);
 	checkJsonRepresentation(project, spec);
 	return project;
 };
-
 
 //TESTS
 module.exports = {
@@ -73,6 +72,26 @@ module.exports = {
 				});
 			},
 
+			"iterator state accessors consistently report the source is exhausted": function assertExhausted() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [{}];
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
+				var pds = createProject();
+				pds.setSource(cds);
+				pds.getNext(function(err, actual) {
+					pds.getNext(function(err, actual1) {
+						assert.equal(DocumentSource.EOF, actual1);
+						pds.getNext(function(err, actual2) {
+							assert.equal(DocumentSource.EOF, actual2);
+							pds.getNext(function(err, actual3) {
+								assert.equal(DocumentSource.EOF, actual3);
+							});
+						});
+					});
+				});
+			},
+
 			"callback is required": function requireCallback() {
 				var pds = createProject();
 				assert.throws(pds.getNext.bind(pds));
@@ -80,11 +99,13 @@ module.exports = {
 
 			"should not return EOF when a document is still in cursor": function testNotEOFTrueIfDocPresent() {
 				var cwc = new CursorDocumentSource.CursorWithContext();
-				cwc._cursor = new Cursor( [{a: 1}] );
+				var input = [{_id: 0, a: 1}, {_id: 1, a: 2}];
+					cwc._cursor = new Cursor( input );
 				var cds = new CursorDocumentSource(cwc);
-				var pds = new ProjectDocumentSource();
+				var pds = createProject();
 				pds.setSource(cds);
 				pds.getNext(function(err,actual) {
+					// first go round
 					assert.notEqual(actual, DocumentSource.EOF);
 				});
 			},
@@ -267,4 +288,4 @@ module.exports = {
 
 };
 
-if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
+if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).grep(process.env.MOCHA_GREP || '').run(process.exit);
