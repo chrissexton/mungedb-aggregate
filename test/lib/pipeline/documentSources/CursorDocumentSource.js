@@ -119,6 +119,53 @@ module.exports = {
 					}
 				);
 			}
+		},
+
+		"#setProjection": {
+
+			"should set a projection": function() {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [1,2,3] );
+
+				var cds = new CursorDocumentSource(cwc);
+				cds.setProjection({a:1}, {a:true});
+				assert.deepEqual(cds._projection, {a:1});
+				assert.deepEqual(cds._dependencies, {a:true});
+			},
+
+			"should throw an error if projection is already set": function (){
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [1,2,3] );
+
+				var cds = new CursorDocumentSource(cwc);
+				cds.setProjection({a:1}, {});
+				assert.throws(function() {
+					cds.setProjection({a:1}, {});
+				});
+			},
+
+			"should project properly": function(next) {
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				cwc._cursor = new Cursor( [{a:1},{a:2,b:3},{c:4,d:5}] );
+
+				var cds = new CursorDocumentSource(cwc);
+				cds.setProjection({a:1}, {a:true});
+				assert.deepEqual(cds._projection, {a:1});
+				assert.deepEqual(cds._dependencies, {a:true});
+
+				async.series([
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+						cds.getNext.bind(cds),
+					],
+					function(err,res) {
+						assert.deepEqual([{a:1},{a:2},{},DocumentSource.EOF], res);
+						next();
+					}
+				);
+			}
+
 		}
 
 	}
