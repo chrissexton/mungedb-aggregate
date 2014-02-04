@@ -95,6 +95,7 @@ Here is a list of the major items where we have deviated from the MongoDB code a
     * `DocumentSource` classes
       * DESIGN: We have implemented a `reset` method for all document sources so that we can reuse them against different streams of data
 	  * DESIGN: GroupDocumentSource stores copies of all unique _id's that it accumulates to dodge a javascript Stringify/Parse issue with dates
+	  * DESIGN: We have implemented an EOF class to signify the end of document streams where Mongo uses boost::none
   * **2.5 Matcher components**
     * `ElementPath`
 	  * `getFieldDottedOrArray: ElementPath.getFieldDottedOrArray (was unattached function, now static function on ElementPath class)
