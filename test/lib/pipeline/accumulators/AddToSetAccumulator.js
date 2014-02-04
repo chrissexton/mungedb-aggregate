@@ -58,7 +58,6 @@ module.exports = {
 			"should return array with one element that equals 5": function test5InSet() {
 				var acc = createAccumulator();
 				acc.processInternal(5);
-				console.log(acc.set);
 				acc.processInternal(5);
 				var value = acc.getValue();
 				assert.deepEqual(JSON.stringify(value), JSON.stringify([5]));
