@@ -115,8 +115,9 @@ module.exports = {
 
 			"should iterate through sources and return resultant array": function () {
 				var p = Pipeline.parseCommand({pipeline:[{$test:{coalesce:false}}, {$test:{coalesce:false}}, {$test:{coalesce:false}}]}),
-					results = p.run();
-				assert.deepEqual(results.result, [ { val: 5 }, { val: 4 }, { val: 3 }, { val: 2 }, { val: 1 } ]);
+					results = p.run(function(err, results) {
+						assert.deepEqual(results.result, [ { val: 5 }, { val: 4 }, { val: 3 }, { val: 2 }, { val: 1 } ]);
+					});
 			},
 
 			"should call callback with errors from pipeline components": function (next) {
