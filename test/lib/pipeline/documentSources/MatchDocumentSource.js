@@ -4,6 +4,11 @@ var assert = require("assert"),
 	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 	MatchDocumentSource = require("../../../../lib/pipeline/documentSources/MatchDocumentSource");
 
+var testRedactSafe = function testRedactSafe(input, safePortion) {
+	var match = MatchDocumentSource.createFromJson(input);
+	assert.deepEqual(match.redactSafePortion(), safePortion);
+};
+
 
 module.exports = {
 
@@ -173,9 +178,142 @@ module.exports = {
 
 		"#redactSafePortion()": {
 
-			"should throw unimplemented, for now": function() {
-				var mds = new MatchDocumentSource({$gt:1});
-				assert.throws(mds.redactSafePortion);
+			"empty match": function() {
+				testRedactSafe({}, {});
+			},
+
+			"basic allowed things": function () {
+				testRedactSafe({a:1},
+					{a:1});
+
+				testRedactSafe({a:'asdf'},
+					{a:'asdf'});
+
+				testRedactSafe({a:/asdf/i},
+					{a:/asdf/i});
+
+				testRedactSafe({a: {$regex: 'adsf'}},
+					{a: {$regex: 'adsf'}});
+
+				testRedactSafe({a: {$regex: 'adsf', $options: 'i'}},
+					{a: {$regex: 'adsf', $options: 'i'}});
+
+				testRedactSafe({a: {$mod: [1, 0]}},
+					{a: {$mod: [1, 0]}});
+
+				testRedactSafe({a: {$type: 1}},
+					{a: {$type: 1}});
+
+			},
+
+			"basic disallowed things": function() {
+
+				testRedactSafe({a: null},
+					{});
+
+				testRedactSafe({a: {}},
+					{});
+
+				testRedactSafe({a: []},
+					{});
+
+				testRedactSafe({'a.0': 1},
+					{});
+
+				testRedactSafe({'a.0.b': 1},
+					{});
+
+				testRedactSafe({a: {$ne: 1}},
+					{});
+
+				testRedactSafe({a: {$nin: [1, 2, 3]}},
+					{});
+
+				testRedactSafe({a: {$exists: true}}, // could be allowed but currently isn't
+					{});
+
+				testRedactSafe({a: {$exists: false}}, // can never be allowed
+					{});
+
+				testRedactSafe({a: {$size: 1}},
+					{});
+
+				testRedactSafe({$nor: [{a:1}]},
+					{});
+
+			},
+
+			"Combinations": function() {
+				testRedactSafe({a:1, b: 'asdf'},
+					{a:1, b: 'asdf'});
+
+				testRedactSafe({a:1, b: null},
+					{a:1});
+
+				testRedactSafe({a:null, b: null},
+					{});
+			},
+
+			"$elemMatch": function() {
+				testRedactSafe({a: {$elemMatch: {b: 1}}},
+					{a:{$elemMatch:{b: 1}}});
+
+				testRedactSafe({a:{$elemMatch:{b:null}}},
+					{});
+
+				testRedactSafe({a:{$elemMatch:{b:null, c:1}}},
+					{a:{$elemMatch:{c: 1}}});
+			},
+
+			"explicit $and": function(){
+				testRedactSafe({$and:[{a: 1}]},
+					{$and:[{a: 1}]});
+
+				testRedactSafe({$and:[{a: 1},{b: null}]},
+					{$and:[{a: 1}]});
+
+				testRedactSafe({$and:[{a: 1},{b: null, c:1}]},
+					{$and:[{a: 1},{c:1}]});
+
+				testRedactSafe({$and:[{a: null},{b: null}]},
+					{});
+			},
+
+			"explicit $or": function() {
+				testRedactSafe({$or:[{a: 1}]},
+					{$or:[{a: 1}]});
+
+				testRedactSafe({$or:[{a: 1},{b: null}]},
+					{});
+
+				testRedactSafe({$or:[{a: 1},{b: null, c:1}]},
+					{$or:[{a: 1}, {c:1}]});
+
+				testRedactSafe({$or:[{a: null},{b: null}]},
+					{});
+
+				testRedactSafe({},
+					{});
+			},
+
+			"$all and $in": function() {
+				testRedactSafe({a:{$all: [1, 0]}},
+					{a: {$all: [1, 0]}});
+
+				testRedactSafe({a:{$all: [1, 0, null]}},
+					{a: {$all: [1, 0]}});
+
+				testRedactSafe({a:{$all: [{$elemMatch: {b:1}}]}}, // could be allowed but currently isn't
+					{});
+
+				testRedactSafe({a:{$all: [1, 0, null]}},
+					{a: {$all: [1, 0]}});
+
+				testRedactSafe({a:{$in: [1, 0]}},
+					{a: {$in: [1, 0]}});
+
+				testRedactSafe({a:{$in: [1, 0, null]}},
+					{});
 			}
 
 		}
