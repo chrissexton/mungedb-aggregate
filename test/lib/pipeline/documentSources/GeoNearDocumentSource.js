@@ -71,7 +71,7 @@ module.exports = {
 		"#createFromJson()":{
 
 			"method creates GeoNearDocumentSource with appropriate options":function() {
-				var optsObj = {
+				var opts = {
 						// example options
 						near:[40.724, -73.997],
 						limit:25,
@@ -81,15 +81,14 @@ module.exports = {
 						uniqueDocs:true,
 						includeLocs:"dist.location"
 					},
-					optsStr = JSON.stringify(optsObj),
-					gnds = GeoNearDocumentSource.createFromJson(optsStr);
+					gnds = GeoNearDocumentSource.createFromJson(opts);
 
 				assert.equal(gnds.source, null);
-				assert.equal(gnds.limit, optsObj.limit);
-				assert.deepEqual(gnds.query, optsObj.query);
+				assert.equal(gnds.limit, opts.limit);
+				assert.deepEqual(gnds.query, opts.query);
 				assert.ok(gnds.distanceField instanceof FieldPath);
-				assert.equal(gnds.maxDistance, optsObj.maxDistance);
-				assert.equal(gnds.uniqueDocs, optsObj.uniqueDocs);
+				assert.equal(gnds.maxDistance, opts.maxDistance);
+				assert.equal(gnds.uniqueDocs, opts.uniqueDocs);
 				assert.ok(gnds.includeLocs instanceof FieldPath);
 			}
 		}
