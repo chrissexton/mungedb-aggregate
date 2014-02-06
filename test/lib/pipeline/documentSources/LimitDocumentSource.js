@@ -18,6 +18,16 @@ module.exports = {
 
 		},
 
+		"#getDependencies": {
+			"limits do not create dependencies": function() {
+				var lds = LimitDocumentSource.createFromJson(1),
+					deps = {};
+
+				assert.equal(DocumentSource.GetDepsReturn.SEE_NEXT, lds.getDependencies(deps));
+				assert.equal(0, Object.keys(deps).length);
+			}
+		},
+
 		"#getSourceName()": {
 
 			"should return the correct source name; $limit": function testSourceName(){

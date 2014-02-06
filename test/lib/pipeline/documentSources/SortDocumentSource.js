@@ -453,11 +453,18 @@ module.exports = {
 				var sds = SortDocumentSource.createFromJson({a:1}),
 					lds = LimitDocumentSource.createFromJson(1);
 
-				var newSrc = sds.coalesce(lds);
+				var newSrc = sds.coalesce(LimitDocumentSource.createFromJson(10));
 				assert.ok(newSrc instanceof LimitDocumentSource);
-				assert.equal(newSrc.limit, 1);
-				assert.equal(sds.getLimit(), 1);
-			}
+				assert.equal(sds.getLimit(), 10);
+				assert.equal(newSrc.limit, 10);
+
+				sds.coalesce(LimitDocumentSource.createFromJson(5));
+				assert.equal(sds.getLimit(), 5);
+
+				var arr = [];
+				sds.serializeToArray(arr);
+				assert.deepEqual(arr, [{$sort: {a:1}}, {$limit: 5}]);
+			},
 		},
 
 		"#dependencies": {

@@ -161,6 +161,43 @@ module.exports = {
 				var actual = mds.coalesce(mds2);
 				assert.equal(actual, true);
 				assert.deepEqual(mds.getQuery(), expected);
+			},
+
+			"should merge two MatchDocumentSources together": function() {
+				var match1 = MatchDocumentSource.createFromJson({ a: 1 }),
+					match2 = MatchDocumentSource.createFromJson({ b: 1 }),
+					match3 = MatchDocumentSource.createFromJson({ c: 1 });
+
+				// check initial state
+				assert.deepEqual(match1.getQuery(), {a:1});
+				assert.deepEqual(match2.getQuery(), {b:1});
+				assert.deepEqual(match3.getQuery(), {c:1});
+
+				assert.doesNotThrow(function() {
+					match1.coalesce(match2);
+				});
+				assert.deepEqual(match1.getQuery(), {$and: [{a:1}, {b:1}]});
+			},
+
+			"should merge three MatchDocumentSources together": function() {
+				var match1 = MatchDocumentSource.createFromJson({ a: 1 }),
+					match2 = MatchDocumentSource.createFromJson({ b: 1 }),
+					match3 = MatchDocumentSource.createFromJson({ c: 1 });
+
+				// check initial state
+				assert.deepEqual(match1.getQuery(), {a:1});
+				assert.deepEqual(match2.getQuery(), {b:1});
+				assert.deepEqual(match3.getQuery(), {c:1});
+
+				assert.doesNotThrow(function() {
+					match1.coalesce(match2);
+				});
+				assert.deepEqual(match1.getQuery(), {$and: [{a:1}, {b:1}]});
+
+				assert.doesNotThrow(function() {
+					match1.coalesce(match3);
+				});
+				assert.deepEqual(match1.getQuery(), {$and: [{$and: [{a:1}, {b:1}]}, {c:1}]});
 			}
 
 		},

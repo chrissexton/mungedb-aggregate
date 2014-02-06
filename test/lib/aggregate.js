@@ -151,6 +151,21 @@ module.exports = {
 			});
 		},
 
+		"should be able to project out a whole document and leave an empty": function(next) {
+			testAggregate({
+				inputs: [{_id:0, a:1}, {_id:1, a:2, b:1}, {_id:2, b:2, c:1}],
+				pipeline: [
+					{$project:{
+						_id:0,
+						a:1
+						//TODO: high level test of all other expression operators
+					}}
+				],
+				expected: [{a:1}, {a:2}, {}],
+				next: next
+			});
+		},
+
 		"should be able to construct an instance with sort operators properly (ascending)": function(next){
 			testAggregate({
 				inputs: [

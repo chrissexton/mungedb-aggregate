@@ -7,6 +7,14 @@ var assert = require("assert"),
 	SkipDocumentSource = require("../../../../lib/pipeline/documentSources/SkipDocumentSource"),
 	Cursor = require("../../../../lib/Cursor");
 
+var getCursor = function(values) {
+	if (!values)
+		values = [1,2,3,4,5];
+	var cwc = new CursorDocumentSource.CursorWithContext();
+	cwc._cursor = new Cursor( values );
+	return new CursorDocumentSource(cwc);
+};
+
 
 module.exports = {
 
@@ -30,15 +38,46 @@ module.exports = {
 
 		"#coalesce": {
 			"should be able to coalesce a limit into itself": function (){
-				var cwc = new CursorDocumentSource.CursorWithContext();
-				cwc._cursor = new Cursor( [] );
+				var cds = getCursor(),
+					lds = LimitDocumentSource.createFromJson(2);
 
-				var lds = new LimitDocumentSource();
-				lds.limit = 1;
-
-				var cds = new CursorDocumentSource(cwc);
 				assert.equal(cds.coalesce(lds) instanceof LimitDocumentSource, true);
+				assert.equal(cds.getLimit(), 2);
 			},
+
+			"should keep original limit if coalesced to a larger limit": function() {
+				var cds = getCursor();
+				cds.coalesce(LimitDocumentSource.createFromJson(2));
+				cds.coalesce(LimitDocumentSource.createFromJson(3));
+				assert.equal(cds.getLimit(), 2);
+			},
+
+
+			"cursor only returns $limit number when coalesced": function(next) {
+				var cds = getCursor(),
+					lds = LimitDocumentSource.createFromJson(2);
+
+
+				cds.coalesce(lds);
+
+				var docs = [], i = 0;
+				async.doWhilst(
+					function(cb) {
+						cds.getNext(function(err, val) {
+							docs[i] = val;
+							return cb(err);
+						});
+					},
+					function() {
+						return docs[i++] !== DocumentSource.EOF;
+					},
+					function(err) {
+						assert.deepEqual([1, 2, DocumentSource.EOF], docs);
+						next();
+					}
+				);
+			},
+
 			"should leave non-limit alone": function () {
 				var cwc = new CursorDocumentSource.CursorWithContext();
 				cwc._cursor = new Cursor( [] );
