@@ -1,5 +1,6 @@
 "use strict";
 var assert = require("assert"),
+	async = require("async"),
 	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 	OutDocumentSource = require("../../../../lib/pipeline/documentSources/OutDocumentSource"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
@@ -38,6 +39,33 @@ module.exports = {
 			"callback is required":function() {
 				var ods = createOut();
 				assert.throws(ods.getNext.bind(ods));
+			},
+
+			"should act ass passthrough (for now)": function(next) {
+				var ods = OutDocumentSource.createFromJson("test"),
+					cwc = new CursorDocumentSource.CursorWithContext(),
+					l = [{_id:0,a:[{b:1},{b:2}]}, {_id:1,a:[{b:1},{b:1}]} ];
+
+				cwc._cursor = new Cursor( l );
+				var cds = new CursorDocumentSource(cwc);
+				ods.setSource(cds);
+
+				var docs = [], i = 0;
+				async.doWhilst(
+					function(cb) {
+						ods.getNext(function(err, val) {
+							docs[i] = val;
+							return cb(err);
+						});
+					},
+					function() {
+						return docs[i++] !== DocumentSource.EOF;
+					},
+					function(err) {
+						assert.deepEqual([{_id:0,a:[{b:1},{b:2}]}, {_id:1,a:[{b:1},{b:1}]}, DocumentSource.EOF], docs);
+						next();
+					}
+				);
 			}
 		},
 
@@ -49,6 +77,7 @@ module.exports = {
 
 				assert.strictEqual(title, ods._collectionName);
 			}
+
 		},
 
 		"#serialize()":{
