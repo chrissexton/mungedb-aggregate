@@ -22,13 +22,13 @@ module.exports = {
 		"#getOpName()": {
 
 			"should return the correct op name; $eq, $ne, $gt, $gte, $lt, $lte, $cmp": function testOpName(){
-				assert.equal((new CompareExpression(Expression.CmpOp.EQ)).getOpName(), "$eq");
-				assert.equal((new CompareExpression(Expression.CmpOp.NE)).getOpName(), "$ne");
-				assert.equal((new CompareExpression(Expression.CmpOp.GT)).getOpName(), "$gt");
-				assert.equal((new CompareExpression(Expression.CmpOp.GTE)).getOpName(), "$gte");
-				assert.equal((new CompareExpression(Expression.CmpOp.LT)).getOpName(), "$lt");
-				assert.equal((new CompareExpression(Expression.CmpOp.LTE)).getOpName(), "$lte");
-				assert.equal((new CompareExpression(Expression.CmpOp.CMP)).getOpName(), "$cmp");
+				assert.equal((new CompareExpression(CompareExpression.EQ)).getOpName(), "$eq");
+				assert.equal((new CompareExpression(CompareExpression.NE)).getOpName(), "$ne");
+				assert.equal((new CompareExpression(CompareExpression.GT)).getOpName(), "$gt");
+				assert.equal((new CompareExpression(CompareExpression.GTE)).getOpName(), "$gte");
+				assert.equal((new CompareExpression(CompareExpression.LT)).getOpName(), "$lt");
+				assert.equal((new CompareExpression(CompareExpression.LTE)).getOpName(), "$lte");
+				assert.equal((new CompareExpression(CompareExpression.CMP)).getOpName(), "$cmp");
 			}
 
 		},
@@ -38,7 +38,7 @@ module.exports = {
 			"$eq": {
 
 				"should return false if first < second; {$eq:[1,2]}": function testEqLt(){
-					assert.equal(Expression.parseOperand({$eq:[1,2]}).evaluate({}), false);
+						assert.equal(Expression.parseOperand({"$eq":[1,2]}), false);
 				},
 
 				"should return true if first == second; {$eq:[1,1]}": function testEqEq(){
@@ -184,9 +184,8 @@ module.exports = {
 						Expression.parseOperand({$gt:[2,3,4]}).evaluate({});
 					});
 				}
-
 			}
-
+			
 		},
 
 		"#optimize()": {

@@ -27,14 +27,6 @@ module.exports = {
 
 		},
 
-		"#getFactory()": {
-
-			"should return the constructor for this class": function factoryIsConstructor(){
-				assert.equal((new AddExpression()).getFactory(), AddExpression);
-			}
-
-		},
-
 		"#evaluate()": {
 
 			"should return the operand if null document is given": function nullDocument(){
