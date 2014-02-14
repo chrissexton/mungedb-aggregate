@@ -10,7 +10,7 @@ module.exports = {
 		"constructor() / #evaluate": {
 
 			"should be able to construct from a value type": function testCreate(){
-				assert.strictEqual(new ConstantExpression(5).evaluate({}), 5);
+				assert.strictEqual(new ConstantExpression(5).evaluateInternal({}), 5);
 			}
 
 			//TODO: CreateFromBsonElement ? ?? ???
