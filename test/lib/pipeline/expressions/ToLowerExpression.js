@@ -26,14 +26,6 @@ module.exports = {
 
 		},
 
-		"#getFactory()": {
-
-			"should return the constructor for this class": function factoryIsConstructor(){
-				assert.strictEqual(new ToLowerExpression().getFactory(), undefined);
-			}
-
-		},
-
 		"#evaluate()": {
 
 			"should return the lowercase version of the string if there is a null character in the middle of the string": function testStuff(){
