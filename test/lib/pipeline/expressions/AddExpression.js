@@ -27,24 +27,24 @@ module.exports = {
 
 		},
 
-		"#evaluate()": {
+		"#evaluateInternal()": {
 
 			"should return the operand if null document is given": function nullDocument(){
 				var expr = new AddExpression();
 				expr.addOperand(new ConstantExpression(2));
-				assert.equal(expr.evaluate(null), 2);
+				assert.equal(expr.evaluateInternal(null), 2);
 			},
 
 			"should return 0 if no operands were given": function noOperands(){
 				var expr = new AddExpression();
-				assert.equal(expr.evaluate({}), 0);
+				assert.equal(expr.evaluateInternal({}), 0);
 			},
 
 			"should throw Error if a Date operand was given": function date(){
 				var expr = new AddExpression();
 				expr.addOperand(new ConstantExpression(new Date()));
 				assert.throws(function(){
-					expr.evaluate({});
+					expr.evaluateInternal({});
 				});
 			},
 
@@ -52,7 +52,7 @@ module.exports = {
 				var expr = new AddExpression();
 				expr.addOperand(new ConstantExpression(""));
 				assert.throws(function(){
-					expr.evaluate({});
+					expr.evaluateInternal({});
 				});
 			},
 
@@ -60,7 +60,7 @@ module.exports = {
 				var expr = new AddExpression();
 				expr.addOperand(new ConstantExpression(true));
 				assert.throws(function() {
-					expr.evaluate({});
+					expr.evaluateInternal({});
 				});
 			},
 
@@ -69,7 +69,7 @@ module.exports = {
 					input = 123,
 					expected = 123;
 				expr.addOperand(new ConstantExpression(input));
-				assert.equal(expr.evaluate({}), expected);
+				assert.equal(expr.evaluateInternal({}), expected);
 			},
 
 			"should pass thru a single null": function nullSupport() {
@@ -77,7 +77,7 @@ module.exports = {
 					input = null,
 					expected = 0;
 				expr.addOperand(new ConstantExpression(input));
-				assert.equal(expr.evaluate({}), expected);
+				assert.equal(expr.evaluateInternal({}), expected);
 			},
 
 			"should pass thru a single undefined": function undefinedSupport() {
@@ -85,7 +85,7 @@ module.exports = {
 					input,
 					expected = 0;
 				expr.addOperand(new ConstantExpression(input));
-				assert.equal(expr.evaluate({}), expected);
+				assert.equal(expr.evaluateInternal({}), expected);
 			},
 
 			"should add two numbers": function numbers() {
@@ -95,7 +95,7 @@ module.exports = {
 				inputs.forEach(function(input) {
 					expr.addOperand(new ConstantExpression(input));
 				});
-				assert.equal(expr.evaluate({}), expected);
+				assert.equal(expr.evaluateInternal({}), expected);
 			},
 
 			"should add a number and a null": function numberAndNull() {
@@ -105,7 +105,7 @@ module.exports = {
 				inputs.forEach(function(input) {
 					expr.addOperand(new ConstantExpression(input));
 				});
-				assert.equal(expr.evaluate({}), expected);
+				assert.equal(expr.evaluateInternal({}), expected);
 			},
 
 			"should add a number and an undefined": function numberAndUndefined() {
@@ -115,7 +115,7 @@ module.exports = {
 				inputs.forEach(function(input) {
 					expr.addOperand(new ConstantExpression(input));
 				});
-				assert.equal(expr.evaluate({}), expected);
+				assert.equal(expr.evaluateInternal({}), expected);
 			}
 
 		}
