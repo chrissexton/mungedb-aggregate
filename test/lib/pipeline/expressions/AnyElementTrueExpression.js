@@ -31,7 +31,7 @@ module.exports = {
 
 			"should return error if parameter is not an array": function testEmpty(){
 				assert.throws(function(){
-					anyElementTrueExpression.evaluateInternal("TEST")});
+					anyElementTrueExpression.evaluateInternal("TEST");});
 			},
 
 			"should return true if only true was given a; {true}": function testEmpty(){
