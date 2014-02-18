@@ -74,7 +74,6 @@ module.exports = {
 			},
 
 			"should return Array with null if field path is nested below Array containing null": function testNestedBelowArrayWithNull(){
-                            debugger;
                             var vars = new Variables(1,{a:[null]}),
                                 fieldPath = FieldPathExpression.create('a.b'),
                                 results = fieldPath.evaluateInternal(vars);
