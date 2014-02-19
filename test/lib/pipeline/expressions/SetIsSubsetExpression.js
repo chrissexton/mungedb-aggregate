@@ -1,18 +1,18 @@
 "use strict";
 var assert = require("assert"),
-		SetDifferenceExpression = require("../../../../lib/pipeline/expressions/SetDifferenceExpression"),
+		SetIsSubsetExpression = require("../../../../lib/pipeline/expressions/SetIsSubsetExpression"),
 		Expression = require("../../../../lib/pipeline/expressions/Expression");
 
 
 module.exports = {
 
-		"SetDifferenceExpression": {
+		"SetIsSubsetExpression": {
 
 				"constructor()": {
 
 						"should throw Error when constructing without args": function testConstructor() {
 								assert.throws(function() {
-										new SetDifferenceExpression();
+										new SetIsSubsetExpression();
 								});
 						}
 
@@ -20,8 +20,8 @@ module.exports = {
 
 				"#getOpName()": {
 
-						"should return the correct op name; $setdifference": function testOpName() {
-								assert.equal(new SetDifferenceExpression([1, 2, 3], [4, 5, 6]).getOpName(), "$setdifference");
+						"should return the correct op name; $setissubset": function testOpName() {
+								assert.equal(new SetIsSubsetExpression([1,2,3],[4,5,6]).getOpName(), "$setissubset");
 						}
 
 				},
@@ -33,7 +33,7 @@ module.exports = {
 										array2 = [6, 7, 8, 9];
 								assert.throws(function() {
 										Expression.parseOperand({
-												$setdifference: ["$array1", "$array2"]
+												$setissubset: ["$array1", "$array2"]
 										}).evaluateInternal({
 												array1: array1,
 												array2: array2
@@ -46,7 +46,7 @@ module.exports = {
 										array2 = "not an array";
 								assert.throws(function() {
 										Expression.parseOperand({
-												$setdifference: ["$array1", "$array2"]
+												$setissubset: ["$array1", "$array2"]
 										}).evaluateInternal({
 												array1: array1,
 												array2: array2
@@ -59,7 +59,7 @@ module.exports = {
 										array2 = "not an array";
 								assert.throws(function() {
 										Expression.parseOperand({
-												$setdifference: ["$array1", "$array2"]
+												$setissubset: ["$array1", "$array2"]
 										}).evaluateInternal({
 												array1: array1,
 												array2: array2
@@ -67,15 +67,26 @@ module.exports = {
 								});
 						},
 
-						"Should pass and return a difference between the arrays": function testBasicAssignment() {
-								var array1 = [1, 9, 2, 3, 4, 5],
-										array2 = [5, 6, 7, 2, 8, 9];
+						"Should pass and return a true": function testBasicAssignment() {
+								var array1 = [1, 2, 3, 4, 5],
+										array2 = [2,3];
 								assert.strictEqual(Expression.parseOperand({
-										$setdifference: ["$array1", "$array2"]
+										$setissubset: ["$array1", "$array2"]
 								}).evaluateInternal({
 										array1: array1,
 										array2: array2
-								}), [1, 3, 4, 6, 7, 8]);
+								}), true);
+						},
+
+						"Should pass and return false": function testBasicAssignment() {
+								var array1 = [1, 2, 3, 4, 5],
+										array2 = [7, 8, 9];
+								assert.strictEqual(Expression.parseOperand({
+										$setissubset: ["$array1", "$array2"]
+								}).evaluateInternal({
+										array1: array1,
+										array2: array2
+								}), true);
 						},
 
 				}

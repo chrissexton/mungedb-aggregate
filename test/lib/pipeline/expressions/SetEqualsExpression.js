@@ -10,8 +10,8 @@ module.exports = {
 
 				"constructor()": {
 
-						"should not throw Error when constructing without args": function testConstructor() {
-								assert.doesNotThrow(function() {
+						"should throw Error when constructing without args": function testConstructor() {
+								assert.throws(function() {
 										new SetEqualsExpression();
 								});
 						}
@@ -21,7 +21,7 @@ module.exports = {
 				"#getOpName()": {
 
 						"should return the correct op name; $setequals": function testOpName() {
-								assert.equal(new SetEqualsExpression().getOpName(), "$setequals");
+								assert.equal(new SetEqualsExpression([1,2,3],[4,5,6]).getOpName(), "$setequals");
 						}
 
 				},
