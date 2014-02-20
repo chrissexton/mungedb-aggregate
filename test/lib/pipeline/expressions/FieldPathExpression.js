@@ -72,11 +72,6 @@ module.exports = {
                                 results = fieldPath.evaluateInternal(vars);
                             assert.deepEqual(results, []);
 			},
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 108f6ba... DEVOPS-258 ObjectExpression Tests passing with mongo 2.5 support
 			"should return empty Array if field path is nested below Array containing null": function testNestedBelowArrayWithNull(){
                             var vars = new Variables(1,{a:[null]}),
                                 fieldPath = FieldPathExpression.create('a.b'),
