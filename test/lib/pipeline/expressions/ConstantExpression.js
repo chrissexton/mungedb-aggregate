@@ -42,8 +42,8 @@ module.exports = {
 
 			"should output proper JSON": function testJson(){
 				var expr = new ConstantExpression(5);
-				assert.strictEqual(expr.toJSON(), 5);
-				assert.deepEqual(expr.toJSON(true), {$const:5});
+				assert.strictEqual(expr.serialize(), 5);
+				assert.deepEqual(expr.serialize(true), {$const:5});
 			}
 
 		}
