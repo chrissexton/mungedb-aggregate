@@ -6,11 +6,13 @@
   "contributors": [
     "Adam Bell <ABell@riverainc.com>",
     "Charles Ezell <CEzell@riverainc.com>",
+    "Chris Sexton <CSexton@riverainc.com>",
+    "Jake Delaney <JDelaney@riverainc.com>",
     "Jared Hall <JHall@riverainc.com>",
-    "Kyle Davis <KDavis@riverainc.com>",
+    "Kyle P Davis <KDavis@riverainc.com>",
     "Phil Murray <PMurray@riverainc.com>",
-    "Phil Murray <PMurray@riverainc.com>",
-    "Spencer Rathbun <SRathbun@riverainc.com>"
+    "Spencer Rathbun <SRathbun@riverainc.com>",
+    "Tony Ennis <TEnnis@riverainc.com>"
   ],
   "main": "./mungedb-aggregate.js",
   "scripts": {
