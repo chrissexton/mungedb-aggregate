@@ -28,7 +28,7 @@
   "devDependencies": {
     "mocha": "*",
     "jshint": "*",
-    "jscoverage": "0.3.8",
+    "jscoverage": "*",
     "jscheckstyle": "*"
   },
   "license": "AGPL",
