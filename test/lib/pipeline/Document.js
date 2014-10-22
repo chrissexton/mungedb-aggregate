@@ -50,6 +50,7 @@ module.exports = {
 			"should return same field and value from cloned Document ": function clonedDocumentSingleFieldValue() {
 				var doc = new Object({"prop1": 17}),
 					res = Document.clone(doc);
+				assert(res instanceof Object);
 				assert.deepEqual(doc, res);
 				assert.equal(res.prop1, 17);
 			},
@@ -58,6 +59,7 @@ module.exports = {
 				var doc = new Object({"prop1": 17, "prop2": "a string"}),
 					res = Document.clone(doc);
 				assert.deepEqual(doc, res);
+				assert(res instanceof Object);
 				assert.equal(res.prop1, 17);
 				assert.equal(res.prop2, "a string");
 			}
