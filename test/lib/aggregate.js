@@ -9,8 +9,18 @@ function testAggregate(opts){
 	// SYNC: test one-off usage
 	var results = aggregate(opts.pipeline, opts.inputs);
 	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
+
+	// SYNC: test one-off usage with context
+	results = aggregate(opts.pipeline, {hi: "there"}, opts.inputs);
+	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
+
+	// SYNC: test use with context
+	var aggregator = aggregate(opts.pipeline, {hi: "there"});
+	results = aggregator(opts.inputs);
+	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
+
 	// SYNC: test reusable aggregator functionality
-	var aggregator = aggregate(opts.pipeline);
+	aggregator = aggregate(opts.pipeline);
 	results = aggregator(opts.inputs);
 	assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
 
@@ -23,19 +33,34 @@ function testAggregate(opts){
 		assert.ifError(err);
 		assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
 
-		// ASYNC: test reusable aggregator functionality
-		var aggregator = aggregate(opts.pipeline);
-		aggregator(opts.inputs, function(err, results){
+		// ASYNC: test one-off usage with context
+		aggregate(opts.pipeline, {hi: "there"}, opts.inputs, function(err, results){
 			assert.ifError(err);
 			assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
 
-			// ASYNC: test that it is actually reusable
-			aggregator(opts.inputs, function(err, results){
+			// ASYNC: test reusable aggregator functionality with context
+			var aggregator = aggregate(opts.pipeline);
+			aggregator({hi: "there"}, opts.inputs, function(err, results){
 				assert.ifError(err);
-				assert.equal(JSON.stringify(results), JSON.stringify(opts.expected), "Reuse of aggregator should yield the same results!");
+				assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
 
-				// success!
-				return opts.next();
+				// ASYNC: test reusable aggregator functionality
+				var aggregator = aggregate(opts.pipeline);
+				aggregator(opts.inputs, function(err, results){
+					assert.ifError(err);
+					assert.equal(JSON.stringify(results), JSON.stringify(opts.expected));
+
+					// ASYNC: test that it is actually reusable
+					aggregator(opts.inputs, function(err, results){
+						assert.ifError(err);
+						assert.equal(JSON.stringify(results), JSON.stringify(opts.expected), "Reuse of aggregator should yield the same results!");
+
+						// success!
+						return opts.next();
+					});
+
+				});
+
 			});
 
 		});
@@ -261,8 +286,86 @@ module.exports = {
 				],
 				next: next
 			});
-		}
+		},
 
+		"should be able to successfully use comparisions of objects to nulls without throwing an exception": function(next){
+			testAggregate({
+				inputs: [
+					{
+						cond:{$or:[
+							{$eq:["$server","Starmetal.demo.com"]},
+						]},
+						value:"PII"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Specium.demo.com"]},
+							{$eq:["$server","Germanium.demo.com"]},
+							{$eq:["$server","Runite.demo.com"]}
+						]},
+						value:"PI"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Primal.demo.com"]}
+						]},
+						value:"Confidential"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Polarite.demo.com"]},
+							{$eq:["$server","Ryanium.demo.com"]}
+						]},
+						value:"Proprietary"
+					},
+					{
+						cond:{$or:[
+							{$eq:["$server","Phazon.demo.com"]}
+						]},
+						value:"PHI"
+					},
+					{
+						cond:null,
+						value:"Authorized"
+					}
+				],
+				pipeline: [
+					{$skip:1},
+					{$limit:1},
+					{$project:{
+						retValue:{$cond:[
+							{$ne:["$cond", null]},
+							null,
+							"$value"
+						]}
+					}}
+				],
+				expected: [{"retValue":null}],
+				next: next
+			});
+		},
+
+		"should be able to successfully compare a null to a null": function(next){
+			testAggregate({
+				inputs: [
+					{
+						cond:null,
+						value:"Authorized"
+					}
+				],
+				pipeline: [
+					{$project:{
+						retValue:{$cond:[
+							{$eq:["$cond", null]},
+							"$value",
+							null
+						]}
+					}}
+				],
+				expected: [{"retValue":"Authorized"}],
+				next: next
+			});
+		},
 	}
 
 };

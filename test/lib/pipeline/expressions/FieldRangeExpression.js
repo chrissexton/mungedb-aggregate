@@ -106,7 +106,7 @@ module.exports = {
 				assert.throws(function(){
 					new FieldRangeExpression(new FieldPathExpression("a"), "$eq", 0).evaluate({a:[1,0,2]});
 				});
-			}
+            }
 
 		},
 

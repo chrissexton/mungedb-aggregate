@@ -2,42 +2,42 @@
 var assert = require("assert"),
     VariablesParseState = require("../../../../lib/pipeline/expressions/VariablesParseState"),
     VariablesIdGenerator = require("../../../../lib/pipeline/expressions/VariablesIdGenerator"),
-    NaryExpression = require("../../../../lib/pipeline/expressions/NaryExpression"),
-    ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),
-    FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
-    Expression = require("../../../../lib/pipeline/expressions/Expression");
+	NaryExpression = require("../../../../lib/pipeline/expressions/NaryExpression"),
+	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),
+	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
+	Expression = require("../../../../lib/pipeline/expressions/Expression");
 
 
 // A dummy child of NaryExpression used for testing
 var TestableExpression = (function(){
-        // CONSTRUCTOR
+	// CONSTRUCTOR
     var klass = function TestableExpression(operands, haveFactory){
-        base.call(this);
-        if (operands) {
-            var self = this;
-            operands.forEach(function(operand) {
-                self.addOperand(operand);
-            });
-        }
-        this.haveFactory = !!haveFactory;
-    }, base = NaryExpression, proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
+		base.call(this);
+		if (operands) {
+			var self = this;
+			operands.forEach(function(operand) {
+				self.addOperand(operand);
+			});
+		}
+		this.haveFactory = !!haveFactory;
+	}, base = NaryExpression, proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
 
-    // PROTOTYPE MEMBERS
+	// PROTOTYPE MEMBERS
     proto.evaluateInternal = function evaluateInternal(vps) {
-        // Just put all the values in a list.  This is not associative/commutative so
-        // the results will change if a factory is provided and operations are reordered.
-        return this.operands.map(function(operand) {
+		// Just put all the values in a list.  This is not associative/commutative so
+		// the results will change if a factory is provided and operations are reordered.
+		return this.operands.map(function(operand) {
             return operand.evaluateInternal(vps);
-        });
-    };
+		});
+	};
 
     proto.isAssociativeAndCommutative = function isAssociativeAndCommutative(){
         return this.isAssociativeAndCommutative;
-    };
+	};
 
-    proto.getOpName = function getOpName() {
-        return "$testable";
-    };
+	proto.getOpName = function getOpName() {
+		return "$testable";
+	};
 
     klass.createFromOperands = function(operands) {
         var vps = new VariablesParseState(new VariablesIdGenerator()),
@@ -48,19 +48,19 @@ var TestableExpression = (function(){
         return testable;
     };
 
-    return klass;
+	return klass;
 })();
 
 
 module.exports = {
 
-        "NaryExpression": {
+	"NaryExpression": {
 
-                "constructor()": {
+		"constructor()": {
 
-                },
+		},
 
-                "#optimize()": {
+		"#optimize()": {
                     "should suboptimize": function() {
                         var testable = TestableExpression.createFromOperands([{"$and": []}, "$abc"], true);
                         testable = testable.optimize();
@@ -76,14 +76,14 @@ module.exports = {
                         var testable = TestableExpression.createFromOperands([55,65, "$path"], true);
                         testable = testable.optimize();
                         assert.deepEqual(testable.serialize(), {$testable:["$path", [55,66]]});
-                    },
+		},
 
                     "should flatten two layers" : function() {
                         var testable = TestableExpression.createFromOperands([55, "$path", {$add: [5,6,"$q"]}], true);
                         testable.addOperand(TestableExpression.createFromOperands([99,100,"$another_path"], true));
                         testable = testable.optimize();
                         assert.deepEqual(testable.serialize(), {$testable: ["$path", {$add: [5,6,"$q"]}, "$another_path", [55,66,[99,100]]]});
-                    },
+		},
 
                     "should flatten three layers": function(){
                         var bottom = TestableExpression.createFromOperands([5,6,"$c"], true),
@@ -105,7 +105,7 @@ module.exports = {
                     assert.deepEqual(baz,foo);
                         assert.deepEqual(new TestableExpression([new ConstantExpression(9)]).serialize(), {"$testable":[{"$const":9}]});
                         assert.deepEqual(new TestableExpression([new FieldPathExpression("ab.c")]).serialize(), {$testable:["$ab.c"]});
-                },
+		},
 
 
             "#serialize() should convert an object to json": function(){
@@ -117,35 +117,35 @@ module.exports = {
 
 
 
-                //the following test case is eagerly awaiting ObjectExpression
-                "#addDependencies()": function testDependencies(){
-                    var testableExpr = new TestableExpression();
+		//the following test case is eagerly awaiting ObjectExpression
+		"#addDependencies()": function testDependencies(){
+			var testableExpr = new TestableExpression();
                     var deps = {};
-                    // no arguments
+			// no arguments
                     testableExpr.addDependencies(deps);
                     assert.deepEqual(deps, {});
 
-                    // add a constant argument
-                    testableExpr.addOperand(new ConstantExpression(1));
+			// add a constant argument
+			testableExpr.addOperand(new ConstantExpression(1));
 
                     deps = {};
                     testableExpr.addDependencies(deps);
                     assert.deepEqual(deps, {});
 
-                    // add a field path argument
-                    testableExpr.addOperand(new FieldPathExpression("ab.c"));
+			// add a field path argument
+			testableExpr.addOperand(new FieldPathExpression("ab.c"));
                     deps = {};
                     testableExpr.addDependencies(deps);
                     assert.deepEqual(deps, {"ab.c":1});
 
-                    // add an object expression
-                    testableExpr.addOperand(Expression.parseObject({a:"$x",q:"$r"}, new Expression.ObjectCtx({isDocumentOk:1})));
+			// add an object expression
+			testableExpr.addOperand(Expression.parseObject({a:"$x",q:"$r"}, new Expression.ObjectCtx({isDocumentOk:1})));
                     deps = {};
                     testableExpr.addDependencies(deps);
                     assert.deepEqual(deps, {"ab.c":1, "x":1, "r":1});
-                }
+		}
 
-        }
+	}
 
 };
 

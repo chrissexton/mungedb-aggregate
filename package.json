@@ -1,23 +1,28 @@
 {
   "name": "mungedb-aggregate",
-  "version": "0.5.7+2013.09.23",
+  "version": "2.4.0-rc0",
   "description": "A JavaScript data aggregation pipeline based on the MongoDB aggregation framework.",
   "author": "Rivera Group <support@riverainc.com>",
   "contributors": [
     "Adam Bell <ABell@riverainc.com>",
-    "Kyle Davis <KDavis@riverainc.com>",
+    "Charles Ezell <CEzell@riverainc.com>",
+    "Chris Sexton <CSexton@riverainc.com>",
+    "Jake Delaney <JDelaney@riverainc.com>",
+    "Jared Hall <JHall@riverainc.com>",
+    "Kyle P Davis <KDavis@riverainc.com>",
     "Phil Murray <PMurray@riverainc.com>",
     "Spencer Rathbun <SRathbun@riverainc.com>",
-    "Charles Ezell <CEzell@riverainc.com>"
+    "Tony Ennis <TEnnis@riverainc.com>"
   ],
   "main": "./mungedb-aggregate.js",
   "scripts": {
     "test": "npm_scripts/test/test.sh"
   },
   "repository": {
-    "url": "git+https://source.rd.rcg.local/git/private/mungedb-aggregate.git#develop"
+    "url": "git+https://github.com/RiveraGroup/mungedb-aggregate.git#master"
   },
   "keywords": [
+    "aggregation",
     "manipulation",
     "alteration"
   ],
