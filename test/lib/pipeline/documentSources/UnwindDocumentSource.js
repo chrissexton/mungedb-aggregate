@@ -1,5 +1,6 @@
 "use strict";
 var assert = require("assert"),
+	async = require("async"),
 	DocumentSource = require("../../../../lib/pipeline/documentSources/DocumentSource"),
 	UnwindDocumentSource = require("../../../../lib/pipeline/documentSources/UnwindDocumentSource"),
 	CursorDocumentSource = require("../../../../lib/pipeline/documentSources/CursorDocumentSource"),
@@ -17,8 +18,7 @@ var assertExhausted = function assertExhausted(pds) {
 *   MUST CALL WITH A PDS AS THIS (e.g. checkJsonRepresentation.call(this, rep) where this is a PDS)
 **/
 var checkJsonRepresentation = function checkJsonRepresentation(self, rep) {
-	var pdsRep = {};
-	self.sourceToJson(pdsRep, true);
+	var pdsRep = self.serialize(true);
 	assert.deepEqual(pdsRep, rep);
 };
 
@@ -42,34 +42,36 @@ var addSource = function addSource(unwind, data) {
 	unwind.setSource(cds);
 };
 
-var checkResults = function checkResults(data, expectedResults, path) {
-	//poplateData?
-	//createSource?
+var checkResults = function checkResults(data, expectedResults, path, next) {
+	if (expectedResults instanceof Function)
+		next = expectedResults, expectedResults = null, path = null;
+	if (path instanceof Function)
+		next = path, path = null;
 
 	var unwind = createUnwind(path);
 	addSource(unwind, data || []);
 
 	expectedResults = expectedResults || [];
 
+	expectedResults.push(DocumentSource.EOF);
+
 	//Load the results from the DocumentSourceUnwind
-	var resultSet = [];
-    while (!unwind.eof()) {
-		// If not eof, current is non null.
-		assert.ok(unwind.getCurrent());
-
-		// Get the current result.
-		resultSet.push(unwind.getCurrent());
-
-		// Advance.
-		if (unwind.advance()) {
-			// If advance succeeded, eof() is false.
-			assert.equal(unwind.eof(), false);
+	var docs = [], i = 0;
+	async.doWhilst(
+		function(cb) {
+			unwind.getNext(function(err, val) {
+				docs[i] = val;
+				return cb(err);
+			});
+		},
+		function() {
+			return docs[i++] !== DocumentSource.EOF;
+		},
+		function(err) {
+			assert.deepEqual(expectedResults, docs);
+			next();
 		}
-    }
-	// Verify the DocumentSourceUnwind is exhausted.
-	assertExhausted(unwind);
-
-    assert.deepEqual(resultSet, expectedResults);
+	);
 };
 
 var throwsException = function throwsException(data, path, expectedResults) {
@@ -103,135 +105,153 @@ module.exports = {
 
         },
 
-        "#eof()": {
+        "#getNext()": {
 
-            "should return true if source is empty": function (){
+            "should return EOF if source is empty": function (next){
                 var pds = createUnwind();
                 addSource(pds, []);
-                assert.strictEqual(pds.eof(), true);
+				pds.getNext(function(err,doc) {
+					assert.strictEqual(doc, DocumentSource.EOF);
+					next();
+				});
             },
-            
-            "should return false if source documents exist": function (){
+
+            "should return document if source documents exist": function (next){
                 var pds = createUnwind();
                 addSource(pds, [{_id:0, a:[1]}]);
-                assert.strictEqual(pds.eof(), false);
-            }
-
-        },
-
-        "#advance()": {
-
-            "should return false if there are no documents in the parent source": function () {
-                var pds = createUnwind();
-                addSource(pds, []);
-                assert.strictEqual(pds.advance(), false);
+				pds.getNext(function(err,doc) {
+					assert.notStrictEqual(doc, DocumentSource.EOF);
+					next();
+				});
             },
 
-            "should return true if source documents exist and advance the source": function (){
+            "should return document if source documents exist and advance the source": function (next){
                 var pds = createUnwind();
                 addSource(pds, [{_id:0, a:[1,2]}]);
-                assert.strictEqual(pds.advance(), true);
-                assert.strictEqual(pds.getCurrent().a, 2);
-            }
-
-        },
-
-        "#getCurrent()": {
-
-            "should return null if there are no documents in the parent source": function () {
-                var pds = createUnwind();
-                addSource(pds, []);
-                assert.strictEqual(pds.getCurrent(), null);
+				pds.getNext(function(err,doc) {
+					assert.notStrictEqual(doc, DocumentSource.EOF);
+					assert.strictEqual(doc.a, 1);
+					pds.getNext(function(err,doc) {
+						assert.strictEqual(doc.a, 2);
+						next();
+					});
+				});
             },
 
-            "should return unwound documents": function (){
+            "should return unwound documents": function (next){
                 var pds = createUnwind();
                 addSource(pds, [{_id:0, a:[1,2]}]);
-                assert.ok(pds.getCurrent());
-                assert.strictEqual(pds.getCurrent().a, 1);
-            },
-            
-            "A document without the unwind field produces no results.": function(){
-				checkResults([{}]);
+
+				var docs = [], i = 0;
+				async.doWhilst(
+					function(cb) {
+						pds.getNext(function(err, val) {
+							docs[i] = val;
+							return cb(err);
+						});
+					},
+					function() {
+						return docs[i++] !== DocumentSource.EOF;
+					},
+					function(err) {
+						assert.deepEqual([{_id:0, a:1},{_id:0, a:2},DocumentSource.EOF], docs);
+						next();
+					}
+				);
             },
 
-            "A document with a null field produces no results.": function(){
-				checkResults([{a:null}]);
+            "A document without the unwind field produces no results.": function (next){
+				checkResults([{}],next);
             },
 
-            "A document with an empty array produces no results.": function(){
-				checkResults([{a:[]}]);
+            "A document with a null field produces no results.": function (next){
+				checkResults([{a:null}],next);
             },
 
-            "A document with a number field produces a UserException.": function(){
-				throwsException([{a:1}]);
+            "A document with an empty array produces no results.": function (next){
+				checkResults([{a:[]}],next);
             },
 
-            "An additional document with a number field produces a UserException.": function(){
-				throwsException([{a:[1]}, {a:1}]);
+            "A document with a number field produces a UserException.": function (next){
+				throwsException([{a:1}],next);
+				next();
             },
 
-            "A document with a string field produces a UserException.": function(){
-				throwsException([{a:"foo"}]);
+            "An additional document with a number field produces a UserException.": function (next){
+				throwsException([{a:[1]}, {a:1}],next);
+				next();
             },
 
-            "A document with an object field produces a UserException.": function(){
-				throwsException([{a:{}}]);
+            "A document with a string field produces a UserException.": function (next){
+				throwsException([{a:"foo"}],next);
+				next();
             },
 
-            "Unwind an array with one value.": function(){
+            "A document with an object field produces a UserException.": function (next){
+				throwsException([{a:{}}],next);
+				next();
+            },
+
+            "Unwind an array with one value.": function (next){
 				checkResults(
 					[{_id:0, a:[1]}],
-					[{_id:0,a:1}]
+					[{_id:0,a:1}],
+					next
 				);
             },
 
-            "Unwind an array with two values.": function(){
+            "Unwind an array with two values.": function (next){
 				checkResults(
 					[{_id:0, a:[1, 2]}],
-					[{_id:0,a:1}, {_id:0,a:2}]
+					[{_id:0,a:1}, {_id:0,a:2}],
+					next
 				);
             },
 
-            "Unwind an array with two values, one of which is null.": function(){
+            "Unwind an array with two values, one of which is null.": function (next){
 				checkResults(
 					[{_id:0, a:[1, null]}],
-					[{_id:0,a:1}, {_id:0,a:null}]
+					[{_id:0,a:1}, {_id:0,a:null}],
+					next
 				);
             },
 
-            "Unwind two documents with arrays.": function(){
+            "Unwind two documents with arrays.": function (next){
 				checkResults(
 					[{_id:0, a:[1,2]}, {_id:0, a:[3,4]}],
-					[{_id:0,a:1}, {_id:0,a:2}, {_id:0,a:3}, {_id:0,a:4}]
+					[{_id:0,a:1}, {_id:0,a:2}, {_id:0,a:3}, {_id:0,a:4}],
+					next
 				);
             },
 
-            "Unwind an array in a nested document.": function(){
+            "Unwind an array in a nested document.": function (next){
 				checkResults(
 					[{_id:0,a:{b:[1,2],c:3}}],
 					[{_id:0,a:{b:1,c:3}},{_id:0,a:{b:2,c:3}}],
-					"$a.b"
+					"$a.b",
+					next
 				);
             },
 
-            "A missing array (that cannot be nested below a non object field) produces no results.": function(){
+            "A missing array (that cannot be nested below a non object field) produces no results.": function (next){
 				checkResults(
 					[{_id:0,a:4}],
 					[],
-					"$a.b"
+					"$a.b",
+					next
 				);
             },
 
-            "Unwind an array in a doubly nested document.": function(){
+            "Unwind an array in a doubly nested document.": function (next){
 				checkResults(
 					[{_id:0,a:{b:{d:[1,2],e:4},c:3}}],
 					[{_id:0,a:{b:{d:1,e:4},c:3}},{_id:0,a:{b:{d:2,e:4},c:3}}],
-					"$a.b.d"
+					"$a.b.d",
+					next
 				);
             },
 
-            "Unwind several documents in a row.": function(){
+            "Unwind several documents in a row.": function (next){
 				checkResults(
 					[
 						{_id:0,a:[1,2,3]},
@@ -247,11 +267,12 @@ module.exports = {
 						{_id:3,a:10},
                         {_id:3,a:20},
                         {_id:4,a:30}
-                    ]
+                    ],
+					next
 				);
             },
 
-            "Unwind several more documents in a row.": function(){
+            "Unwind several more documents in a row.": function (next){
 				checkResults(
 					[
 						{_id:0,a:null},
@@ -275,10 +296,11 @@ module.exports = {
                         {_id:6,a:7},
                         {_id:6,a:8},
                         {_id:6,a:9}
-					]
+					],
+					next
 				);
             }
-            
+
         },
 
         "#createFromJson()": {
@@ -319,4 +341,4 @@ module.exports = {
 
 };
 
-if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).run(process.exit);
+if (!module.parent)(new(require("mocha"))()).ui("exports").reporter("spec").addFile(__filename).grep(process.env.MOCHA_GREP || '').run(process.exit);
