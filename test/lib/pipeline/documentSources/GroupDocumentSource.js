@@ -8,13 +8,13 @@ var assert = require("assert"),
 
 
 /**
-*   Tests if the given spec is the same as what the DocumentSource resolves to as JSON.
-*   MUST CALL WITH A DocumentSource AS THIS (e.g. checkJsonRepresentation.call(this, spec) where this is a DocumentSource and spec is the JSON used to create the source).
-**/
+ * Tests if the given spec is the same as what the DocumentSource resolves to as JSON.
+ * MUST CALL WITH A DocumentSource AS THIS (e.g. checkJsonRepresentation.call(this, spec) where this is a DocumentSource and spec is the JSON used to create the source).
+ **/
 var checkJsonRepresentation = function checkJsonRepresentation(self, spec) {
-    var rep = {};
-    self.serialize(rep, true);
-    assert.deepEqual(rep, {$group:spec});
+	var rep = {};
+	self.serialize(rep, true);
+	assert.deepEqual(rep, {$group: spec});
 };
 
 /// An assertion for `ObjectExpression` instances based on Mongo's `ExpectedResultBase` class
@@ -102,7 +102,7 @@ module.exports = {
 			},
 
 			// $group _id is specified as an invalid object expression
-			"should throw error when  _id is an invalid object expression": function testConstructor(){
+			"should throw error when _id is an invalid object expression": function testConstructor(){
 				assertExpectedResult({
 					spec:{_id:{$add:1, $and:1}},
 				});

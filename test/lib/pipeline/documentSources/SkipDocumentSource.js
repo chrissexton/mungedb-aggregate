@@ -60,15 +60,15 @@ module.exports = {
 					DocumentSource.EOF
 				];
 
-                var cwc = new CursorDocumentSource.CursorWithContext();
-                var input = [
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [
 					{val:1},
 					{val:2},
 					{val:3},
 					{val:4},
 				];
-                cwc._cursor = new Cursor( input );
-                var cds = new CursorDocumentSource(cwc);
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
 				sds.setSource(cds);
 
 				async.series([
@@ -87,10 +87,10 @@ module.exports = {
 			"should return documents if skip count is not hit and there are more documents": function hitSkip(next){
 				var sds = SkipDocumentSource.createFromJson(1);
 
-                var cwc = new CursorDocumentSource.CursorWithContext();
-                var input = [{val:1},{val:2},{val:3}];
-                cwc._cursor = new Cursor( input );
-                var cds = new CursorDocumentSource(cwc);
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [{val:1},{val:2},{val:3}];
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
 				sds.setSource(cds);
 
 				sds.getNext(function(err,actual) {
@@ -103,10 +103,10 @@ module.exports = {
 			"should return the current document source": function currSource(){
 				var sds = SkipDocumentSource.createFromJson(1);
 
-                var cwc = new CursorDocumentSource.CursorWithContext();
-                var input = [{val:1},{val:2},{val:3}];
-                cwc._cursor = new Cursor( input );
-                var cds = new CursorDocumentSource(cwc);
+				var cwc = new CursorDocumentSource.CursorWithContext();
+				var input = [{val:1},{val:2},{val:3}];
+				cwc._cursor = new Cursor( input );
+				var cds = new CursorDocumentSource(cwc);
 				sds.setSource(cds);
 
 				sds.getNext(function(err, actual) {

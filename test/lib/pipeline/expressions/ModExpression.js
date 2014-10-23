@@ -1,8 +1,8 @@
 "use strict";
 var assert = require("assert"),
-    ModExpression = require("../../../../lib/pipeline/expressions/ModExpression"),
-    Expression = require("../../../../lib/pipeline/expressions/Expression"),
-    VariablesParseState = require("../../../../lib/pipeline/expressions/Expression");
+	ModExpression = require("../../../../lib/pipeline/expressions/ModExpression"),
+	Expression = require("../../../../lib/pipeline/expressions/Expression"),
+	VariablesParseState = require("../../../../lib/pipeline/expressions/Expression");
 
 
 module.exports = {

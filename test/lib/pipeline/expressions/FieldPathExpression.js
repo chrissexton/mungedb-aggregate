@@ -25,72 +25,72 @@ module.exports = {
 			},
 
 			"should return value if field path is present": function testPresent(){
-                            var vars = new Variables(1, {a:123}),
-                                fieldPath = FieldPathExpression.create('a'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.strictEqual(results, 123);
+			    var vars = new Variables(1, {a:123}),
+				fieldPath = FieldPathExpression.create('a'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.strictEqual(results, 123);
 			},
 
 			"should return undefined if field path is nested below null": function testNestedBelowNull(){
-                            var vars = new Variables(1,{a:null}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
+			    var vars = new Variables(1,{a:null}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
 				assert.strictEqual(results, undefined);
 			},
 
 			"should return undefined if field path is nested below undefined": function NestedBelowUndefined(){
-                            var vars = new Variables(1,{a:undefined}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
+			    var vars = new Variables(1,{a:undefined}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
 				assert.strictEqual(results, undefined);
 			},
 
 			"should return undefined if field path is nested below Number": function testNestedBelowInt(){
-                            var vars = new Variables(1,{a:2}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.strictEqual(results, undefined);
+			    var vars = new Variables(1,{a:2}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.strictEqual(results, undefined);
 			},
 
 			"should return value if field path is nested": function testNestedValue(){
-                            var vars = new Variables(1,{a:{b:55}}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.strictEqual(results, 55);
+			    var vars = new Variables(1,{a:{b:55}}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.strictEqual(results, 55);
 			},
 
 			"should return undefined if field path is nested below empty Object": function testNestedBelowEmptyObject(){
-                            var vars = new Variables(1,{a:{}}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.strictEqual(results, undefined);
+			    var vars = new Variables(1,{a:{}}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.strictEqual(results, undefined);
 			},
 
 			"should return empty Array if field path is nested below empty Array": function testNestedBelowEmptyArray(){
-                            var vars = new Variables(1,{a:[]}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.deepEqual(results, []);
+			    var vars = new Variables(1,{a:[]}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.deepEqual(results, []);
 			},
 			"should return empty Array if field path is nested below Array containing null": function testNestedBelowArrayWithNull(){
-                            var vars = new Variables(1,{a:[null]}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.deepEqual(results, []);
+			    var vars = new Variables(1,{a:[null]}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.deepEqual(results, []);
 			},
 
 			"should return empty Array if field path is nested below Array containing undefined": function testNestedBelowArrayWithUndefined(){
-                            var vars = new Variables(1,{a:[undefined]}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.deepEqual(results, []);
+			    var vars = new Variables(1,{a:[undefined]}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.deepEqual(results, []);
 			},
 
 			"should return empty Array if field path is nested below Array containing a Number": function testNestedBelowArrayWithInt(){
-                            var vars = new Variables(1,{a:[9]}),
-                                fieldPath = FieldPathExpression.create('a.b'),
-                                results = fieldPath.evaluateInternal(vars);
-                            assert.deepEqual(results, []);
+			    var vars = new Variables(1,{a:[9]}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+			    assert.deepEqual(results, []);
 			},
 
 			"should return Array with value if field path is in Object within Array": function testNestedWithinArray(){

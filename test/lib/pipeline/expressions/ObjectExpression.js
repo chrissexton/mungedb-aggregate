@@ -4,7 +4,7 @@ var assert = require("assert"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
 	AndExpression = require("../../../../lib/pipeline/expressions/AndExpression"),
-    Variables = require("../../../../lib/pipeline/expressions/Variables");
+	Variables = require("../../../../lib/pipeline/expressions/Variables");
 
 
 function assertEqualJson(actual, expected, message){
@@ -31,13 +31,13 @@ function assertExpectedResult(args) {
 		if (args.expression === undefined) args.expression = ObjectExpression.createRoot(); //NOTE: replaces prepareExpression + _expression assignment
 	}// base args if none provided
 	// run implementation
-    var result = {},
-        variable = new Variables(1, args.source);
+	var result = {},
+		variable = new Variables(1, args.source);
 
 	args.expression.addToDocument(result, args.source, variable);
 	assert.deepEqual(result, args.expected);
 	var dependencies = {};
-    args.expression.addDependencies(dependencies, [/*FAKING: includePath=true*/]);
+	args.expression.addDependencies(dependencies, [/*FAKING: includePath=true*/]);
 	//dependencies.sort(), args.expectedDependencies.sort();	// NOTE: this is a minor hack added for munge because I'm pretty sure order doesn't matter for this anyhow
 	assert.deepEqual(Object.keys(dependencies).sort(), Object.keys(args.expectedDependencies).sort());
 	assert.deepEqual(args.expression.serialize(true), args.expectedJsonRepresentation);
@@ -66,17 +66,16 @@ module.exports = {
 				var expr = ObjectExpression.create();
 				expr.addField("a", new ConstantExpression(5));
 				assertEqualJson(expr.addDependencies({}, [/*FAKING: includePath=true*/]), {"_id":1});
-                            expr.excludeId = true;
+				expr.excludeId = true;
 				assertEqualJson(expr.addDependencies({}, []), {});
 				expr.addField("b", FieldPathExpression.create("c.d"));
-                            var deps = {};
-                            expr.addDependencies(deps, []);
-                            assert.deepEqual(deps, {"c.d":1});
-                            expr.excludeId = false;
-                            deps = {};
-                            expr.addDependencies(deps, []);
-                            assert.deepEqual(deps, {"_id":1, "c.d":1});
-
+				var deps = {};
+				expr.addDependencies(deps, []);
+				assert.deepEqual(deps, {"c.d":1});
+				expr.excludeId = false;
+				deps = {};
+				expr.addDependencies(deps, []);
+				assert.deepEqual(deps, {"_id":1, "c.d":1});
 			},
 
 			"should be able to get dependencies for inclusion expressions": function testInclusionDependencies(){
@@ -530,15 +529,15 @@ module.exports = {
 				var aSubExpression = ObjectExpression.create();
 				aSubExpression.addField("b", bSubExpression);
 				expr.addField("a", aSubExpression);
-                            assertExpectedResult({
-                                source:{_id:0},
-                                expression: expr,
-                                expected: {"_id":0, "a":{ "b":{ "c":6, "d":7}}},
-                                expectedDependencies:{_id:1},
-                                expectedJsonRepresentation:{"a":{"b":{"c":{$const:6},"d":{$const:7}}}},
-                                expectedIsSimple:false
-                            });
-                            var res = expr.evaluateDocument(new Variables(1, {_id:1}));
+				assertExpectedResult({
+					source:{_id:0},
+					expression: expr,
+					expected: {"_id":0, "a":{ "b":{ "c":6, "d":7}}},
+					expectedDependencies:{_id:1},
+					expectedJsonRepresentation:{"a":{"b":{"c":{$const:6},"d":{$const:7}}}},
+					expectedIsSimple:false
+				});
+				var res = expr.evaluateDocument(new Variables(1, {_id:1}));
 			},
 
 			"should throw an Error if two expressions generate the same field": function testConflictingExpressionFields(){
@@ -649,8 +648,8 @@ module.exports = {
 				expr.includePath("a");
 				expr.addField("b", new ConstantExpression(5));
 				expr.addField("c", FieldPathExpression.create("a"));
-                            var res = expr.evaluateInternal(new Variables(1, {_id:0, a:1}));
-                            assert.deepEqual({"b":5, "c":1}, res);
+				var res = expr.evaluateInternal(new Variables(1, {_id:0, a:1}));
+				assert.deepEqual({"b":5, "c":1}, res);
 			}
 		}
 
