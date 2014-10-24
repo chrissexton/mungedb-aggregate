@@ -15,7 +15,21 @@ module.exports = {
 				assert.throws(function(){
 					new CoerceToBoolExpression();
 				});
-			}
+			},
+
+			"should throw Error if more than 1 arg": function construct(){
+				assert.throws(function(){
+					var a = b = "foo";
+					new CoerceToBoolExpression(a,b);
+				});
+			},
+
+			"should not throw Error if 1 arg": function construct(){
+				assert.doesNotThrow(function(){
+					var a = "foo";
+					new CoerceToBoolExpression(a);
+				});
+			},
 
 		},
 
@@ -33,6 +47,19 @@ module.exports = {
 
 		},
 
+		/**
+		 * These tests should just work after the FieldPathExpression Stuff is ported.
+		**/
+
+		"#toJSON()": {
+
+			"should serialize as $and which will coerceToBool; '$foo'": function(){
+				var expr = new CoerceToBoolExpression(new FieldPathExpression('foo'));
+				assert.deepEqual(expr.toJSON(), {$and:['$foo']});
+			}
+
+		},
+
 		"#addDependencies()": {
 
 			"should forward dependencies of nested expression": function testDependencies(){
@@ -40,15 +67,6 @@ module.exports = {
 					deps = expr.addDependencies({});
 				assert.equal(Object.keys(deps).length, 1);
 				assert.ok(deps['a.b']);
-			}
-
-		},
-
-		"#toJSON()": {
-
-			"should serialize as $and which will coerceToBool; '$foo'": function(){
-				var expr = new CoerceToBoolExpression(new FieldPathExpression('foo'));
-				assert.deepEqual(expr.toJSON(), {$and:['$foo']});
 			}
 
 		}
