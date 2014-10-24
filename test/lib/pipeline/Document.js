@@ -7,6 +7,25 @@ module.exports = {
 
 	"Document": {
 
+		"Json conversion": {
+			"convert to Json": function toJson() {
+				var aDocument = {"prop1":0},
+					result = Document.toJson(aDocument);
+				assert.equal(result, '{"prop1":0}');
+			},
+			"convert to Json with metadata": function toJsonWithMetaData() {
+				var aDocument = {"prop1": 0,"metadata":"stuff"},
+					result = Document.toJsonWithMetaData(aDocument);
+				assert.equal(result, '{"prop1":0,"metadata":"stuff"}');
+			},
+			"convert from Json": function fromJsonWithMetaData() {
+				var aDocumentString = '{\"prop1\":0,\"metadata\":1}',
+					jsonDocument = {"prop1":0,"metadata":1},
+					result = Document.fromJsonWithMetaData(aDocumentString);
+				assert.deepEqual(result, jsonDocument);
+			}
+		},
+
 		"compare 2 Documents": {
 
 			"should return 0 if Documents are identical": function compareDocumentsIdentical() {
@@ -62,6 +81,22 @@ module.exports = {
 				assert(res instanceof Object);
 				assert.equal(res.prop1, 17);
 				assert.equal(res.prop2, "a string");
+			}
+		},
+
+		"serialize and deserialize for sorter": {
+
+			"should return a string": function serializeDocument() {
+				var doc = {"prop1":1},
+					res = Document.serializeForSorter(doc);
+				assert.equal(res, "{\"prop1\":1}");
+			},
+
+			"should return a Document": function deserializeToDocument() {
+				var str = "{\"prop1\":1}",
+					doc = {"prop1":1},
+					res = Document.deserializeForSorter(str);
+				assert.deepEqual(res, doc);
 			}
 		}
 
