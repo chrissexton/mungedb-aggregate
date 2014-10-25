@@ -65,24 +65,28 @@ module.exports = {
 				/** Dependencies for non inclusion expressions. */
 				var expr = ObjectExpression.create();
 				expr.addField("a", new ConstantExpression(5));
-				assertEqualJson(expr.addDependencies({}, [/*FAKING: includePath=true*/]), {"_id":1});
+				var depsTracker = {fields:{}};
+				assertEqualJson(expr.addDependencies(depsTracker, [/*FAKING: includePath=true*/]), {fields:{"_id":1}}, "Message");
 				expr.excludeId = true;
-				assertEqualJson(expr.addDependencies({}, []), {});
+				assertEqualJson(expr.addDependencies(depsTracker, []), {fields:{"_id":1}});
 				expr.addField("b", FieldPathExpression.create("c.d"));
-				var deps = {};
-				expr.addDependencies(deps, []);
-				assert.deepEqual(deps, {"c.d":1});
+				//var deps = {};
+				depsTracker = {fields:{}};
+				expr.addDependencies(depsTracker, []);
+				assert.deepEqual(depsTracker, {fields:{"c.d":1}});
 				expr.excludeId = false;
-				deps = {};
-				expr.addDependencies(deps, []);
-				assert.deepEqual(deps, {"_id":1, "c.d":1});
+				//deps = {};
+				depsTracker = {fields:{}}
+				expr.addDependencies(depsTracker, []);
+				assert.deepEqual(depsTracker, {fields:{"_id":1,"c.d":1}});
 			},
 
 			"should be able to get dependencies for inclusion expressions": function testInclusionDependencies(){
 				/** Dependencies for inclusion expressions. */
 				var expr = ObjectExpression.create();
 				expr.includePath( "a" );
-				assertEqualJson(expr.addDependencies({}, [/*FAKING: includePath=true*/]), {"_id":1, "a":1});
+				var depsTracker = {fields:{}};
+				assertEqualJson(expr.addDependencies(depsTracker, [/*FAKING: includePath=true*/]), {"fields":{"_id":1,"a":1}});
 				assert.throws(function(){
 					expr.addDependencies({});
 				}, Error);
@@ -125,9 +129,8 @@ module.exports = {
 				assertExpectedResult({
 					expression: expr,
 					expected: {"_id":0},
-					expectedDependencies: {"_id":1},
+					expectedDependencies: {"fields":1},
 					expectedJsonRepresentation: {}
-
 				});
 			},
 
