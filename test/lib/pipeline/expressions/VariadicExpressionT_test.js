@@ -19,7 +19,14 @@ module.exports = {
 			},
 
 			"should be an instance of NaryExpression": function () {
-				assert(new VariadicExpressionT() instanceof NaryExpression);
+				var VariadicExpressionString = VariadicExpressionT(String);
+				assert.doesNotThrow(function() {
+					var ves = new VariadicExpressionString();
+				});
+				var ves = new VariadicExpressionString();
+				assert(ves.addOperand);
+				assert(ves.validateArguments);
+				//.... and so on. These prove we have a NaryExpression
 			}
 		}
 	}
