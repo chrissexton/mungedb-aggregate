@@ -37,7 +37,6 @@ function assertExpectedResult(args) {
 	args.expression.addToDocument(result, args.source, variable);
 	assert.deepEqual(result, args.expected);
 	var dependencies = {};
-	debugger
 	args.expression.addDependencies(dependencies, [/*FAKING: includePath=true*/]);
 	//dependencies.sort(), args.expectedDependencies.sort();	// NOTE: this is a minor hack added for munge because I'm pretty sure order doesn't matter for this anyhow
 	assert.deepEqual(Object.keys(dependencies).sort(), Object.keys(args.expectedDependencies).sort());
