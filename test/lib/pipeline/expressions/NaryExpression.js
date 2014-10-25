@@ -51,7 +51,7 @@ var TestableExpression = (function(){
 	var klass = function TestableExpression(isAssociativeAndCommutative){
 		this._isAssociativeAndCommutative = isAssociativeAndCommutative;
 		base.call(this);
-	}, base = NaryExpressionTemplate(TestableExpression), proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
+	}, base = NaryExpressionT(TestableExpression), proto = klass.prototype = Object.create(base.prototype, {constructor:{value:klass}});
 
 	// PROTOTYPE MEMBERS
 	proto.evaluateInternal = function evaluateInternal(vars) {
@@ -99,13 +99,13 @@ var TestableExpression = (function(){
 
 module.exports = {
 
-	"NaryExpressionTemplate": {
+	"NaryExpressionT": {
 
 		"generator": {
 
 			"can generate a NaryExpression class": function() {
 				assert.doesNotThrow(function() {
-					var NaryExpressionClass = NaryExpressionTemplate(String),
+					var NaryExpressionClass = NaryExpressionT(String),
 						naryEpressionIntance = new NaryExpressionClass();
 				});
 			}
@@ -121,7 +121,7 @@ module.exports = {
 			"parseArguments":{
 
 				"should parse a fieldPathExpression": function parsesFieldPathExpression() {
-					var NaryExpressionClass = NaryExpressionTemplate(String),
+					var NaryExpressionClass = NaryExpressionT(String),
 						vps = new VariablesParseState(new VariablesIdGenerator()),
 						parsedArguments = NaryExpressionClass.parseArguments("$field.path.expression", vps);
 						assert.equal(parsedArguments.length, 1);
@@ -129,7 +129,7 @@ module.exports = {
 				},
 
 				"should parse an array of fieldPathExpressions": function parsesFieldPathExpression() {
-					var NaryExpressionClass = NaryExpressionTemplate(String),
+					var NaryExpressionClass = NaryExpressionT(String),
 						vps = new VariablesParseState(new VariablesIdGenerator()),
 						parsedArguments = NaryExpressionClass.parseArguments(["$field.path.expression", "$another.FPE"], vps);
 						assert.equal(parsedArguments.length, 2);
