@@ -2,7 +2,7 @@
 var assert = require("assert"),
 	VariablesParseState = require("../../../../lib/pipeline/expressions/VariablesParseState"),
 	VariablesIdGenerator = require("../../../../lib/pipeline/expressions/VariablesIdGenerator"),
-	NaryExpressionT = require("../../../../lib/pipeline/expressions/NaryExpression"),
+	NaryExpressionT = require("../../../../lib/pipeline/expressions/NaryExpressionT"),
 	ConstantExpression = require("../../../../lib/pipeline/expressions/ConstantExpression"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression");
