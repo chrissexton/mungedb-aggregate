@@ -71,15 +71,8 @@ module.exports = {
             },
             "should be able to parse dependencies with subfields": function() {
                 var deps = new DepsTracker(),
-                    expected = {"_fields":{"a":true}};
-                deps.fields = {'a':1,'a.b':1};
-
-                assert.deepEqual(expected, deps.toParsedDeps());
-            },
-            "should be able to parse dependencies with arrays": function() {
-                var deps = new DepsTracker(),
-                    expected = {"_fields":{"a":true,"b":true}};
-                deps.fields = {'a':1,'b':[{'c':1},{'d':'d.e'}]};
+                    expected = {"_fields":{"a.b":true}};
+                deps.fields = {'a.b':1};
 
                 assert.deepEqual(expected, deps.toParsedDeps());
             }
