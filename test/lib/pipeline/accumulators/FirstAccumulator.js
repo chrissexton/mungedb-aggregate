@@ -92,7 +92,7 @@ exports.FirstAccumulator = {
 
 	"#getOpName()": {
 
-		"should return the correct op name; $first": function testOpName(){
+		"should return the correct op name; $first": function() {
 			assert.equal(new FirstAccumulator().getOpName(), "$first");
 		}
 
