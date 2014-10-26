@@ -8,7 +8,7 @@ var assert = require("assert"),
 //TODO: refactor these test cases using Expression.parseOperand() or something because these could be a whole lot cleaner...
 module.exports = {
 
-	"VariaticExpression": {
+	"VariadicExpression": {
 
 		"constructor()": {
 
