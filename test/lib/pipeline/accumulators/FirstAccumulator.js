@@ -77,7 +77,7 @@ exports.FirstAccumulator = {
 
 	"#reset()": {
 
-		"should reset to zero": function() {
+		"should reset to missing": function() {
 			var acc = FirstAccumulator.create();
 			assert.strictEqual(acc.getValue(), undefined);
 			acc.process(123);
@@ -88,7 +88,6 @@ exports.FirstAccumulator = {
 		}
 
 	},
-
 
 	"#getOpName()": {
 
