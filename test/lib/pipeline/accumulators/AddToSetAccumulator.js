@@ -41,25 +41,25 @@ exports.AddToSetAccumulator = {
 
 	},
 
-	"#processInternal()": {
+	"#process()": {
 
 		"should add input to set": function testAddsToSet() {
 			var acc = AddToSetAccumulator.create();
-			acc.processInternal(testData);
+			acc.process(testData);
 			assert.deepEqual(acc.getValue(), [testData]);
 		},
 
 		"should add input iff not already in set": function testUniquelyAddsToSet() {
 			var acc = AddToSetAccumulator.create();
-			acc.processInternal(testData);
-			acc.processInternal(testData);
+			acc.process(testData);
+			acc.process(testData);
 			assert.deepEqual(acc.getValue(), [testData]);
 		},
 
 		"should merge input into set": function testMergeAddsToSet() {
 			var acc = AddToSetAccumulator.create();
-			acc.processInternal(testData);
-			acc.processInternal([testData, 42], true);
+			acc.process(testData);
+			acc.process([testData, 42], true);
 			assert.deepEqual(acc.getValue(), [42, testData]);
 		},
 
@@ -83,7 +83,7 @@ exports.AddToSetAccumulator = {
 					testData
 				];
 			expected.forEach(function(input){
-				acc.processInternal(input);
+				acc.process(input);
 			});
 			assert.deepEqual(acc.getValue(), expected);
 		},
