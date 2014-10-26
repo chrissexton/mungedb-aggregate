@@ -22,7 +22,7 @@ exports.AddToSetAccumulator = {
 	".constructor()": {
 
 		"should create instance of Accumulator": function testCtorAssignsSet() {
-			assert(AddToSetAccumulator.create() instanceof AddToSetAccumulator);
+			assert(new AddToSetAccumulator() instanceof AddToSetAccumulator);
 		},
 
 		"should error if called with args": function testArgsGivenToCtor() {
