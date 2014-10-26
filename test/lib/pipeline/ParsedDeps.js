@@ -4,7 +4,17 @@ var assert = require("assert"),
 
 module.exports = {
     "ParsedDeps": {
-        "_documentHelper": {
+        "#extractFields": {
+            "should be able to convert a document to its projected form": function() {
+                var deps = {'a': true, 'b': true},
+                    doc = {a:23, b:64, c:92},
+                    parse = new ParsedDeps(deps);
+
+                var proj = parse.extractFields(doc);
+                assert.deepEqual({a:23,b:64}, proj);
+            }
+        },
+        "#_documentHelper": {
             "should skip fields that are not needed": function() {
                 var json = {'foo':'bar'},
                     neededFields = {},
@@ -38,7 +48,7 @@ module.exports = {
                 assert.deepEqual(expected, parse._documentHelper(json, neededFields));
             }
         },
-        "_arrayHelper": {
+        "#_arrayHelper": {
             "should call _documentHelper on values that are objects": function() {
                 var array = [{'foo':'bar'}],
                     neededFields = {'foo':true},

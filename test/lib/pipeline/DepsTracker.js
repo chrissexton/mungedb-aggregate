@@ -4,7 +4,7 @@ var assert = require("assert"),
 
 module.exports = {
     "DepsTracker": {
-        "toProjection()": {
+        "#toProjection()": {
             "should be able to convert dependencies to a projection": function(){
                 var deps = new DepsTracker(),
                     expected = {"_id":0,"a":1,"b":1};
@@ -47,7 +47,7 @@ module.exports = {
                 assert.deepEqual(expected, deps.toProjection());
             }
         },
-        "toParsedDeps()": {
+        "#toParsedDeps()": {
             "should not parse if needWholeDocument is true": function() {
                 var deps = new DepsTracker(),
                     expected;
