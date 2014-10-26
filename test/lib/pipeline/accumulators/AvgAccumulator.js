@@ -9,7 +9,7 @@ exports.AvgAccumulator = {
 
 	".constructor()": {
 
-		"should not throw Error when constructing without args": function testConstructor() {
+		"should not throw Error when constructing without args": function() {
 			new AvgAccumulator();
 		},
 
