@@ -21,11 +21,11 @@ exports.AddToSetAccumulator = {
 
 	".constructor()": {
 
-		"should create instance of Accumulator": function testCtorAssignsSet() {
+		"should create instance of Accumulator": function() {
 			assert(new AddToSetAccumulator() instanceof AddToSetAccumulator);
 		},
 
-		"should error if called with args": function testArgsGivenToCtor() {
+		"should error if called with args": function() {
 			assert.throws(function() {
 				new AddToSetAccumulator(123);
 			});
@@ -35,7 +35,7 @@ exports.AddToSetAccumulator = {
 
 	".create()": {
 
-		"should return an instance of the accumulator": function testCreate() {
+		"should return an instance of the accumulator": function() {
 			assert(AddToSetAccumulator.create() instanceof AddToSetAccumulator);
 		}
 
@@ -43,20 +43,20 @@ exports.AddToSetAccumulator = {
 
 	"#process()": {
 
-		"should add input to set": function testAddsToSet() {
+		"should add input to set": function() {
 			var acc = AddToSetAccumulator.create();
 			acc.process(testData);
 			assert.deepEqual(acc.getValue(), [testData]);
 		},
 
-		"should add input iff not already in set": function testUniquelyAddsToSet() {
+		"should add input iff not already in set": function() {
 			var acc = AddToSetAccumulator.create();
 			acc.process(testData);
 			acc.process(testData);
 			assert.deepEqual(acc.getValue(), [testData]);
 		},
 
-		"should merge input into set": function testMergeAddsToSet() {
+		"should merge input into set": function() {
 			var acc = AddToSetAccumulator.create();
 			acc.process(testData);
 			acc.process([testData, 42], true);
@@ -67,14 +67,14 @@ exports.AddToSetAccumulator = {
 
 	"#getValue()": {
 
-		"should return empty set initially": function testGetsEmpty() {
+		"should return empty set initially": function() {
 			var acc = new AddToSetAccumulator.create();
 			var value = acc.getValue();
 			assert.equal((value instanceof Array), true);
 			assert.equal(value.length, 0);
 		},
 
-		"should return set of added items": function test() {
+		"should return set of added items": function() {
 			var acc = AddToSetAccumulator.create(),
 				expected = [
 					42,
