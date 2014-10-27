@@ -1,7 +1,8 @@
 "use strict";
 var assert = require("assert"),
 	FieldPathExpression = require("../../../../lib/pipeline/expressions/FieldPathExpression"),
-    Variables = require("../../../../lib/pipeline/expressions/Variables");
+    Variables = require("../../../../lib/pipeline/expressions/Variables"),
+	DepsTracker = require("../../../../lib/pipeline/DepsTracker");
 
 
 module.exports = {
@@ -40,6 +41,13 @@ module.exports = {
 
 			"should return undefined if field path is nested below undefined": function NestedBelowUndefined(){
 			    var vars = new Variables(1,{a:undefined}),
+				fieldPath = FieldPathExpression.create('a.b'),
+				results = fieldPath.evaluateInternal(vars);
+				assert.strictEqual(results, undefined);
+			},
+
+			"should return undefined if field path is nested below missing": function testNestedBelowMissing(){
+				var vars = new Variables(1,{z:1}),
 				fieldPath = FieldPathExpression.create('a.b'),
 				results = fieldPath.evaluateInternal(vars);
 				assert.strictEqual(results, undefined);
@@ -137,11 +145,11 @@ module.exports = {
 		"#addDependencies()": {
 
 			"should return the field path itself as a dependency": function testDependencies(){
-				var deps = {};
+				var deps = new DepsTracker();
 				var fpe = FieldPathExpression.create('a.b');
 				fpe.addDependencies(deps);
 				assert.strictEqual(Object.keys(deps).length, 1);
-				assert.ok(deps['a.b']);
+				assert.ok(deps.fields['a.b']);
 			}
 
 		},
