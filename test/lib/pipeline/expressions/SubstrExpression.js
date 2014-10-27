@@ -1,160 +1,102 @@
 "use strict";
 var assert = require("assert"),
-		SubstrExpression = require("../../../../lib/pipeline/expressions/SubstrExpression"),
-		Expression = require("../../../../lib/pipeline/expressions/Expression");
+	SubstrExpression = require("../../../../lib/pipeline/expressions/SubstrExpression"),
+	Expression = require("../../../../lib/pipeline/expressions/Expression"),
+	VariablesIdGenerator = require("../../../../lib/pipeline/expressions/VariablesIdGenerator"),
+	VariablesParseState = require("../../../../lib/pipeline/expressions/VariablesParseState");
 
+//TODO Replace this stub with an actual implementation of constify
+var constifyStub = function(thing) {
+		return thing;
+	},
+	expressionToJsonStub = function(thing) {
+		return thing;
+	};
 
 module.exports = {
 
-		"SubstrExpression": {
+	"SubstrExpression": {
 
-				"constructor()": {
+		"constructor()": {
 
-						"should not throw Error when constructing without args": function testConstructor() {
-								assert.doesNotThrow(function() {
-										new SubstrExpression();
-								});
-						}
+			"should not throw Error when constructing without args": function testConstructor() {
+				assert.doesNotThrow(function() {
+					new SubstrExpression();
+				});
+			}
 
-				},
+		},
 
-				"#getOpName()": {
+		"#getOpName()": {
 
-						"should return the correct op name; $substr": function testOpName() {
-								assert.equal(new SubstrExpression().getOpName(), "$substr");
-						}
+			"should return the correct op name; $substr": function testOpName() {
+				assert.equal(new SubstrExpression().getOpName(), "$substr");
+			}
 
-				},
+		},
 
-				"#evaluateInternal()": {
+		"evaluate": {
 
-						"Should fail if no end argument is given": function testMissing3rdArg() {
-								var s = "mystring",
-										start = 0,
-										end = s.length;
-								assert.throws(function() {
-										Expression.parseOperand({
-												$substr: ["$s", "$start"]
-										}).evaluateInternal({
-												s: s,
-												start: start
-										});
-								});
-						},
+			"before": function before() {
+				this.run = function run() {
+					var idGenerator = new VariablesIdGenerator(),
+						vps = new VariablesParseState(idGenerator),
+						spec = this.spec(),
+						expectedResult = this.expectedResult,
+						expression = Expression.parseOperand(spec, vps);
+					assert.deepEqual(constifyStub(spec), expressionToJsonStub(expression));
+					assert.equal(expectedResult, expression.evaluate({}));
+				};
+				this.str = undefined;
+				this.offset = undefined;
+				this.length = undefined;
+				this.expectedResult = undefined;
+				this.spec = function spec() {return {$substr:[this.str, this.offset, this.length]}; };
+			},
 
-						"Should return entire string when called with 0 and length": function testWholeString() {
-								var s = "mystring",
-										start = 0,
-										end = s.length;
-								assert.strictEqual(Expression.parseOperand({
-										$substr: ["$s", "$start", "$end"]
-								}).evaluateInternal({
-										s: s,
-										start: start,
-										end: end
-								}), "mystring");
-						},
+			"FullNull": function FullNull() {
+				this.str = "a\0b";
+				this.offset = 0;
+				this.length = 3;
+				this.expectedResult = this.str;
+				this.run();
+			},
 
-						"Should return entire string less the last character when called with 0 and length-1": function testLastCharacter() {
-								var s = "mystring",
-										start = 0,
-										end = s.length;
-								assert.strictEqual(Expression.parseOperand({
-										$substr: ["$s", "$start", "$end"]
-								}).evaluateInternal({
-										s: s,
-										start: start,
-										end: end - 1
-								}), "mystrin");
-						},
+			"BeginAtNull": function BeginAtNull() {
+				this.str = "a\0b";
+				this.offset = 1;
+				this.length = 2;
+				this.expectedResult = "\0b";
+				this.run();
+			},
 
-						"Should return empty string when 0 and 0 are given as indexes": function test00Indexes() {
-								var s = "mystring",
-										start = 0,
-										end = 0;
-								assert.strictEqual(Expression.parseOperand({
-										$substr: ["$s", "$start", "$end"]
-								}).evaluateInternal({
-										s: s,
-										start: start,
-										end: end
-								}), "");
-						},
+			"EndAtNull": function EndAtNull() {
+				this.str = "a\0b";
+				this.offset = 0;
+				this.length = 2;
+				this.expectedResult = "a\0";
+				this.run();
+			},
 
-						"Should first character when 0 and 1 are given as indexes": function testFirstCharacter() {
-								var s = "mystring",
-										start = 0,
-										end = 1;
-								assert.strictEqual(Expression.parseOperand({
-										$substr: ["$s", "$start", "$end"]
-								}).evaluateInternal({
-										s: s,
-										start: start,
-										end: end
-								}), "m");
-						},
+			"DropBeginningNull": function DropBeginningNull() {
+				this.str = "\0b";
+				this.offset = 1;
+				this.length = 1;
+				this.expectedResult = "b";
+				this.run();
+			},
 
-						"Should return empty string when empty string is given": function testEmptyString() {
-								var s = "",
-										start = 0,
-										end = 0;
-								assert.strictEqual(Expression.parseOperand({
-										$substr: ["$s", "$start", "$end"]
-								}).evaluateInternal({
-										s: s,
-										start: start,
-										end: end
-								}), "");
-						},
+			"DropEndingNull": function DropEndingNull() {
+				this.str = "a\0";
+				this.offset = 0;
+				this.length = 1;
+				this.expectedResult = "a";
+				this.run();
+			},
 
-						"Should return the entire string if end is -1": function testIndexTooLarge() {
-								var s = "mystring",
-										start = 0,
-										end = -1;
-								assert.strictEqual(Expression.parseOperand({
-										$substr: ["$s", "$start", "$end"]
-								}).evaluateInternal({
-										s: s,
-										start: start,
-										end: end
-								}), "mystring");
-						},
-
-
-						"Should fail if end is before begin": function testUnorderedIndexes() {
-								var s = "mystring",
-										start = s.length,
-										end = 0;
-								assert.throws(function() {
-										Expression.parseOperand({
-												$substr: ["$s", "$start"]
-										}).evaluateInternal({
-												s: s,
-												start: start,
-												end: end
-										});
-								});
-						},
-
-						"Should fail if end is greater than length": function testIndexTooLarge() {
-								var s = "mystring",
-										start = 0,
-										end = s.length + 1;
-								assert.throws(function() {
-										Expression.parseOperand({
-												$substr: ["$s", "$start"]
-										}).evaluateInternal({
-												s: s,
-												start: start,
-												end: end
-										});
-								});
-						},
-
-
-				}
 
 		}
+	}
 
 };
 
