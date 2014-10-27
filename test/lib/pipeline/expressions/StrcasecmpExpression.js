@@ -1,8 +1,17 @@
 "use strict";
 var assert = require("assert"),
 	StrcasecmpExpression = require("../../../../lib/pipeline/expressions/StrcasecmpExpression"),
-	Expression = require("../../../../lib/pipeline/expressions/Expression");
+	Expression = require("../../../../lib/pipeline/expressions/Expression"),
+	VariablesIdGenerator = require("../../../../lib/pipeline/expressions/VariablesIdGenerator"),
+	VariablesParseState = require("../../../../lib/pipeline/expressions/VariablesParseState");
 
+//TODO Replace this stub with an actual implementation of constify
+var constifyStub = function(thing) {
+		return thing;
+	},
+	expressionToJsonStub = function(thing) {
+		return thing;
+	};
 
 module.exports = {
 
@@ -26,30 +35,60 @@ module.exports = {
 
 		},
 
-		"#getFactory()": {
+		"evaluate": {
 
-			"should return the constructor for this class": function factoryIsConstructor(){
-				assert.strictEqual(new StrcasecmpExpression().getFactory(), undefined);
-			}
+			"before": function before() {
+				this.run = function run() {
+					this.assertResult(this.expectedResult, this.spec());
+					this.assertResult(-this.expectedResult, this.reverseSpec());
+				};
+				this.a = undefined;
+				this.b = undefined;
+				this.expectedResult = undefined;
+				this.spec = function spec() {return {$strcasecmp:[this.a, this.b]}; };
+				this.reverseSpec = function reverseSpec() {return {$strcasecmp:[this.b, this.a]}; };
+				this.assertResult = function assertResult(expectedResult, spec) {
+					var idGenerator = new VariablesIdGenerator(),
+						vps = new VariablesParseState(idGenerator),
+						expression = Expression.parseOperand(spec, vps);
+					assert.deepEqual(constifyStub(spec), expressionToJsonStub(expression));
+					assert.equal(expectedResult, expression.evaluate({}));
+				};
+			},
 
-		},
+			"NullBegin": function NullBegin() {
+				this.a = "\0ab";
+				this.b = "\0AB";
+				this.expectedResult = 0;
+				this.run();
+			},
 
-		"#evaluateInternal()": {
+			"NullEnd": function NullEnd() {
+				this.a = "ab\0";
+				this.b = "AB\0";
+				this.expectedResult = 0;
+				this.run();
+			},
 
-			"should return 0 if the strings are equivalent and begin with a null character": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$strcasecmp:["$a", "$b"]}).evaluateInternal({a:"\0ab", b:"\0AB"}), 0);
+			"NullMiddleLt": function NullMiddleLt() {
+				this.a = "a\0a";
+				this.b = "A\0B";
+				this.expectedResult = -1;
+				this.run();
 			},
-			"should return 0 if the strings are equivalent and end with a null character": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$strcasecmp:["$a", "$b"]}).evaluateInternal({a:"ab\0", b:"AB\0"}), 0);
+
+			"NullMiddleEq": function NullMiddleEq() {
+				this.a = "a\0b";
+				this.b = "a\0B";
+				this.expectedResult = 0;
+				this.run();
 			},
-			"should return -1 if the left hand side is less than the right hand side and both contain a null character": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$strcasecmp:["$a", "$b"]}).evaluateInternal({a:"a\0a", b:"A\0B"}), -1);
-			},
-			"should return 0 if the strings are equivalent and both contain a null character": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$strcasecmp:["$a", "$b"]}).evaluateInternal({a:"a\0b", b:"A\0B"}), 0);
-			},
-			"should return 1 if the left hand side is greater than the right hand side and both contain a null character": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$strcasecmp:["$a", "$b"]}).evaluateInternal({a:"a\0c", b:"A\0B"}), 1);
+
+			"NullMiddleGt": function NullMiddleGt() {
+				this.a = "a\0c";
+				this.b = "a\0B";
+				this.expectedResult = 1;
+				this.run();
 			}
 		}
 
