@@ -45,26 +45,25 @@ module.exports = {
 		"#evaluateInternal()": {
 
 			"should evaluate boolean expression as true, then return 1; [ true === true, 1, 0 ]": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$cond:[ true === true, 1, 0 ]}).evaluateInternal({}), 1);
+				assert.strictEqual(Expression.parseOperand({$cond:[ true === true, 1, 0 ]}, {}).evaluateInternal({}), 1);
 			},
 
 			"should evaluate boolean expression as false, then return 0; [ false === true, 1, 0 ]": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$cond:[ false === true, 1, 0 ]}).evaluateInternal({}), 0);
+				assert.strictEqual(Expression.parseOperand({$cond:[ false === true, 1, 0 ]}, {}).evaluateInternal({}), 0);
 			}, 
 
 			"should evaluate boolean expression as true, then return 1; [ (true === true) && true, 1, 0 ]": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$cond:[ (true === true) && true , 1, 0 ]}).evaluateInternal({}), 1);
+				assert.strictEqual(Expression.parseOperand({$cond:[ (true === true) && true , 1, 0 ]}, {}).evaluateInternal({}), 1);
 			},
 
 			"should evaluate boolean expression as false, then return 0; [ (false === true) && true, 1, 0 ]": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$cond:[ (false === true) && true, 1, 0 ]}).evaluateInternal({}), 0);
+				assert.strictEqual(Expression.parseOperand({$cond:[ (false === true) && true, 1, 0 ]}, {}).evaluateInternal({}), 0);
 			},
 
 			"should evaluate complex boolean expression as true, then return 1; [ ( 1 > 0 ) && (( 'a' == 'b' ) || ( 3 <= 5 )), 1, 0 ]": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$cond:[ ( 1 > 0 ) && (( 'a' == 'b' ) || ( 3 <= 5 )), 1, 0 ]}).evaluate({}), 1);
-			},
+				assert.strictEqual(Expression.parseOperand({$cond:[ ( 1 > 0 ) && (( 'a' == 'b' ) || ( 3 <= 5 )), 1, 0 ]}, {}).evaluate({}), 1);
+			}
 		}
-
 	}
 
 };

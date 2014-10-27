@@ -14,6 +14,11 @@ module.exports = {
 				assert.doesNotThrow(function(){
 					new NotExpression();
 				});
+			},
+			"should throw when constructing with args": function testConstructor(){
+				assert.throws(function(){
+					new NotExpression(1);
+				});
 			}
 
 		},
@@ -36,12 +41,12 @@ module.exports = {
 
 		"#evaluateInternal()": {
 
-			"should return false for a true input; false for true": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$not:true}).evaluateInternal({}), false);
+			"should return false for a true input; false for true": function(){
+				assert.strictEqual(Expression.parseOperand({$not:true}, {}).evaluateInternal({}), false);
 			},
 
-			"should return true for a false input; true for false": function testStuff(){
-				assert.strictEqual(Expression.parseOperand({$not:false}).evaluateInternal({}), true);
+			"should return true for a false input; true for false": function(){
+				assert.strictEqual(Expression.parseOperand({$not:false}, {}).evaluateInternal({}), true);
 			}
 
 		}
