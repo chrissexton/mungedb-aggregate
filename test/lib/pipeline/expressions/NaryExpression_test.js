@@ -98,7 +98,7 @@ exports.NaryExpression = {
 		var testable = Testable.create();
 
 		var assertDependencies = function assertDependencies(expectedDeps, expr) {
-			var deps = new DepsTracker(),
+			var deps = {}, //TODO: new DepsTracker
 				depsJson = [];
 			expr.addDependencies(deps);
 			deps.forEach(function(dep) {
