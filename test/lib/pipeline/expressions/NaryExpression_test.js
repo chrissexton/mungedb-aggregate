@@ -9,8 +9,10 @@ var assert = require("assert"),
 	Expression = require("../../../../lib/pipeline/expressions/Expression"),
 	utils = require("./utils");
 
+
 // Mocha one-liner to make these tests self-hosted
 if(!module.parent)return(require.cache[__filename]=null,(new(require("mocha"))({ui:"exports",reporter:"spec",grep:process.env.TEST_GREP})).addFile(__filename).run(process.exit));
+
 
 // A dummy child of NaryExpression used for testing
 var Testable = (function(){
@@ -63,6 +65,7 @@ var Testable = (function(){
 	return klass;
 })();
 
+
 exports.NaryExpression = {
 
 	".parseArguments()": {
@@ -87,10 +90,10 @@ exports.NaryExpression = {
 	/** Adding operands to the expression. */
 	"AddOperand": function testAddOperand() {
 		var testable = Testable.create();
-		testable.addOperand(new ConstantExpression(9));
+		testable.addOperand(ConstantExpression.create(9));
 		testable.assertContents([9]);
-		testable.addOperand(new FieldPathExpression("ab.c"));
-		testable.assertContents([9, "$ab.c"]); //NOTE: Broken, not sure if problem with assertConents or FPE serialize
+		testable.addOperand(FieldPathExpression.create("ab.c"));
+		testable.assertContents([9, "$ab.c"]);
 	},
 
 	/** Dependencies of the expression. */
@@ -151,7 +154,7 @@ exports.NaryExpression = {
 
 	/** One operand is optimized to a constant, while another is left as is. */
 	"OptimizeOneOperand": function testOptimizeOneOperand() {
-		var spec = [{$and:[]},"$abc"],
+		var spec = [{$and:[]}, "$abc"],
 			testable = Testable.createFromOperands(spec);
 		testable.assertContents(spec);
 		assert.deepEqual(testable.serialize(), testable.optimize().serialize());
@@ -160,7 +163,7 @@ exports.NaryExpression = {
 
 	/** All operands are constants, and the operator is evaluated with them. */
 	"EvaluateAllConstantOperands": function testEvaluateAllConstantOperands() {
-		var spec = [1,2],
+		var spec = [1, 2],
 			testable = Testable.createFromOperands(spec);
 		testable.assertContents(spec);
 		var optimized = testable.optimize();
@@ -173,19 +176,19 @@ exports.NaryExpression = {
 
 		/** A string constant prevents factory optimization. */
 		"StringConstant": function testStringConstant() {
-			var testable = Testable.createFromOperands(["abc","def","$path"], true);
+			var testable = Testable.createFromOperands(["abc", "def", "$path"], true);
 			assert.deepEqual(testable.serialize(), testable.optimize().serialize());
 		},
 
 		/** A single (instead of multiple) constant prevents optimization.  SERVER-6192 */
 		"SingleConstant": function testSingleConstant() {
-			var testable = Testable.createFromOperands([55,"$path"], true);
+			var testable = Testable.createFromOperands([55, "$path"], true);
 			assert.deepEqual(testable.serialize(), testable.optimize().serialize());
 		},
 
 		/** Factory optimization is not used without a factory. */
 		"NoFactory": function testNoFactory() {
-			var testable = Testable.createFromOperands([55,66,"$path"], false);
+			var testable = Testable.createFromOperands([55, 66, "$path"], false);
 			assert.deepEqual(testable.serialize(), testable.optimize().serialize());
 		},
 
@@ -194,18 +197,18 @@ exports.NaryExpression = {
 	/** Factory optimization separates constant from non constant expressions. */
 	"FactoryOptimize": function testFactoryOptimize() {
 		// The constant expressions are evaluated separately and placed at the end.
-		var testable = Testable.createFromOperands([55,66,"$path"], false),
+		var testable = Testable.createFromOperands([55, 66, "$path"], false),
 			optimized = testable.optimize();
-		assert.deepEqual({$testable:["$path", [55,66]]}, utils.expressionToJson(optimized));
+		assert.deepEqual({$testable:["$path", [55, 66]]}, utils.expressionToJson(optimized));
 	},
 
 	/** Factory optimization flattens nested operators of the same type. */
 	"FlattenOptimize": function testFlattenOptimize() {
 		var testable = Testable.createFromOperands(
-				[55,"$path",{$add:[5,6,"$q"]},66],
+				[55, "$path", {$add:[5,6,"$q"]}, 66],
 			true);
 		testable.addOperand(Testable.createFromOperands(
-				[99,100,"$another_path"],
+				[99, 100, "$another_path"],
 			true));
 		var optimized = testable.optimize();
 		assert.deepEqual(
@@ -220,9 +223,9 @@ exports.NaryExpression = {
 
 	/** Three layers of factory optimization are flattened. */
 	"FlattenThreeLayers": function testFlattenThreeLayers() {
-		var top = Testable.createFromOperands([1,2,"$a"], true),
-			nested = Testable.createFromOperands([3,4,"$b"], true);
-		nested.addOperand(Testable.createFromOperands([5,6,"$c"],true));
+		var top = Testable.createFromOperands([1, 2, "$a"], true),
+			nested = Testable.createFromOperands([3, 4, "$b"], true);
+		nested.addOperand(Testable.createFromOperands([5, 6, "$c"], true));
 		top.addOperand(nested);
 		var optimized = top.optimize();
 		assert.deepEqual(
