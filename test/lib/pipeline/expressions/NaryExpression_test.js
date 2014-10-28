@@ -57,7 +57,6 @@ var Testable = (function(){
 	};
 
 	proto.assertContents = function assertContents(expectedContents) {
-		debugger;
 		assert.deepEqual(utils.constify({$testable:expectedContents}), utils.expressionToJson(this));
 	};
 
